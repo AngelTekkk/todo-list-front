@@ -1,0 +1,10 @@
+@use "../../_index.scss" as *;
+
+.bigContainer {
+  margin-top: 80px;
+  margin-bottom: 100px;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  flex: 1;
+}
