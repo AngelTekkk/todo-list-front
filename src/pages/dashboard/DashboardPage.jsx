@@ -9,7 +9,7 @@ function DashboardPage() {
     return (
         <>
             <div>
-                <button className="todopage btn" onClick={() => navigate("/todo-list-api/todos")}>zu den Todo's</button>
+                <button className="todopage btn" onClick={() => navigate("/todo-list-api/todos")}>zu meinen Todo's</button>
             </div>
         </>
     )
