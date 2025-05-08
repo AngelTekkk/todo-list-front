@@ -1,11 +1,15 @@
-import { createBrowserRouter } from "react-router";
+import {createBrowserRouter} from "react-router-dom";
 
 import DashbordPage from "../pages/dashboard/DashboardPage.jsx"
+import TodoPage from "../pages/todo/TodoPage.jsx";
+import {Component} from "react";
+import NewToDo from "../components/NewToDo/NewToDo.jsx";
+
 
 const router = createBrowserRouter([
     {
         path: "/",
-        Component: DashbordPage,
+        Component: DashbordPage
         // children: [
         //     { index: true, Component: Home },
         //     { path: "about", Component: About },
@@ -27,6 +31,13 @@ const router = createBrowserRouter([
         //     },
         // ],
     },
+    {
+        path: "/todo-list-api/todos",
+        Component: TodoPage
+    },
+    {    path: "/createNewTodo",
+        Component: NewToDo
+    },
 ]);
 
-export  default router;
+export default router;
