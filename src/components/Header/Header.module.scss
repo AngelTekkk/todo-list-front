@@ -1,0 +1,90 @@
+@use "../../_index.scss" as *;
+
+
+* {
+  font-family: $font-family-main;
+}
+
+.header {
+  height: 80px;
+  background-color: $primary-color;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  color: white;
+  padding: 10px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.h1 {
+  font-size: 32px;
+  margin: 0;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid $background-color;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.h1:hover {
+  background-color: $background-color;
+  color: $primary-color;
+  cursor: progress;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.h1 > a {
+  font-family: 'Consolas', monospace;
+  text-decoration: none;
+  color: inherit;
+}
+
+.navList {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+}
+
+.navPoint {
+  text-decoration: none;
+  font-size: 18px;
+  transition: color 0.3s ease;
+}
+
+.navLink {
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+  transition: text-decoration 0.3s ease;
+  padding: 1px 10px;
+  border-radius: 5px;
+  border: none;
+}
+
+.navLink:hover {
+  color: $highlight-color;
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+  transition: text-decoration 0.3s ease;
+}
+
+.logoutBtn {
+  background-color: $background-color;
+  color: $primary-color;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.logoutBtn:hover {
+  background-color: tomato;
+  color: $primary-color;
+  transition: background-color 0.3s ease, color 0.3s ease;
+
+}
