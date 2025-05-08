@@ -23,7 +23,7 @@ function DashboardPage() {
             title: "TestPost",
             description: "TestPOST",
             endDate: "2025-05-30",
-            startDate: "2025-04-20",
+            startDate: "2025-05-20",
             status: "DOING",
             projectId: null,
             curriculumIds: null

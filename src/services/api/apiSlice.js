@@ -14,13 +14,21 @@ export const apiSlice = createApi({
         credentials: 'include',
         prepareHeaders: (headers) => {
             const csrfToken = getCsrfToken();
-            console.log(csrfToken)
             if (csrfToken) {
                 headers.set('X-XSRF-TOKEN', csrfToken); // 💉 CSRF токен
+            } else {
+                console.warn("CSRF token not found in cookies!");
             }
             return headers;
         },
     }),
     tagTypes: ['Projects', 'Todos', 'LearningPlans'],
-    endpoints: () => ({}),
+    endpoints: (builder) => ({
+        getCsrfToken: builder.query({
+            query: () => ({
+                url: '/csrf',
+                method: 'GET',
+            }),
+        }),
+    }),
 });
