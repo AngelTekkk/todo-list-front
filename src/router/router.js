@@ -1,11 +1,12 @@
 import { createBrowserRouter } from "react-router";
 
 import DashbordPage from "../pages/dashboard/DashboardPage.jsx"
+import ProjectsPage from "../pages/Project/ProjectsPage.jsx";
 
 const router = createBrowserRouter([
     {
         path: "/",
-        Component: DashbordPage,
+        Component: DashbordPage
         // children: [
         //     { index: true, Component: Home },
         //     { path: "about", Component: About },
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
         //     },
         // ],
     },
+    {
+        path: "/todo-list-api/projects",
+        Component: ProjectsPage
+    }
 ]);
 
 export  default router;
