@@ -1,12 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit'
+import dashboardReducer from '../redux/dashboard/dashboardSlice.js'
 import projectsReducer  from "../redux/projects/projectsSlice";
+import { authApi } from '../services/api/authApi.js';
 
 export const store = configureStore({
     reducer: {
-        projects: projectsReducer
+        dashboard: dashboardReducer,
+        projects: projectsReducer,
+        [authApi.reducerPath]: authApi.reducer,
     },
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware().concat(authApi.middleware),
 })
-
-
-
-

@@ -1,0 +1,41 @@
+import ReactModal from 'react-modal';
+import {useDispatch, useSelector} from "react-redux";
+import {getModalType, closeModal} from "../../redux/dashboard/dashboardSlice.js";
+import {useEffect} from "react";
+
+import AuthForm from "../AuthForm/AuthForm.jsx"
+
+const customStyles = {
+    content: {
+        top: '50%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        marginRight: '-50%',
+        transform: 'translate(-50%, -50%)',
+        color: 'black'
+    },
+};
+
+function ModalWindow() {
+    const modalType = useSelector(getModalType);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        ReactModal.setAppElement('#root');
+    }, []);
+
+    const handleClose = () => {
+        dispatch(closeModal());
+    }
+
+    return (
+        <ReactModal isOpen={modalType !== null} onRequestClose={handleClose} style={customStyles}>
+            <button onClick={handleClose}>Close Modal</button>
+            {modalType === 'login' && <AuthForm type={modalType} onSuccess={handleClose}/>}
+            {modalType === 'register' && <AuthForm type={modalType} onSuccess={handleClose}/>}
+        </ReactModal>
+    )
+}
+
+export default ModalWindow;
