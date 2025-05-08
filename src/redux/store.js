@@ -1,3 +1,4 @@
+import { configureStore } from '@reduxjs/toolkit'
 import dashboardReducer from '../redux/dashboard/dashboardSlice.js'
 import projectsReducer  from "../redux/projects/projectsSlice";
 import todoReducer from "../redux/todos/todoSlice.js"
