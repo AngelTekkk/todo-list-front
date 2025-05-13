@@ -1,7 +1,11 @@
 import {useState} from "react";
+import {useDispatch} from "react-redux";
+
 import {useLoginMutation, useRegisterMutation} from "../../services/api/authApi.js";
+import {login as loginAction} from "../../redux/auth/authSlice.js";
 
 function AuthForm({ type = 'login', onSuccess }) {
+    const dispatch = useDispatch();
     const isLogin = type === 'login';
 
     const [formData, setFormData] = useState({
@@ -58,6 +62,7 @@ function AuthForm({ type = 'login', onSuccess }) {
             const result = isLogin
                 ? await login(payload).unwrap()
                 : await register(payload).unwrap();
+            dispatch(loginAction(true));
             console.log("✅ Erfolg:", result);
             onSuccess();
         } catch (err) {
@@ -109,4 +114,4 @@ function AuthForm({ type = 'login', onSuccess }) {
     );
 }
 
-export default AuthForm
+export default AuthForm;

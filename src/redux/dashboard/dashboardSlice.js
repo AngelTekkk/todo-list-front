@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-    modalType: null // Could be just 'login' | 'register' | null
+    modalType: null, // Could be just 'login' | 'register' | null
 }
 
 const dashboardSlice = createSlice({

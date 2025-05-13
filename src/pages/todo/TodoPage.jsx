@@ -9,9 +9,6 @@ function TodoPage() {
     const sortedTodos = todos.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
     const dispatch = useDispatch();
 
-
-
-
     return (
         <>
             <div className={s.bigContainer}>

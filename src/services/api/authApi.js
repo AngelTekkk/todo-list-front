@@ -16,7 +16,25 @@ export const authApi = apiSlice.injectEndpoints({
                 body: credentials,
             }),
         }),
-        test: builder.mutation({
+        checkAuth: builder.query({
+            query: () => ({
+                url: '/auth/current',
+                method: 'GET',
+            }),
+            transformResponse: (response) => {
+                return {
+                    user: response,
+                    isAuthenticated: true
+                };
+            },
+            transformErrorResponse: () => {
+                return {
+                    user: null,
+                    isAuthenticated: false
+                };
+            }
+        }),
+        test: builder.query({
             query: () => ({
                 url: '/todos',
                 method: 'GET',
@@ -33,4 +51,4 @@ export const authApi = apiSlice.injectEndpoints({
 });
 
 
-export const { useLoginMutation, useRegisterMutation, useTestMutation, useTestPostMutation } = authApi;
+export const { useLoginMutation, useRegisterMutation, useCheckAuthQuery, useTestQuery, useTestPostMutation } = authApi;
