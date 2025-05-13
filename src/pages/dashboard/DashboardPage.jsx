@@ -1,22 +1,32 @@
+import {useDispatch, useSelector} from "react-redux";
+
 import ModalWindow from "../../components/ModalWindow/ModalWindow.jsx";
-import {openModal} from "../../redux/dashboard/dashboardSlice.js";
-import {useDispatch} from "react-redux";
+import Button from "../../components/Button/Button.jsx";
 import s from "./DashboardPage.module.scss";
 
-import {useTestMutation, useTestPostMutation} from "../../services/api/authApi.js"; // Should be deleted. For test
+import {openModal} from "../../redux/dashboard/dashboardSlice.js";
+import {getIsAuthenticated} from "../../redux/auth/authSlice.js";
+import { useTestQuery, useTestPostMutation} from "../../services/api/authApi.js"; // Should be deleted. For test
 
 function DashboardPage() {
     const dispatch = useDispatch();
+    const isAuthenticated = useSelector(getIsAuthenticated);
+    console.log("isAuthenticated: " + isAuthenticated)
 
     // Should be deleted. For test
-    const [test] = useTestMutation();
+    const { data: testData } = useTestQuery(undefined, {skip: !isAuthenticated});
     const [testPost] = useTestPostMutation();
     const handleTest = async () => {
+        if (!isAuthenticated) {
+            alert("Zuerst anmelden");
+            dispatch(openModal('login'));
+            return;
+        }
+
         try {
-            const res = await test().unwrap();
-            console.log(res);
+            console.log(testData);
         } catch (e) {
-            console.error(e.message)
+            console.error(e?.message)
         }
     }
     const handleTestPost = async () => {
@@ -38,18 +48,21 @@ function DashboardPage() {
     }
 
     const handleOpenModal = (type) => {
-        dispatch(openModal(type)); // 'login' или 'register'
+        dispatch(openModal(type)); // 'login' oder 'register'
     }
 
     return (
         <>
             <div className={s.bigContainer}>
                 <h1 className={s.h1}>Hallo</h1>
-                <button onClick={() => handleOpenModal('login')}>Anmelden</button>
-
-                    <button onClick={() => handleOpenModal('register')}>Registrieren</button>
-                    <button onClick={handleTest}>test</button>
-                    <button onClick={handleTestPost}>testPost</button>
+                {!isAuthenticated &&
+                    <>
+                        <Button onClick={() => handleOpenModal('login')} text={'Anmelden'}/>
+                        <Button onClick={() => handleOpenModal('register')} text={'Registrieren'}/>
+                    </>
+                }
+                <Button onClick={handleTest} text={'test'} />
+                <Button onClick={handleTestPost} text={'testPost'} />
 
                 <ModalWindow></ModalWindow>
             </div>
