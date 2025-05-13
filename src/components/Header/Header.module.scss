@@ -17,6 +17,7 @@
   top: 0;
   left: 0;
   right: 0;
+  z-index: 1;
 }
 
 .h1 {
@@ -43,8 +44,9 @@
 
 .navList {
   list-style: none;
+  gap: 60px;
   display: flex;
-  gap: 20px;
+  justify-content: space-evenly;
 }
 
 .navPoint {

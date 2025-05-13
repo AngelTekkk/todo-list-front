@@ -1,73 +1,189 @@
 @use "../../_index.scss" as *;
 
-.bigContainer {
-  margin-top: 80px;
-  margin-bottom: 100px;
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
-  flex: 1;
+* {
+  outline: 1px solid black;
 }
 
-.textDescription {
-  width: 150px;
-  height: 50px;
-  resize: none;
+
+
+.todoTitle::after {
+  content: "";
+  display: block;
+  background-color: tomato;
+  width: 100%;
+  height: 0.25rem;
+  border-radius: 5px;
+  margin-top: 0.5rem;
 }
 
 .todoList {
+  margin: 80px auto 100px;
   flex: 1;
-  margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
 }
 
 .todoCards {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 1rem;
+  margin: 3.5rem auto 100px;
+  gap: 1.5rem;
+  padding: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  position: relative;
 }
 
 .todoCard {
-  background-color: #f8f8f8;
+  background-color: #F3D92C74;
   padding: 1rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 25px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  //justify-content: space-between;
+  gap: 10px;
+  width: 300px;
+  max-height: 200px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, height 0.3s ease, background-color 0.3s ease;
+  z-index: 0;
+  position: relative;
+
+  //overflow: hidden;
+
+  &:hover {
+    transform: scale(1.5);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 1.4);
+    background-color: $highlight-color;
+    z-index: 5;
+    max-height: 500px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, height 0.3s ease, background-color 0.3s ease;
+
+    .hidden {
+
+      visibility: visible;
+      opacity: 1;
+      font-size: 1em;
+      transition: opacity 0.3s ease;
+
+    }
+  }
+}
+
+
+//.todoTitle,
+//.fancyStatus,
+//.dueDate {
+//  margin-bottom: 0.5rem;
+//}
+
+
+.hidden {
+  margin: 0;
+  visibility: hidden;
+  opacity: 0;
+  overflow: hidden;
+  transition: opacity 0.3s ease;
+  font-size: 0;
+}
+
+
+//.todoCard {
+//  background-color: $highlight-color;
+//  padding: 1rem;
+//  border-radius: 25px;
+//  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+//  position: relative;
+//  line-height: 0.1rem;
+//  display: flex;
+//  flex-direction: column;
+//  justify-content: flex-end;
+//  width: 350px;
+//
+//  > p {
+//    margin: 0;
+//    padding-top: 5px;
+//    display: flex;
+//    justify-content: space-between;
+//    visibility: hidden;
+//    opacity: 0;
+//    transition: visibility 0.1s 0.4s, opacity 0.4s ease;
+//  }
+//
+//  &:hover > p {
+//    line-height: 1.2rem;
+//    z-index: 10;
+//    visibility: visible;
+//    opacity: 1;
+//    transition-delay: 0s;
+//  }
+//}
+
+.fancyStatus {
+  position: absolute;
+  top: -0.5rem;
+  right: -2rem;
+  background-color: rgba(255, 255, 255, 0.5);
+  color: tomato;
+  padding: 0.5rem 0.8rem;
+  border: 3px dotted tomato;
+  border-radius: 50%;
+  font-size: 1.8rem;
+  transform: rotate(35deg);
+  cursor: pointer;
+  text-decoration: none;
+
 }
 
 .cardActions {
   display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
+  justify-content: space-around;
+  margin: 10px;
+  gap: 35px;
+  padding: 10px;
 }
 
 .cardActions button {
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
+  position: relative;
+  background-color: transparent;
+  color: $primary-color;
+  border: 1px solid $primary-color;
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  text-decoration: none;
 }
 
 .cardActions button:hover {
-  background-color: #0056b3;
+  background-color: $background-color;
+  color: $primary-color;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-body {
+.goToNewToDo {
+  background-color: $background-color;
+  color: $primary-color;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  text-decoration: none;
+}
 
-
+.goToNewToDo:hover {
+  background-color: $highlight-color;
+  color: $primary-color;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 
-.newTodoBox {
-  padding: 20px;
-  margin: 0;
-}
 
-.newTodoWrapper {
-  display: flex;
-  flex-direction: row;
-  gap: 25px;
-}
+
+
 
 
 

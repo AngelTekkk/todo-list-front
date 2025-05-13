@@ -4,6 +4,7 @@ import DashbordPage from "../pages/dashboard/DashboardPage.jsx"
 import TodoPage from "../pages/todo/TodoPage.jsx";
 import NewToDo from "../components/NewToDo/NewToDo.jsx";
 import ProjectsPage from "../pages/Project/ProjectsPage.jsx";
+import UpdateTodoPage from "../components/UpdateToDo/UpdateTodoPage.jsx";
 
 const router = createBrowserRouter([
     {
@@ -34,13 +35,18 @@ const router = createBrowserRouter([
         path: "/todos",
         Component: TodoPage
     },
-    {    path: "/createNewTodo",
+    {
+        path: "/createNewTodo",
         Component: NewToDo
     },
     {
         path: "/projects",
         Component: ProjectsPage
-    }
+    },
+    {
+        path: "/updateToDo/:id",
+        Component: UpdateTodoPage
+    },
 ]);
 
 export default router;

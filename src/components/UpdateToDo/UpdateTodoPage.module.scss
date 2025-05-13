@@ -1,0 +1,9 @@
+@use "../../index.scss" as *;
+
+*{
+  font-family: $font-family-main;
+}
+
+.bigContainer {
+  margin-top: 200px;
+}

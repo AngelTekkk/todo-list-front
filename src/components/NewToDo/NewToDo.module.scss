@@ -1,2 +1,9 @@
 @use "../../_index.scss" as *;
 
+
+
+
+.newTodoBox {
+  margin-top: $header-height;
+  min-height: calc(100vh - $footer-height - $header-height);
+}
