@@ -3,7 +3,7 @@ import {useDeleteTodoMutation, useGetTodosQuery, useUpdateStatusTodoMutation} fr
 import s from './TodoPage.module.scss';
 import  { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {allTodos, toggleTodo, getAllTodos} from "../../redux/todos/todoSlice.js";
+import {allTodos, toggleTodo, getAllTodos, removeTodo} from "../../redux/todos/todoSlice.js";
 
 
 function TodoPage() {
@@ -32,10 +32,11 @@ function TodoPage() {
     if (error) return <p>Fehler beim Laden der Todos: {error.message}</p>;
 
     const handleToggleStatus = async (id, status) => {
-        const newStatusObject = {status: status === 'TODO' ? 'DOING' : status === 'DOING' ? 'DONE' : 'TODO'};
+        const newStatus = status === 'TODO' ? 'DOING' : status === 'DOING' ? 'DONE' : 'TODO';
+        const newStatusObject = {status: newStatus};
         try {
-            toggleTodo({id, status});
             await updateStatus({newStatusObject, id}).unwrap();
+            dispatch(toggleTodo({id, newStatus}));
         } catch (err) {
             console.error("Fehler beim Aktualisieren des ToDos:", err);
         }
@@ -44,7 +45,7 @@ function TodoPage() {
     const handleDeleteTodo = async (id) => {
         try {
             await deleteTodo(id).unwrap();
-            navigate(0);
+            dispatch(removeTodo(id));
         } catch (err) {
             console.error("Fehler beim Löschen des ToDos:", err);
         }
@@ -79,7 +80,7 @@ function TodoPage() {
                         <div className={`${s.cardActions} ${s.hidden}`}>
 
                         <button onClick={() => handleToggleStatus(todo.id, todo.status)}>
-                                {todo.status === 'TODO' ? 'DOING' : 'DONE'}
+                                {todo.status === 'TODO' ? 'DOING' : todo.status === 'DOING' ? 'DONE' : 'TODO'}
                             </button>
                             <button onClick={() => handleDeleteTodo(todo.id)}>Löschen</button>
                         </div>

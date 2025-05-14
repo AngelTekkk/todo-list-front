@@ -1,7 +1,8 @@
 @use "../../_index.scss" as *;
 
 .footer {
-  height: 100px;
+  position: fixed;
+  height: $footer-height;
   left: 0;
   right: 0;
   bottom: 0;
@@ -12,7 +13,6 @@
   justify-content: center;
   align-items: center;
 }
-
 
 .a {
   color: white;

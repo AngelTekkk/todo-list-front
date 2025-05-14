@@ -1,0 +1,7 @@
+@use "../../_index.scss" as *;
+
+.container {
+  min-height: calc(100vh);
+  padding-top: $header-height;
+  padding-bottom: $footer-height;
+}
