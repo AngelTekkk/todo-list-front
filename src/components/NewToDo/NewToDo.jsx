@@ -1,14 +1,16 @@
 // import {addTodo} from "../../redux/todos/todoSlice.js";
-import React, {useEffect, useState} from "react";
+import React, {
+    // useEffect,
+    useState} from "react";
 import s from "./NewToDo.module.scss";
-import {useDispatch, useSelector} from "react-redux";
-import {loadProjects} from '../../redux/projects/projectsSlice';
+// import {useDispatch, useSelector} from "react-redux";
+// import {loadProjects} from '../../redux/projects/projectsSlice';
 import {useCreateTodoMutation} from "../../services/api/todoApi";
 import {useNavigate} from "react-router-dom";
 
 
 function NewToDo() {
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
     const [title, setTitle] = useState('');
     const [creator, setCreator] = useState('');
     const [description, setDescription] = useState('');
@@ -17,12 +19,12 @@ function NewToDo() {
     const [status, setStatus] = useState('');
     const [projectId, setProjectId] = useState('');
     //const [curriculumId, setCurriculumId] = useState('');
-    const [availableProjects, setAvailableProjects] = useState([]);
+    // const [availableProjects, setAvailableProjects] = useState([]);
     //const [availableCurricula, setAvailableCurricula] = useState([]);
 
-    const projects = useSelector((state) => state.projects.items);
-    const projectStatus = useSelector((state) => state.projects.status);
-    const projectError = useSelector((state) => state.projects.error);
+    // const projects = useSelector((state) => state.projects.items);
+    // const projectStatus = useSelector((state) => state.projects.status);
+    // const projectError = useSelector((state) => state.projects.error);
 
     const [createTodo] = useCreateTodoMutation();
 
@@ -66,20 +68,20 @@ function NewToDo() {
         }
     };
 
-    useEffect(() => {
-        if (projectStatus === 'idle') {
-            dispatch(loadProjects());
-        }
-    }, [dispatch, projectStatus]);
-
-    useEffect(() => {
-        if (projects.length > 0) {
-            setAvailableProjects(projects);
-        }
-    }, [projects]);
-
-    if (projectStatus === 'loading') return <p>Lade Projekte…</p>;
-    if (projectStatus === 'failed') return <p>Fehler: {projectError}</p>;
+    // useEffect(() => {
+    //     if (projectStatus === 'idle') {
+    //         dispatch(loadProjects());
+    //     }
+    // }, [dispatch, projectStatus]);
+    //
+    // useEffect(() => {
+    //     if (projects.length > 0) {
+    //         setAvailableProjects(projects);
+    //     }
+    // }, [projects]);
+    //
+    // if (projectStatus === 'loading') return <p>Lade Projekte…</p>;
+    // if (projectStatus === 'failed') return <p>Fehler: {projectError}</p>;
 
     return (
         <>
@@ -163,31 +165,31 @@ function NewToDo() {
                         </label>
                     </div>
 
-                    <div className={s.inputRow}>
-                        <label className={s.text}>
-                            Projekt (optional):
-                            <select
-                                className={s.input}
-                                value={projectId}
-                                onChange={(e) => setProjectId(e.target.value)}
-                            >
-                                <option value="">Kein Projekt</option>
-                                {availableProjects.map((project) => (
-                                    <option key={project.id} value={project.id}>
-                                        {project.title}
-                                    </option>
-                                ))}
-                            </select>
-                        </label>
-                    </div>
+                    {/*<div className={s.inputRow}>*/}
+                    {/*    <label className={s.text}>*/}
+                    {/*        Projekt (optional):*/}
+                    {/*        <select*/}
+                    {/*            className={s.input}*/}
+                    {/*            value={projectId}*/}
+                    {/*            onChange={(e) => setProjectId(e.target.value)}*/}
+                    {/*        >*/}
+                    {/*            <option value="">Kein Projekt</option>*/}
+                    {/*            {availableProjects.map((project) => (*/}
+                    {/*                <option key={project.id} value={project.id}>*/}
+                    {/*                    {project.title}*/}
+                    {/*                </option>*/}
+                    {/*            ))}*/}
+                    {/*        </select>*/}
+                    {/*    </label>*/}
+                    {/*</div>*/}
 
-                    <div className={s.inputRow}>
-                        <label className={s.text}>
-                            Curriculum (optional):
-                            <button className={s.assignToCurriculaBtn} type={"button"}>Einem Lehrplan zuweisen
-                                ➡️ </button>
-                        </label>
-                    </div>
+                    {/*<div className={s.inputRow}>*/}
+                    {/*    <label className={s.text}>*/}
+                    {/*        Curriculum (optional):*/}
+                    {/*        <button className={s.assignToCurriculaBtn} type={"button"}>Einem Lehrplan zuweisen*/}
+                    {/*            ➡️ </button>*/}
+                    {/*    </label>*/}
+                    {/*</div>*/}
 
                     <div className="btn container">
                         <button
