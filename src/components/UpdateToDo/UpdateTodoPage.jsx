@@ -1,92 +1,73 @@
-// import {addTodo} from "../../redux/todos/todoSlice.js";
-import React, {useEffect, useState} from "react";
-import s from "./NewToDo.module.scss";
-import {useDispatch, useSelector} from "react-redux";
-import {loadProjects} from '../../redux/projects/projectsSlice';
-import {useCreateTodoMutation} from "../../services/api/todoApi";
-import {useNavigate} from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import { useDeleteTodoMutation, useGetTodoQuery, useUpdateTodoMutation } from '../../services/api/todoApi';
+import { useNavigate, useParams } from 'react-router-dom';
+import s from './UpdateTodoPage.module.scss';
 
+function UpdateTodoPage() {
+    const { id } = useParams();
+    const navigate = useNavigate();
 
-function NewToDo() {
-    const dispatch = useDispatch();
+    const { data: todo, error, isLoading } = useGetTodoQuery(id);
+    const [updateTodo] = useUpdateTodoMutation();
+    const [deleteTodo] = useDeleteTodoMutation();
+
     const [title, setTitle] = useState('');
-    const [creator, setCreator] = useState('');
     const [description, setDescription] = useState('');
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [status, setStatus] = useState('');
-    const [projectId, setProjectId] = useState('');
-    //const [curriculumId, setCurriculumId] = useState('');
-    const [availableProjects, setAvailableProjects] = useState([]);
-    //const [availableCurricula, setAvailableCurricula] = useState([]);
-
-    const projects = useSelector((state) => state.projects.items);
-    const projectStatus = useSelector((state) => state.projects.status);
-    const projectError = useSelector((state) => state.projects.error);
-
-    const [createTodo] = useCreateTodoMutation();
-
-    const navigate = useNavigate();
 
 
-    const handleAddTodo = async () => {
+    useEffect(() => {
+        if (todo) {
+            setTitle(todo.title || '');
+            setDescription(todo.description || '');
+            setStartDate(todo.startDate || '');
+            setEndDate(todo.endDate || '');
+            setStatus(todo.status || '');
+        }
+    }, [todo]);
+
+    if (isLoading) return <p>Lade Todo…</p>;
+    if (error) return <p>Fehler beim Laden des Todos: {error.message}</p>;
+
+    const handleDeleteTodo = async () => {
+        try {
+            await deleteTodo(id).unwrap();
+            navigate(-1);
+        } catch (err) {
+            console.error('Fehler beim Löschen:', err);
+            alert('Fehler beim Löschen des Todos.');
+        }
+    };
+
+    const handleUpdateTodo = async () => {
         if (title.trim().length < 5 || description.trim().length < 5) {
             alert('Titel und Beschreibung müssen mindestens 5 Zeichen lang sein.');
             return;
         }
 
+        const updatedTodo = {
+            title,
+            description,
+            startDate,
+            endDate,
+            status
+        };
+
         try {
-            const newTodo = {
-                title,
-                creator,
-                description,
-                startDate,
-                endDate,
-                status,
-                projectId: projectId || null,
-                curriculumIds: []
-            };
-
-
-            await createTodo(newTodo).unwrap();
-
-            setTitle('');
-            setCreator('');
-            setDescription('');
-            setStartDate('');
-            setEndDate('');
-            setStatus('');
-            setProjectId('');
-
-
+            await updateTodo({id, updatedTodo}).unwrap();
             navigate(-1);
         } catch (err) {
-            console.error("Fehler beim Speichern:", err);
-            alert("Fehler beim Speichern des ToDos");
+            console.error('Fehler beim Speichern:', err);
+            alert('Fehler beim Speichern des Todos.');
         }
     };
 
-    useEffect(() => {
-        if (projectStatus === 'idle') {
-            dispatch(loadProjects());
-        }
-    }, [dispatch, projectStatus]);
-
-    useEffect(() => {
-        if (projects.length > 0) {
-            setAvailableProjects(projects);
-        }
-    }, [projects]);
-
-    if (projectStatus === 'loading') return <p>Lade Projekte…</p>;
-    if (projectStatus === 'failed') return <p>Fehler: {projectError}</p>;
-
     return (
-        <>
-
-
+        <div className={s.bigContainer}>
             <div className={s.newTodoBox}>
-                <h2>Neues ToDo erstellen</h2>
+                <h2>TODO ÄNDERN {id}</h2>
                 <div className={s.newTodoWrapper}>
 
                     <div className={s.inputRow}>
@@ -95,12 +76,11 @@ function NewToDo() {
                             <input
                                 type="text"
                                 className={s.inputDescription}
-                                placeholder="Gib einen Titel ein..."
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
                                 required
                                 minLength={5}
-                                maxLength={25}
+                                maxLength={255}
                             />
                         </label>
                     </div>
@@ -110,7 +90,6 @@ function NewToDo() {
                             Beschreibung:
                             <textarea
                                 className={`${s.textarea} ${s.text}`}
-                                placeholder="Gib eine Beschreibung ein..."
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
                                 required
@@ -163,48 +142,26 @@ function NewToDo() {
                         </label>
                     </div>
 
-                    <div className={s.inputRow}>
-                        <label className={s.text}>
-                            Projekt (optional):
-                            <select
-                                className={s.input}
-                                value={projectId}
-                                onChange={(e) => setProjectId(e.target.value)}
-                            >
-                                <option value="">Kein Projekt</option>
-                                {availableProjects.map((project) => (
-                                    <option key={project.id} value={project.id}>
-                                        {project.title}
-                                    </option>
-                                ))}
-                            </select>
-                        </label>
-                    </div>
-
-                    <div className={s.inputRow}>
-                        <label className={s.text}>
-                            Curriculum (optional):
-                            <button className={s.assignToCurriculaBtn} type={"button"}>Einem Lehrplan zuweisen
-                                ➡️ </button>
-                        </label>
-                    </div>
-
                     <div className="btn container">
+                        <button onClick={handleDeleteTodo}>Löschen</button>
                         <button
                             className={`${s.saveBtn} ${s.text}`}
-                            onClick={handleAddTodo}
+                            onClick={handleUpdateTodo}
                         >
                             Speichern
                         </button>
-                        <button className={`${s.cancelBtn} ${s.text}`}>Abbrechen</button>
+                        <button
+                            className={`${s.cancelBtn} ${s.text}`}
+                            onClick={() => navigate(-1)}
+                        >
+                            Abbrechen
+                        </button>
                     </div>
+
                 </div>
             </div>
-
-        </>
+        </div>
     );
-
 }
 
-export default NewToDo;
-
+export default UpdateTodoPage;

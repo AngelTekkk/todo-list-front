@@ -5,17 +5,14 @@
   left: 0;
   right: 0;
   bottom: 0;
-}
-
-.footerStuff {
   background-color: $primary-color;
   display: flex;
-  justify-content: space-around;
-  align-items: center;
   color: white;
-  padding: 10px;
-  flex-direction: column;
+  padding-top: 20px;
+  justify-content: center;
+  align-items: center;
 }
+
 
 .a {
   color: white;
