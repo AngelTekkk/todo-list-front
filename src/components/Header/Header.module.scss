@@ -1,12 +1,8 @@
 @use "../../_index.scss" as *;
 
 
-* {
-  font-family: $font-family-main;
-}
-
 .header {
-  height: 80px;
+  height: $header-height;
   background-color: $primary-color;
   display: flex;
   justify-content: space-around;

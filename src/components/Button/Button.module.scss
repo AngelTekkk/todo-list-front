@@ -1,0 +1,19 @@
+@use "../../_index.scss" as *;
+
+.btn {
+  background-color: $background-color;
+  color: $primary-color;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+
+  &:hover {
+    background-color: tomato;
+    color: $primary-color;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+}

@@ -4,6 +4,8 @@ import {getModalType, closeModal} from "../../redux/dashboard/dashboardSlice.js"
 import {useEffect} from "react";
 
 import AuthForm from "../AuthForm/AuthForm.jsx"
+import Button from "../Button/Button.jsx";
+import s from "./ModalWindow.module.scss"
 
 const customStyles = {
     content: {
@@ -31,7 +33,7 @@ function ModalWindow() {
 
     return (
         <ReactModal isOpen={modalType !== null} onRequestClose={handleClose} style={customStyles}>
-            <button onClick={handleClose}>Close Modal</button>
+            <Button onClick={handleClose} text={'X'} className={s.btn}/>
             {modalType === 'login' && <AuthForm type={modalType} onSuccess={handleClose}/>}
             {modalType === 'register' && <AuthForm type={modalType} onSuccess={handleClose}/>}
         </ReactModal>
