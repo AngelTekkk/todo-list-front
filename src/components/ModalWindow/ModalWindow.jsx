@@ -6,6 +6,7 @@ import {useEffect} from "react";
 import AuthForm from "../AuthForm/AuthForm.jsx"
 import Button from "../Button/Button.jsx";
 import s from "./ModalWindow.module.scss"
+import NewToDo from "../NewToDo/NewToDo.jsx";
 
 const customStyles = {
     content: {
@@ -33,9 +34,11 @@ function ModalWindow() {
 
     return (
         <ReactModal isOpen={modalType !== null} onRequestClose={handleClose} style={customStyles}>
-            <Button onClick={handleClose} text={'X'} className={s.btn}/>
+            {(modalType === 'login' || modalType === 'register') && <><Button onClick={handleClose} text={'X'} className={s.btn}/>
             {modalType === 'login' && <AuthForm type={modalType} onSuccess={handleClose}/>}
-            {modalType === 'register' && <AuthForm type={modalType} onSuccess={handleClose}/>}
+            {modalType === 'register' && <AuthForm type={modalType} onSuccess={handleClose}/>}</>}
+            {modalType === 'newTodo' && <NewToDo type={modalType} onSuccess={handleClose}/>}
+
         </ReactModal>
     )
 }

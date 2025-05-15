@@ -5,6 +5,7 @@ import TodoPage from "../pages/todo/TodoPage.jsx";
 import NewToDo from "../components/NewToDo/NewToDo.jsx";
 import ProjectsPage from "../pages/Project/ProjectsPage.jsx";
 import UpdateTodoPage from "../components/UpdateToDo/UpdateTodoPage.jsx";
+import AllTodo from "../pages/AllTodoPage/AllTodo.jsx";
 
 const router = createBrowserRouter([
     {
@@ -46,6 +47,10 @@ const router = createBrowserRouter([
     {
         path: "/updateToDo/:id",
         Component: UpdateTodoPage
+    },
+    {
+        path: "/allTodos",
+        Component: AllTodo
     },
 ]);
 

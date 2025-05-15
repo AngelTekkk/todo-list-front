@@ -1,0 +1,145 @@
+@use "../../../_index.scss" as *;
+
+.todoSections {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.section {
+  border: 1px solid #ddd;
+  padding: 1rem;
+  border-radius: 1rem;
+  background-color: #f9f9f9;
+  position: relative;
+}
+
+.carousel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  gap: 1rem;
+}
+
+.todoCardWrapper {
+  position: relative;
+  width: 300px;
+  min-height: 350px; // optional: je nach Inhalt
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.todoCard {
+  width: 100%;
+  padding: 1rem;
+  border-radius: 1rem;
+  background-color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.arrowLeft,
+.arrowRight {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.fancyStatus {
+  margin-bottom: 0.5rem;
+}
+
+.todoTitle {
+  margin: 0.5rem 0;
+}
+
+.description {
+  margin-top: 0.5rem;
+}
+
+.cardActions {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.button,
+.navigateBtn,
+.deleteBtn {
+  width: 100%;
+}
+
+.endDate {
+  color: #ff0000;
+}
+
+.startDate {
+  color: green;
+}
+
+.carousel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.todoCardGroup {
+  display: flex;
+  gap: 1rem;
+  position: relative;
+  width: calc(300px * 5 + 1rem * 4);
+  overflow: hidden;
+}
+
+.todoCard {
+  width: 300px;
+  padding: 1rem;
+  border-radius: 1rem;
+  background-color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+  flex-shrink: 0;
+}
+
+.arrowLeft,
+.arrowRight {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.todoCardGroup {
+  position: relative;
+  width: calc(300px * 5 + 1rem * 4);
+  height: 370px;
+  overflow: hidden;
+}
+
+.todoCardSet {
+  display: flex;
+  gap: 1rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+}
+
+.pageIndicator {
+  text-align: center;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #666;
+}
+

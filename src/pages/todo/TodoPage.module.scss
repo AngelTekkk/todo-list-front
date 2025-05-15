@@ -36,7 +36,7 @@
   width: 300px;
   max-height: 200px;
   transition: transform 0.3s ease, box-shadow 0.3s ease, height 0.3s ease, background-color 0.3s ease;
-  z-index: 0;
+  z-index: -1;
   position: relative;
 
   //overflow: hidden;
@@ -128,9 +128,6 @@
 .cardActions {
   display: flex;
   justify-content: space-around;
-  margin: 10px;
-  gap: 35px;
-  padding: 10px;
 }
 
 .cardActions button {
@@ -140,7 +137,7 @@
   border: 1px solid $primary-color;
   border-radius: 10px;
   padding: 10px 20px;
-  font-size: 1rem;
+  font-size: 0.75rem;
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
@@ -170,6 +167,10 @@
   background-color: $highlight-color;
   color: $primary-color;
   transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.endDate {
+  text-decoration: double underline;
 }
 
 
