@@ -1,34 +1,41 @@
 // import {addTodo} from "../../redux/todos/todoSlice.js";
 import React, {
-    // useEffect,
+    useEffect,
     useState} from "react";
 import s from "./NewToDo.module.scss";
-// import {useDispatch, useSelector} from "react-redux";
-// import {loadProjects} from '../../redux/projects/projectsSlice';
+import {useDispatch,
+    // useSelector
+} from "react-redux";
+import {loadProjects} from '../../redux/projects/projectsSlice';
 import {useCreateTodoMutation} from "../../services/api/todoApi";
-import {useNavigate} from "react-router-dom";
+import {addTodo} from "../../redux/todos/todoSlice.js";
+import Button from "../Button/Button.jsx";
+// import {useNavigate} from "react-router-dom";
 
 
-function NewToDo() {
-    // const dispatch = useDispatch();
+function NewToDo({onSuccess}) {
+    const dispatch = useDispatch();
     const [title, setTitle] = useState('');
-    const [creator, setCreator] = useState('');
+    const [creator,
+        // setCreator
+    ] = useState('');
     const [description, setDescription] = useState('');
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [status, setStatus] = useState('');
-    const [projectId, setProjectId] = useState('');
+    const [projectId,
+        // setProjectId
+    ] = useState('');
     //const [curriculumId, setCurriculumId] = useState('');
-    // const [availableProjects, setAvailableProjects] = useState([]);
+    const [availableProjects, setAvailableProjects] = useState([]);
     //const [availableCurricula, setAvailableCurricula] = useState([]);
 
-    // const projects = useSelector((state) => state.projects.items);
-    // const projectStatus = useSelector((state) => state.projects.status);
-    // const projectError = useSelector((state) => state.projects.error);
+    const projects = useSelector((state) => state.projects.items);
+    const projectStatus = useSelector((state) => state.projects.status);
+    const projectError = useSelector((state) => state.projects.error);
 
     const [createTodo] = useCreateTodoMutation();
 
-    const navigate = useNavigate();
 
 
     const handleAddTodo = async () => {
@@ -51,34 +58,28 @@ function NewToDo() {
 
 
             await createTodo(newTodo).unwrap();
-
-            setTitle('');
-            setCreator('');
-            setDescription('');
-            setStartDate('');
-            setEndDate('');
-            setStatus('');
-            setProjectId('');
+            dispatch(addTodo(newTodo));
+            onSuccess();
 
 
-            navigate(-1);
+
         } catch (err) {
             console.error("Fehler beim Speichern:", err);
             alert("Fehler beim Speichern des ToDos");
         }
     };
 
-    // useEffect(() => {
-    //     if (projectStatus === 'idle') {
-    //         dispatch(loadProjects());
-    //     }
-    // }, [dispatch, projectStatus]);
-    //
-    // useEffect(() => {
-    //     if (projects.length > 0) {
-    //         setAvailableProjects(projects);
-    //     }
-    // }, [projects]);
+    useEffect(() => {
+        if (projectStatus === 'idle') {
+            dispatch(loadProjects());
+        }
+    }, [dispatch, projectStatus]);
+
+    useEffect(() => {
+        if (projects.length > 0) {
+            setAvailableProjects(projects);
+        }
+    }, [projects]);
     //
     // if (projectStatus === 'loading') return <p>Lade Projekte…</p>;
     // if (projectStatus === 'failed') return <p>Fehler: {projectError}</p>;
@@ -165,23 +166,23 @@ function NewToDo() {
                         </label>
                     </div>
 
-                    {/*<div className={s.inputRow}>*/}
-                    {/*    <label className={s.text}>*/}
-                    {/*        Projekt (optional):*/}
-                    {/*        <select*/}
-                    {/*            className={s.input}*/}
-                    {/*            value={projectId}*/}
-                    {/*            onChange={(e) => setProjectId(e.target.value)}*/}
-                    {/*        >*/}
-                    {/*            <option value="">Kein Projekt</option>*/}
-                    {/*            {availableProjects.map((project) => (*/}
-                    {/*                <option key={project.id} value={project.id}>*/}
-                    {/*                    {project.title}*/}
-                    {/*                </option>*/}
-                    {/*            ))}*/}
-                    {/*        </select>*/}
-                    {/*    </label>*/}
-                    {/*</div>*/}
+                    <div className={s.inputRow}>
+                        <label className={s.text}>
+                            Projekt (optional):
+                            <select
+                                className={s.input}
+                                value={projectId}
+                                onChange={(e) => setProjectId(e.target.value)}
+                            >
+                                <option value="">Kein Projekt</option>
+                                {availableProjects.map((project) => (
+                                    <option key={project.id} value={project.id}>
+                                        {project.title}
+                                    </option>
+                                ))}
+                            </select>
+                        </label>
+                    </div>
 
                     {/*<div className={s.inputRow}>*/}
                     {/*    <label className={s.text}>*/}
@@ -192,13 +193,17 @@ function NewToDo() {
                     {/*</div>*/}
 
                     <div className="btn container">
-                        <button
-                            className={`${s.saveBtn} ${s.text}`}
+                        <Button
+                            // className={`${s.saveBtn} ${s.text}`}
                             onClick={handleAddTodo}
-                        >
-                            Speichern
-                        </button>
-                        <button className={`${s.cancelBtn} ${s.text}`}>Abbrechen</button>
+                            text={'Speichern'}
+
+                        />
+
+
+                        <button
+                            // className={`${s.cancelBtn} ${s.text}`}
+                        >Abbrechen</button>
                     </div>
                 </div>
             </div>

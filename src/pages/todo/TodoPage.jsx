@@ -1,10 +1,13 @@
-import React, { useEffect } from 'react';
+import React, {useEffect} from 'react';
 import {useDeleteTodoMutation, useGetTodosQuery, useUpdateStatusTodoMutation} from '../../services/api/todoApi';
 import s from './TodoPage.module.scss';
-import  { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import {allTodos, toggleTodo, getAllTodos, removeTodo} from "../../redux/todos/todoSlice.js";
-
+import {useNavigate} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import {allTodos, getAllTodos, removeTodo, toggleTodo} from "../../redux/todos/todoSlice.js";
+import ToDoSection from "./TodoSection/TodoSection.jsx";
+import ModalWindow from "../../components/ModalWindow/ModalWindow.jsx";
+import {openModal} from "../../redux/dashboard/dashboardSlice.js";
+import Button from "../../components/Button/Button.jsx";
 
 function TodoPage() {
     const {data: todos, error, isLoading} = useGetTodosQuery();
@@ -31,8 +34,18 @@ function TodoPage() {
     if (isLoading) return <p>Lade Todos…</p>;
     if (error) return <p>Fehler beim Laden der Todos: {error.message}</p>;
 
-    const handleToggleStatus = async (id, status) => {
-        const newStatus = status === 'TODO' ? 'DOING' : status === 'DOING' ? 'DONE' : 'TODO';
+    // const handleToggleStatus = async (id, status) => {
+    //     const newStatus = status === 'TODO' ? 'DOING' : status === 'DOING' ? 'DONE' : 'TODO';
+    //     const newStatusObject = {status: newStatus};
+    //     try {
+    //         await updateStatus({newStatusObject, id}).unwrap();
+    //         dispatch(toggleTodo({id, newStatus}));
+    //     } catch (err) {
+    //         console.error("Fehler beim Aktualisieren des ToDos:", err);
+    //     }
+    // };
+
+    const handleSetStatus = async (id, newStatus) => {
         const newStatusObject = {status: newStatus};
         try {
             await updateStatus({newStatusObject, id}).unwrap();
@@ -41,6 +54,16 @@ function TodoPage() {
             console.error("Fehler beim Aktualisieren des ToDos:", err);
         }
     };
+
+    const handleToggleStatus = (id, currentStatus) => {
+        const nextStatus =
+            currentStatus === 'TODO' ? 'DOING' :
+                currentStatus === 'DOING' ? 'DONE' :
+                    'TODO';
+
+        handleSetStatus(id, nextStatus);
+    };
+
 
     const handleDeleteTodo = async (id) => {
         try {
@@ -51,48 +74,88 @@ function TodoPage() {
         }
     };
 
+    const handleOpenModal = (type) => {
+        dispatch(openModal(type));
+    }
+
     return (
         <div className={s.todoList}>
+
             <h2>Deine ToDos</h2>
 
-            <a className={s.goToNewToDo} type="button" href="/createNewTodo">
-                Ein neues ToDo erstellen ➡️
-            </a>
 
-            <div className={s.todoCards}>
-                {[...fetchedTodos]
-                    .sort((a, b) => new Date(a.endDate) - new Date(b.endDate)).map((todo) => (
-                    <div key={todo.id} className={s.todoCard}>
-                        <button
-                            className={s.todoUpdateLink}
-                            onClick={() => navigate(`/updateToDo/${todo.id}`)}
-                        >
-                            Todo ändern
-                        </button>
-                        <p className={s.fancyStatus}>{todo.status}</p>
-                        <h3 className={s.todoTitle}>{todo.title}</h3>
-                        <p className={s.dueDate}><strong>Fällig am:</strong> {todo.endDate}</p>
+            <Button className={s.goToNewToDo} onClick={() => handleOpenModal('newTodo')}
+                    text={'Ein neues ToDo erstellen ➡️'}/>
 
-                        <p className={s.hidden}><strong>Erstellt von:</strong> {todo.creator}</p>
-                        <p className={s.hidden}><strong>Erstellt am:</strong> {todo.startDate}</p>
-                        <p className={`${s.description} ${s.hidden}`}><strong>Todo:</strong> {todo.description}</p>
+            <a className={s.goToAllTodos} href="/AllTodo">Alle meine TODO's ➡️</a>
 
-                        <div className={`${s.cardActions} ${s.hidden}`}>
+            <div className={s.todoSections}>
+                {["TODO", "DOING", "DONE"].map((status) => (
+                    <ToDoSection
+                        key={status}
+                        status={status}
+                        todos={fetchedTodos.filter(todo => todo.status === status)}
+                        onSetStatus={handleSetStatus}
+                        onToggleStatus={handleToggleStatus}
+                        onDeleteTodo={handleDeleteTodo}
+                        onNavigate={(id) => navigate(`/edit/${id}`)}
+                    />
 
-                        <button onClick={() => handleToggleStatus(todo.id, todo.status)}>
-                                {todo.status === 'TODO' ? 'DOING' : todo.status === 'DOING' ? 'DONE' : 'TODO'}
-                            </button>
-                            <button onClick={() => handleDeleteTodo(todo.id)}>Löschen</button>
-                        </div>
-                    </div>
                 ))}
             </div>
+
+            <ModalWindow></ModalWindow>
+
         </div>
-
-
-
-
     );
+
+
+    // return (
+    //     <div className={s.todoList}>
+    //         <h2>Deine ToDos</h2>
+    //
+    //         <a className={s.goToNewToDo} type="button" href="/createNewTodo">
+    //             Ein neues ToDo erstellen ➡️
+    //         </a>
+    //
+    //         <div className={s.todoCards}>
+    //             {[...fetchedTodos]
+    //                 .sort((a, b) => new Date(a.endDate) - new Date(b.endDate)).map((todo) => (
+    //                 <div key={todo.id} className={s.todoCard}>
+    //
+    //                     <Button className={s.fancyStatus} onClick={() => handleToggleStatus(todo.id, todo.status)} text={todo.status} />
+    //
+    //                     <h3 className={s.todoTitle}>{todo.title}</h3>
+    //                     <p className={s.endDate}><strong>Fällig am:</strong> {todo.endDate}</p>
+    //
+    //                     <p className={s.hidden}><strong>Erstellt von:</strong> {todo.creator}</p>
+    //                     <p className={s.hidden}><strong>Beginnt am:</strong> {todo.startDate}</p>
+    //                     <p className={`${s.description} ${s.hidden}`}><strong>Todo:</strong> {todo.description}</p>
+    //
+    //                     <div className={`${s.cardActions} ${s.hidden}`}>
+    //
+    //                         <select className={s.button}
+    //                             value={todo.status}
+    //                             onChange={(e) => handleSetStatus(todo.id, e.target.value)}
+    //                         >
+    //                             <option value="TODO">TODO</option>
+    //                             <option value="DOING">DOING</option>
+    //                             <option value="DONE">DONE</option>
+    //                         </select>
+    //
+    //                         <Button className={s.navigateBtn} onClick={() => navigate(`/updateToDo/${todo.id}`)} text={`Todo ändern`} />
+    //
+    //                         <Button className={s.deleteBtn} onClick={() => handleDeleteTodo(todo.id)} text={`Todo löschen`}/>
+    //                     </div>
+    //                 </div>
+    //             ))}
+    //         </div>
+    //     </div>
+    //
+    //
+    //
+    //
+    // );
 }
 
 export default TodoPage;
