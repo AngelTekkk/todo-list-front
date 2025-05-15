@@ -1,181 +1,111 @@
-import React, { useState } from 'react';
-import {
-    useGetProjectsQuery,
-    useCreateProjectMutation,
-    useUpdateProjectMutation,
-    useDeleteProjectMutation,
-} from '../../services/api/projectApi';
-import CreateProjectForm from '../../components/NewProject/CreateProjectForm.jsx';
-import s from './ProjectsPage.module.scss';
+// src/pages/Project/ProjectsPage.jsx
+import React, { useState } from "react";
+import { useGetProjectsQuery } from "../../services/api/projectApi.js";
+import s from "./ProjectsPage.module.scss";
 
 export default function ProjectsPage() {
+    // 1) Тянем сразу полный список: у каждого проекта уже есть поле .tasks
     const { data: projects = [], isLoading, isError } = useGetProjectsQuery();
-    const [createProject] = useCreateProjectMutation();
-    const [updateProject] = useUpdateProjectMutation();
-    const [deleteProject] = useDeleteProjectMutation();
+    const [selectedId, setSelectedId] = useState(null);
 
-    const [showForm, setShowForm] = useState(false);
-    const [editingProject, setEditingProject] = useState(null);
-    const [selectedProject, setSelectedProject] = useState(null);
-    const [confirmDelete, setConfirmDelete] = useState(false);
+    if (isLoading) return <p>Loading projects…</p>;
+    if (isError)   return <p>Error loading projects</p>;
 
-    // Вспомогательные для расчёта периода
+    // Выбранный объект
+    const project = projects.find((p) => p.id === selectedId);
+
+    // Хелперы для периода
     const getEarliest = (tasks) =>
-        tasks?.length
+        tasks.length
             ? tasks.reduce(
                 (min, t) => (t.startDate < min ? t.startDate : min),
                 tasks[0].startDate
             )
-            : '';
+            : "";
     const getLatest = (tasks) =>
-        tasks?.length
+        tasks.length
             ? tasks.reduce(
                 (max, t) => (t.endDate > max ? t.endDate : max),
                 tasks[0].endDate
             )
-            : '';
+            : "";
 
-    if (isLoading) return <p>Loading projects…</p>;
-    if (isError) return <p>Error loading projects</p>;
+    // — Если выбрали проект — показываем только карточку + кнопку назад
+    if (project) {
+        const { title, description, tasks = [] } = project;
 
-    // 1) Режим удаления с подтверждением
-    if (selectedProject && confirmDelete) {
         return (
             <div className={s.page}>
-                <div className={s.overlay}>
-                    <div className={s.confirmBox}>
-                        <p>Wirklich Projekt löschen?</p>
-                        <button
-                            onClick={async () => {
-                                await deleteProject(selectedProject.id).unwrap();
-                                setSelectedProject(null);
-                                setConfirmDelete(false);
-                            }}
-                        >
-                            Bestätigen
-                        </button>
-                        <button onClick={() => setConfirmDelete(false)}>Abbrechen</button>
+                <button
+                    className={s.backBtn}
+                    onClick={() => setSelectedId(null)}
+                >
+                    ← Zurück zur Projekte
+                </button>
+
+                <div className={s.card}>
+                    <div className={s.cardHeader}>
+                        <h2 className={s.cardTitle}>{title}</h2>
+                    </div>
+                    <div className={s.cardBody}>
+                        <p>
+                            <strong>Beschreibung:</strong> {description}
+                        </p>
+                        <p>
+                            <strong>Zeitraum:</strong>{" "}
+                            {tasks.length
+                                ? `${getEarliest(tasks)} – ${getLatest(tasks)}`
+                                : "—"}
+                        </p>
+
+                        <h3>Aufgaben:</h3>
+                        {tasks.length ? (
+                            <ul className={s.taskList}>
+                                {tasks.map((t) => (
+                                    <li key={t.id} className={s.taskItem}>
+                                        <strong>{t.title}</strong> ({t.startDate} – {t.endDate})
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p className={s.noTasks}>
+                                Keine Aufgaben in diesem Projekt.
+                            </p>
+                        )}
                     </div>
                 </div>
             </div>
         );
     }
 
-    // 2) Режим редактирования
-    if (selectedProject && editingProject) {
-        return (
-            <div className={s.page}>
-                <CreateProjectForm
-                    initialTitle={selectedProject.title}
-                    initialDescription={selectedProject.description}
-                    submitLabel="Speichern"
-                    onSubmit={async ({ title, description }) => {
-                        await updateProject({
-                            id: selectedProject.id,
-                            title,
-                            description,
-                        }).unwrap();
-                        setEditingProject(false);
-                    }}
-                    onCancel={() => setEditingProject(false)}
-                />
-            </div>
-        );
-    }
-
-    // 3) Карточка выбранного проекта
-    if (selectedProject) {
-        return (
-            <div className={s.page}>
-                <button
-                    className={s.editBtn}
-                    onClick={() => setEditingProject(true)}
-                >
-                    Редактieren
-                </button>
-                <button
-                    className={s.deleteBtn}
-                    onClick={() => setConfirmDelete(true)}
-                >
-                    Löschen
-                </button>
-                <button
-                    className={s.backBtn}
-                    onClick={() => setSelectedProject(null)}
-                >
-                    Zurück zur Projekte
-                </button>
-                <div className={s.card}>
-                    <h2>{selectedProject.title}</h2>
-                    <p>
-                        <strong>Beschreibung:</strong>{' '}
-                        {selectedProject.description}
-                    </p>
-                    <p>
-                        <strong>Zeitraum:</strong>{' '}
-                        {getEarliest(selectedProject.tasks)} –{' '}
-                        {getLatest(selectedProject.tasks)}
-                    </p>
-                    <h3>Aufgaben:</h3>
-                    {selectedProject.tasks?.length ? (
-                        <ul>
-                            {selectedProject.tasks.map((t) => (
-                                <li key={t.id}>
-                                    <strong>{t.title}</strong> (
-                                    {t.startDate} – {t.endDate})
-                                </li>
-                            ))}
-                        </ul>
-                    ) : (
-                        <p>Keine Aufgaben in diesem Projekt.</p>
-                    )}
-                </div>
-            </div>
-        );
-    }
-
-    // 4) Список проектов + кнопка создания
+    // — Иначе — общий список проектов
     return (
         <div className={s.page}>
             <h1 className={s.heading}>Deine Projekte</h1>
-            {!showForm ? (
-                <button
-                    className={s.createBtn}
-                    onClick={() => setShowForm(true)}
-                >
-                    Projekt herstellen
-                </button>
-            ) : (
-                <CreateProjectForm
-                    submitLabel="Create Project"
-                    onSubmit={async ({ title, description }) => {
-                        await createProject({ title, description }).unwrap();
-                        setShowForm(false);
-                    }}
-                    onCancel={() => setShowForm(false)}
-                />
-            )}
+
             {projects.length === 0 ? (
-                <p>Sie haben noch keine Projekte.</p>
+                <p className={s.noProjects}>
+                    Sie haben noch keine Projekte.
+                </p>
             ) : (
                 <table className={s.table}>
                     <thead>
                     <tr>
-                        <th>#</th>
-                        <th>Titel</th>
-                        <th>Beschreibung</th>
+                        <th className={s.th}>#</th>
+                        <th className={s.th}>Titel</th>
+                        <th className={s.th}>Beschreibung</th>
                     </tr>
                     </thead>
                     <tbody>
                     {projects.map((p, idx) => (
                         <tr
                             key={p.id}
-                            onClick={() => setSelectedProject(p)}
                             className={s.tr}
+                            onClick={() => setSelectedId(p.id)}
                         >
-                            <td>{idx + 1}</td>
-                            <td>{p.title}</td>
-                            <td>{p.description}</td>
+                            <td className={s.td}>{idx + 1}</td>
+                            <td className={s.td}>{p.title}</td>
+                            <td className={s.td}>{p.description}</td>
                         </tr>
                     ))}
                     </tbody>
@@ -184,8 +114,4 @@ export default function ProjectsPage() {
         </div>
     );
 }
-
-
-
-
 
