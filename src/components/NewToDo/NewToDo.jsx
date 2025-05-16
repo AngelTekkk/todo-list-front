@@ -1,16 +1,12 @@
-// import {addTodo} from "../../redux/todos/todoSlice.js";
-import React, {
-    useEffect,
-    useState} from "react";
+import React, {useEffect, useState} from "react";
 import s from "./NewToDo.module.scss";
-import {useDispatch,
-    // useSelector
-} from "react-redux";
-import {loadProjects} from '../../redux/projects/projectsSlice';
+import {useDispatch, useSelector} from "react-redux";
 import {useCreateTodoMutation} from "../../services/api/todoApi";
 import {addTodo} from "../../redux/todos/todoSlice.js";
 import Button from "../Button/Button.jsx";
-// import {useNavigate} from "react-router-dom";
+import { useGetProjectsQuery } from "../../services/api/projectApi";
+
+
 
 
 function NewToDo({onSuccess}) {
@@ -23,20 +19,19 @@ function NewToDo({onSuccess}) {
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [status, setStatus] = useState('');
-    const [projectId,
-        // setProjectId
-    ] = useState('');
-    //const [curriculumId, setCurriculumId] = useState('');
+    const [projectId, setProjectId] = useState('');
     const [availableProjects, setAvailableProjects] = useState([]);
+    //const [curriculumId, setCurriculumId] = useState('');
     //const [availableCurricula, setAvailableCurricula] = useState([]);
 
-    const projects = useSelector((state) => state.projects.items);
-    const projectStatus = useSelector((state) => state.projects.status);
-    const projectError = useSelector((state) => state.projects.error);
+    const {
+        data: projects = [],
+        isLoading,
+        isError,
+        error,
+    } = useGetProjectsQuery();
 
     const [createTodo] = useCreateTodoMutation();
-
-
 
     const handleAddTodo = async () => {
         if (title.trim().length < 5 || description.trim().length < 5) {
@@ -56,12 +51,9 @@ function NewToDo({onSuccess}) {
                 curriculumIds: []
             };
 
-
-            await createTodo(newTodo).unwrap();
-            dispatch(addTodo(newTodo));
+            const response = await createTodo(newTodo).unwrap();
+            dispatch(addTodo(response));
             onSuccess();
-
-
 
         } catch (err) {
             console.error("Fehler beim Speichern:", err);
@@ -70,19 +62,14 @@ function NewToDo({onSuccess}) {
     };
 
     useEffect(() => {
-        if (projectStatus === 'idle') {
-            dispatch(loadProjects());
-        }
-    }, [dispatch, projectStatus]);
-
-    useEffect(() => {
         if (projects.length > 0) {
             setAvailableProjects(projects);
         }
     }, [projects]);
-    //
-    // if (projectStatus === 'loading') return <p>Lade Projekte…</p>;
-    // if (projectStatus === 'failed') return <p>Fehler: {projectError}</p>;
+
+    if (isLoading) return <p>Lade Projekte…</p>;
+    if (isError) return <p>Fehler: {error?.message || "Unbekannter Fehler"}</p>;
+
 
     return (
         <>
@@ -193,17 +180,8 @@ function NewToDo({onSuccess}) {
                     {/*</div>*/}
 
                     <div className="btn container">
-                        <Button
-                            // className={`${s.saveBtn} ${s.text}`}
-                            onClick={handleAddTodo}
-                            text={'Speichern'}
-
-                        />
-
-
-                        <button
-                            // className={`${s.cancelBtn} ${s.text}`}
-                        >Abbrechen</button>
+                        <Button onClick={handleAddTodo} text={'Speichern'}/>
+                        <Button text={'Abbrechen'} />
                     </div>
                 </div>
             </div>
