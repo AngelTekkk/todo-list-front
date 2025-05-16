@@ -1,16 +1,10 @@
-// import {addTodo} from "../../redux/todos/todoSlice.js";
-import React, {
-    useEffect,
-    useState} from "react";
+import React, {useEffect, useState} from "react";
 import s from "./NewToDo.module.scss";
-import {useDispatch,
-    // useSelector
-} from "react-redux";
-import {loadProjects} from '../../redux/projects/projectsSlice';
+import {useDispatch, useSelector} from "react-redux";
 import {useCreateTodoMutation} from "../../services/api/todoApi";
 import {addTodo} from "../../redux/todos/todoSlice.js";
 import Button from "../Button/Button.jsx";
-// import {useNavigate} from "react-router-dom";
+
 
 
 function NewToDo({onSuccess}) {
@@ -23,9 +17,7 @@ function NewToDo({onSuccess}) {
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [status, setStatus] = useState('');
-    const [projectId,
-        // setProjectId
-    ] = useState('');
+    const [projectId, setProjectId] = useState('');
     //const [curriculumId, setCurriculumId] = useState('');
     const [availableProjects, setAvailableProjects] = useState([]);
     //const [availableCurricula, setAvailableCurricula] = useState([]);
@@ -71,18 +63,18 @@ function NewToDo({onSuccess}) {
 
     useEffect(() => {
         if (projectStatus === 'idle') {
-            dispatch(loadProjects());
+            dispatch(projects);
         }
-    }, [dispatch, projectStatus]);
+    }, [dispatch, projectStatus, projects]);
 
     useEffect(() => {
         if (projects.length > 0) {
             setAvailableProjects(projects);
         }
     }, [projects]);
-    //
-    // if (projectStatus === 'loading') return <p>Lade Projekte…</p>;
-    // if (projectStatus === 'failed') return <p>Fehler: {projectError}</p>;
+
+    if (projectStatus === 'loading') return <p>Lade Projekte…</p>;
+    if (projectStatus === 'failed') return <p>Fehler: {projectError}</p>;
 
     return (
         <>

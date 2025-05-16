@@ -49,6 +49,19 @@ function ToDoSection({
         }),
     };
 
+    const getNextStatus = (currentStatus) => {
+        switch (currentStatus) {
+            case "TODO":
+                return "verschieben zu DOING";
+            case "DOING":
+                return "verschieben zu DONE";
+            case "DONE":
+                return "verschieben zu TODO";
+            default:
+                return "verschieben zu TODO";
+        }
+    };
+
     return (
         <section className={s.section}>
             <h3>{status}</h3>
@@ -79,7 +92,7 @@ function ToDoSection({
                                     <Button
                                         className={s.fancyStatus}
                                         onClick={() => onToggleStatus(todo.id, todo.status)}
-                                        text={todo.status}
+                                        text={getNextStatus(todo.status)}
                                     />
 
                                     <h4 className={s.todoTitle}>{todo.title}</h4>
