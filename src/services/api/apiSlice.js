@@ -22,7 +22,7 @@ export const apiSlice = createApi({
             return headers;
         },
     }),
-    tagTypes: ['Projects', 'Todos', 'LearningPlans'],
+    tagTypes: ['Projects', 'Todos', 'Curriculum'],
     endpoints: (builder) => ({
         getCsrfToken: builder.query({
             query: () => ({
