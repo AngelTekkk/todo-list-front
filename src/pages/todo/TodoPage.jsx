@@ -70,7 +70,7 @@ function TodoPage() {
                         text={'neues Todo'}/>
 
 
-                <Button className={s.goToAllTodos} onClick={() => navigate(`/allTodos`)} text={`meine Todos`}/>
+                <Button className={s.goToAllTodos} onClick={() => navigate(`/allTodos`)} text={`Todo Liste`}/>
             </div>
 
             <div className={s.todoSections}>
@@ -82,7 +82,7 @@ function TodoPage() {
                         onSetStatus={handleSetStatus}
                         onToggleStatus={handleToggleStatus}
                         onDeleteTodo={handleDeleteTodo}
-                        onNavigate={(id) => navigate(`/edit/${id}`)}
+                        onNavigate={(id) => navigate(`/updateTodo/${id}`)}
                     />
 
                 ))}

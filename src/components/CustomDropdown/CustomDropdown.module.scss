@@ -1,0 +1,75 @@
+@use "../../_index.scss" as *;
+
+.customSelect {
+  position: relative;
+  width: 100%;
+
+  &Button {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    background-color: rgba(119, 136, 153, 0.3);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 99px;
+  }
+}
+
+.arrow {
+  margin-left: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.customSelectOptions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  margin-top: 0.25rem;
+  z-index: 1000;
+}
+
+.customSelectOption {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  background-color: rgba(119, 136, 153, 1);
+
+
+  &:hover {
+    background-color: rgba(42, 182, 20, 1);
+  }
+
+  &:first-child {
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+  }
+
+  &:last-child {
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    border-bottom: none;
+  }
+}
+
+
+.optionLabel {
+  font-size: 0.95rem;
+  font-weight: 300;
+  color: $primary-color;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.selected {
+  background-color: rgba(42, 182, 20, 1);
+  color: $primary-color;
+  font-weight: 800;
+  text-decoration: lightslategray double underline;
+}
+
