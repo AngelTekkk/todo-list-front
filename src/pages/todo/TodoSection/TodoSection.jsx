@@ -54,13 +54,13 @@ function ToDoSection({
     const getNextStatus = (currentStatus) => {
         switch (currentStatus) {
             case "TODO":
-                return "verschieben zu DOING";
+                return "nach DOING";
             case "DOING":
-                return "verschieben zu DONE";
+                return "nach DONE";
             case "DONE":
-                return "verschieben zu TODO";
+                return "nach TODO";
             default:
-                return "verschieben zu TODO";
+                return "nach TODO";
         }
     };
 
@@ -70,10 +70,10 @@ function ToDoSection({
         const daysLeft = Math.ceil((end - today) / (1000 * 60 * 60 * 24));
 
         return daysLeft > 7
-            ? 'rgba(44,211,85,0.8)'
+            ? 'rgba(72,204,104,0.4)'
             : daysLeft > 3
-                ? 'rgba(253,220,117,0.81)'
-                : '#fa6c79';
+                ? 'rgba(253,220,117,0.32)'
+                : 'rgba(250,108,121,0.32)';
     };
 
     return (
@@ -86,7 +86,9 @@ function ToDoSection({
                     className={s.arrowLeft}
                     disabled={page === 0}
                 >
-                    ⬅️
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M15 6L9 12L15 18" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
                 </button>
 
                 <div className={s.todoCardGroup}>
@@ -112,9 +114,11 @@ function ToDoSection({
                                     />
 
                                     <h4 className={s.todoTitle}>{todo.title}</h4>
-                                    <p className={s.startDate}><strong>Start:</strong> {todo.startDate}</p>
-                                    <p className={s.endDate}><strong>Ende:</strong> {todo.endDate}</p>
-                                    <p className={s.description}><strong>Beschreibung:</strong> {todo.description}</p>
+                                    <div className={s.cardStuff}>
+                                        <p className={s.startDate}><strong>Start:</strong> {todo.startDate}</p>
+                                        <p className={s.endDate}><strong>Ende:</strong> {todo.endDate}</p>
+                                        <p className={s.description}><strong>Beschreibung:</strong> {todo.description}</p>
+                                    </div>
 
                                     <div className={s.cardActions}>
                                         <select
@@ -149,7 +153,21 @@ function ToDoSection({
                     className={s.arrowRight}
                     disabled={page === maxPage}
                 >
-                    ➡️
+                    <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <path
+                            d="M9 6L15 12L9 18"
+                            stroke="#333"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+                    </svg>
                 </button>
             </div>
         </section>
