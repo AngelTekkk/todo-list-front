@@ -68,7 +68,7 @@ function AllTodoPage() {
                         {filteredTodos.map((todo) => (
                             <tr key={todo.id}>
                                 <td>
-                                    <button onClick={() => navigate(`/edit/${todo.id}`)}>📝</button>{' '}
+                                    <button onClick={() => navigate(`/updateTodo/${todo.id}`)}>📝</button>{' '}
                                     <button onClick={() => handleDelete(todo.id)}>🗑️</button>
                                 </td>
                                 <td>{todo.title}</td>
@@ -98,7 +98,7 @@ function AllTodoPage() {
 
     return (
         <div className={s.wrapper}>
-            <h2>Alle ToDos</h2>
+
             {['TODO', 'DOING', 'DONE'].map(renderTable)}
         </div>
     );

@@ -9,10 +9,10 @@
 .section {
   margin-top: 1rem;
   padding: 1rem;
-  border-radius: 1rem;
-  background-color: #f9f9f9;
+  border-radius: 2rem;
+  background-color: transparent;
   position: relative;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .carousel {
@@ -38,7 +38,7 @@
   padding: 1rem;
   border-radius: 2rem;
   background-color: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.155);
   position: relative;
   top: 0;
   left: 0;
@@ -47,7 +47,7 @@
   flex-direction: column;
 }
 
-.cardStuff{
+.cardStuff {
   min-height: 170px;
 }
 
@@ -97,44 +97,30 @@
   }
 }
 
-
-
 .fancyStatus {
   position: absolute;
-  top: 0.5rem;
-  right: -1rem;
-  transform: rotate(25deg);
-  background: rgba(250, 108, 121, 0.63);
-  color: black;
+  top: 1rem;
+  right: 1rem;
+  background: linear-gradient(135deg, $accent-color, $primary-color);
+  color: #fff;
+  font-weight: bold;
   padding: 0.4rem 1rem;
-  font-size: 0.75rem;
-  font-weight: 800;
+  border-radius: 0.5rem;
   text-transform: uppercase;
+  font-size: 0.75rem;
   letter-spacing: 1px;
-  border-radius: 1rem;
-  box-shadow:
-          0 0 0 2px rgba(255, 255, 255, 0.5),
-          0 4px 8px rgba(0, 0, 0, 0.3),
-          inset 0 -2px 6px rgba(255, 255, 255, 0.2);
-  border: 2px dashed rgb(136, 105, 18);
+  border: none;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  z-index: 1;
   user-select: none;
+  z-index: 2;
 
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transform-origin: center center;
   &:hover {
-    transform: rotate(25deg) scale(1.05);
-    box-shadow:
-            0 0 0 2px rgba(255, 255, 255, 0.6),
-            0 6px 16px rgba(0, 0, 0, 0.4),
-            inset 0 -2px 8px rgba(255, 255, 255, 0.25);
-  }
-
-  &:active {
-    transform: rotate(25deg) scale(0.95);
+    transform: scale(1.25) rotate(15deg);
+    box-shadow: 0 0 20px $accent-color, 0 0 30px $background-color;
   }
 }
-
 
 .todoTitle {
   margin: 0.5rem 0;
@@ -148,15 +134,89 @@
   margin-top: 1rem;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  position: sticky;
+  gap: 0.75rem;
+  align-items: stretch;
+  padding: 0.5rem;
 }
 
 .button,
 .navigateBtn,
-.deleteBtn {
+.deleteBtn,
+select {
   width: 100%;
+  padding: 0.2rem 1rem;
+  font-size: 0.9rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.25s ease-in-out;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+
 }
+
+select {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: $primary-color;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg width='14' height='10' viewBox='0 0 14 10' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10L0.0717968 0.5H13.9282L7 10Z' fill='%23667'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 0.75rem;
+}
+
+select:hover {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.option {
+  -webkit-appearance: none;
+  color: $primary-color;
+  border-radius: 10px;
+  background: whitesmoke;
+  border: none;
+
+  &hover {
+    color: inherit;
+    background: transparent;
+  }
+}
+
+
+
+.navigateBtn {
+  background-color: rgba(71, 80, 92, 0.2);
+  color: $primary-color;
+
+  &:hover {
+    background-color: rgba(38, 45, 58, 0.5);
+    transform: scale(1.02);
+    color: whitesmoke;
+    text-transform: uppercase;
+  }
+
+  &:active {
+    transform: scale(0.97);
+  }
+}
+
+.deleteBtn {
+  background-color: rgba(255, 0, 0, 0.2);
+  color: $primary-color;
+
+  &:hover {
+    background-color: rgba(255, 0, 0, 0.5);
+    transform: scale(1.02);
+    color: whitesmoke;
+    text-transform: uppercase;
+  }
+
+  &:active {
+    transform: scale(0.97);
+  }
+}
+
 
 .endDate {
   color: #ff0000;
@@ -173,15 +233,6 @@
   gap: 1rem;
 }
 
-//.todoCard {
-//  width: 300px;
-//  padding: 1rem;
-//  border-radius: 1rem;
-//  background-color: white;
-//
-//  position: relative;
-//  flex-shrink: 0;
-//}
 
 .todoCardGroup {
   position: relative;
@@ -198,7 +249,6 @@
   cursor: pointer;
   z-index: 2;
 }
-
 
 
 .todoCardSet {
