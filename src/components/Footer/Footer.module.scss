@@ -1,7 +1,7 @@
 @use "../../_index.scss" as *;
 
 .footer {
-  position: fixed;
+  position: static;
   height: $footer-height;
   left: 0;
   right: 0;

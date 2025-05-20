@@ -6,8 +6,8 @@ import {useDispatch, useSelector} from "react-redux";
 import {allTodos, getAllTodos, removeTodo, toggleTodo} from "../../redux/todos/todoSlice.js";
 import ToDoSection from "./TodoSection/TodoSection.jsx";
 import ModalWindow from "../../components/ModalWindow/ModalWindow.jsx";
-import {openModal} from "../../redux/dashboard/dashboardSlice.js";
 import Button from "../../components/Button/Button.jsx";
+import {openModal} from "../../redux/dashboard/dashboardSlice.js";
 
 function TodoPage() {
     const {data: todos, error, isLoading} = useGetTodosQuery();
@@ -63,13 +63,15 @@ function TodoPage() {
     return (
         <div className={s.todoList}>
 
-            <h2>Deine ToDos</h2>
+            <div className={s.leftSide}>
 
 
-            <Button className={s.goToNewToDo} onClick={() => handleOpenModal('newTodo')}
-                    text={'Ein neues ToDo erstellen ➡️'}/>
+                <Button className={s.goToNewToDo} onClick={() => handleOpenModal('newTodo')}
+                        text={'neues Todo'}/>
 
-            <a className={s.goToAllTodos} href="/AllTodo">Alle meine TODO's ➡️</a>
+
+                <Button className={s.goToAllTodos} onClick={() => navigate(`/allTodos`)} text={`meine Todos`}/>
+            </div>
 
             <div className={s.todoSections}>
                 {["TODO", "DOING", "DONE"].map((status) => (
@@ -84,6 +86,11 @@ function TodoPage() {
                     />
 
                 ))}
+
+            </div>
+
+            <div className={s.rightSide}>
+
             </div>
 
             <ModalWindow></ModalWindow>

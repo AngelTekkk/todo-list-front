@@ -7,11 +7,12 @@
 }
 
 .section {
-  border: 1px solid #ddd;
+  margin-top: 1rem;
   padding: 1rem;
   border-radius: 1rem;
   background-color: #f9f9f9;
   position: relative;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .carousel {
@@ -25,7 +26,7 @@
 .todoCardWrapper {
   position: relative;
   width: 300px;
-  min-height: 350px; // optional: je nach Inhalt
+  min-height: 350px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -33,28 +34,107 @@
 }
 
 .todoCard {
-  width: 100%;
+  width: 300px;
   padding: 1rem;
-  border-radius: 1rem;
+  border-radius: 2rem;
   background-color: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  position: absolute;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  position: relative;
   top: 0;
   left: 0;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.cardStuff{
+  min-height: 170px;
 }
 
 .arrowLeft,
 .arrowRight {
-  background: none;
+  width: 40px;
+  height: 40px;
   border: none;
-  font-size: 2rem;
+  border-radius: 50%;
+  background-color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
-  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    transition: transform 0.3s ease;
+  }
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: scale(1.05);
+
+
+    &.arrowLeft svg {
+      transform: translateX(-4px);
+    }
+
+    &.arrowRight svg {
+      transform: translateX(4px);
+    }
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+
+    svg {
+      transform: none;
+    }
+  }
 }
 
+
+
 .fancyStatus {
-  margin-bottom: 0.5rem;
+  position: absolute;
+  top: 0.5rem;
+  right: -1rem;
+  transform: rotate(25deg);
+  background: rgba(250, 108, 121, 0.63);
+  color: black;
+  padding: 0.4rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-radius: 1rem;
+  box-shadow:
+          0 0 0 2px rgba(255, 255, 255, 0.5),
+          0 4px 8px rgba(0, 0, 0, 0.3),
+          inset 0 -2px 6px rgba(255, 255, 255, 0.2);
+  border: 2px dashed rgb(136, 105, 18);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  z-index: 1;
+  user-select: none;
+
+  &:hover {
+    transform: rotate(25deg) scale(1.05);
+    box-shadow:
+            0 0 0 2px rgba(255, 255, 255, 0.6),
+            0 6px 16px rgba(0, 0, 0, 0.4),
+            inset 0 -2px 8px rgba(255, 255, 255, 0.25);
+  }
+
+  &:active {
+    transform: rotate(25deg) scale(0.95);
+  }
 }
+
 
 .todoTitle {
   margin: 0.5rem 0;
@@ -69,6 +149,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  position: sticky;
 }
 
 .button,
@@ -92,22 +173,21 @@
   gap: 1rem;
 }
 
+//.todoCard {
+//  width: 300px;
+//  padding: 1rem;
+//  border-radius: 1rem;
+//  background-color: white;
+//
+//  position: relative;
+//  flex-shrink: 0;
+//}
+
 .todoCardGroup {
-  display: flex;
-  gap: 1rem;
   position: relative;
   width: calc(300px * 5 + 1rem * 4);
-  overflow: hidden;
-}
-
-.todoCard {
-  width: 300px;
-  padding: 1rem;
-  border-radius: 1rem;
-  background-color: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  position: relative;
-  flex-shrink: 0;
+  height: 370px;
+  overflow: visible;
 }
 
 .arrowLeft,
@@ -119,12 +199,7 @@
   z-index: 2;
 }
 
-.todoCardGroup {
-  position: relative;
-  width: calc(300px * 5 + 1rem * 4);
-  height: 370px;
-  overflow: hidden;
-}
+
 
 .todoCardSet {
   display: flex;

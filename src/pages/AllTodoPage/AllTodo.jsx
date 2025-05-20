@@ -7,6 +7,7 @@ import {
     useUpdateStatusTodoMutation
 } from '../../services/api/todoApi';
 import { allTodos, toggleTodo, removeTodo, getAllTodos } from '../../redux/todos/todoSlice';
+import s from "./AllTodo.module.scss"
 
 function AllTodoPage() {
     const dispatch = useDispatch();
@@ -49,12 +50,12 @@ function AllTodoPage() {
 
         return (
             <section key={status}>
-                <h2>{status}</h2>
+                <h3>{status}</h3>
                 {filteredTodos.length === 0 ? (
                     <p>Keine ToDos im Status {status}.</p>
                 ) : (
-                    <table>
-                        <thead>
+                    <table className={s.table}>
+                        <thead >
                         <tr>
                             <th></th>
                             <th>Titel</th>
@@ -96,8 +97,8 @@ function AllTodoPage() {
     if (error) return <p>Fehler beim Laden der ToDos: {error.message}</p>;
 
     return (
-        <div>
-            <h1>Alle ToDos</h1>
+        <div className={s.wrapper}>
+            <h2>Alle ToDos</h2>
             {['TODO', 'DOING', 'DONE'].map(renderTable)}
         </div>
     );
