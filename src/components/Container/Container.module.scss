@@ -1,7 +1,9 @@
 @use "../../_index.scss" as *;
 
 .container {
+  position: relative;
   min-height: calc(100vh);
-  padding-top: $header-height;
-  //padding-bottom: $footer-height;
+  min-width: 320px;
+  margin: 0 auto;
+  padding: $header-height 20px $footer-height;
 }
