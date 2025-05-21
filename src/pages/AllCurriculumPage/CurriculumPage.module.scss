@@ -1,0 +1,9 @@
+@use "../../_index.scss" as *;
+
+.curryContainer{
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  color: red;
+}
+
