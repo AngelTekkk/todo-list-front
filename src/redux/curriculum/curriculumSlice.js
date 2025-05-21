@@ -16,8 +16,8 @@ const curriculumSlice = createSlice({
         createCurriculum: (state, action)=>{
             state.curriculum = action.payload;
         },
-        deleteCurriculum: (state, action)=>{
-            state.curriculum = action.payload;
+        deleteCurriculum: (state)=>{
+            state.curriculum = {};
         }
     }
 })

@@ -1,9 +1,190 @@
 @use "../../_index.scss" as *;
 
-.curryContainer{
-  display: flex;
-  flex-direction: column;
+//.curryContainer{
+//  display: flex;
+//  flex-direction: column;
+//  text-align: center;
+//  color: red;
+//}
+
+.curryContainer {
+  max-width: 700px;
+  margin: 3rem auto;
+  padding: 2rem 3rem;
+  background: #121212;
+  border-radius: 20px;
+  box-shadow: 0 0 40px #ff2aadaa;
+  color: #ff2aad;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   text-align: center;
-  color: red;
+  user-select: none;
+
+  h1, h2 {
+    text-shadow:
+            0 0 5px #ff2aad,
+            0 0 10px #ff2aad,
+            0 0 15px #ff2aadcc;
+  }
+
+  h1 {
+    font-weight: 900;
+    font-size: 2.5rem;
+    margin-bottom: 0.3rem;
+  }
+
+  h2 {
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: #ff6ec4;
+  }
+
+  p {
+    font-size: 1.1rem;
+    margin: 0.4rem 0 1.5rem;
+    color: #ff99d1;
+  }
 }
 
+/* Buttons mit komplett geisteskrankem Glitch & Pulse */
+.button {
+  position: relative;
+  background-color: #ff2aad;
+  color: white;
+  border: none;
+  padding: 0.9rem 2.2rem;
+  margin: 1rem auto;
+  border-radius: 16px;
+  font-weight: 900;
+  font-size: 1.25rem;
+  cursor: pointer;
+  box-shadow: 0 0 20px #ff2aadbb;
+  user-select: none;
+  overflow: hidden;
+  transition: color 0.3s ease;
+  animation: pulseGlow 3s ease-in-out infinite;
+  display: inline-block;
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    top: -5%;
+    left: -5%;
+    width: 110%;
+    height: 110%;
+    pointer-events: none;
+    border-radius: 16px;
+    mix-blend-mode: screen;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &::before {
+    background: linear-gradient(45deg, #ff2aad, #ff6ec4, #ff2aad);
+    animation: glitchShift 1.5s infinite;
+  }
+
+  &::after {
+    background: linear-gradient(135deg, #ff6ec4, #ff2aad, #ff6ec4);
+    animation: glitchShift 1.8s infinite reverse;
+  }
+
+  &:hover {
+    animation-play-state: paused;
+    color: #ff2aad;
+
+    &::before,
+    &::after {
+      opacity: 0.6;
+    }
+  }
+}
+
+/* Styling für jedes einzelne Todo */
+.todoItem {
+  background: #1a1a1a;
+  border-left: 4px solid #ff2aad;
+  margin: 0.7rem 0;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #ff8de1;
+  box-shadow: 0 0 6px #ff2aad66;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: translateX(8px);
+    color: #ff2aad;
+    box-shadow: 0 0 15px #ff2aadcc;
+  }
+}
+
+/* Label und Input Styling (für den Error-Zustand und "kein Curriculum"-Formular) */
+label {
+  color: #ff2aad;
+  font-weight: 700;
+  font-size: 1.1rem;
+  display: block;
+  margin-bottom: 0.3rem;
+  text-shadow: 0 0 8px #ff2aadbb;
+}
+
+input#newCurrName {
+  width: 100%;
+  max-width: 400px;
+  padding: 0.6rem 1rem;
+  font-size: 1.1rem;
+  border-radius: 12px;
+  border: 2px solid #ff2aadcc;
+  background: #222;
+  color: #ffbbdd;
+  box-shadow: 0 0 10px #ff2aad88;
+  transition: border-color 0.3s ease;
+
+  &:focus {
+    outline: none;
+    border-color: #ff6ec4;
+    box-shadow: 0 0 15px #ff6ec4dd;
+  }
+}
+
+/* Animations (aus Button-Styles) */
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 8px #ff2aad, 0 0 20px #ff2aad88;
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 20px #ff6ec4, 0 0 40px #ff6ec488;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes glitchShift {
+  0% {
+    clip-path: inset(0 0 0 0);
+    transform: translate(0);
+  }
+  20% {
+    clip-path: inset(10% 0 85% 0);
+    transform: translate(-2px, -2px);
+  }
+  40% {
+    clip-path: inset(85% 0 10% 0);
+    transform: translate(2px, 2px);
+  }
+  60% {
+    clip-path: inset(10% 0 85% 0);
+    transform: translate(-2px, 2px);
+  }
+  80% {
+    clip-path: inset(85% 0 10% 0);
+    transform: translate(2px, -2px);
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+    transform: translate(0);
+  }
+}

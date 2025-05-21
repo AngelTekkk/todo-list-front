@@ -18,8 +18,8 @@ function CurriculumPage(){
     const { data: curriculum, isLoading, isError } = useGetCurriculumForCurrentUserQuery();
     const [title, setTitle] = useState('');
 
-    const [createCurriculum] = useCreateCurriculumMutation();
-    const [deleteCurriculum] = useDeleteCurriculumMutation();
+    const [createCurriculumApi] = useCreateCurriculumMutation();
+    const [deleteCurriculumApi] = useDeleteCurriculumMutation();
     const user = useSelector((state) => state.auth.user);
     const allTodos = useSelector(getAllTodos);
 
@@ -39,8 +39,8 @@ function CurriculumPage(){
 
     const handleDeleteCurriculum = async () =>  {
         try {
-            await deleteCurriculum().unwrap();
-            dispatch(deleteCurriculum(curriculum));
+            await deleteCurriculumApi(curriculum.id).unwrap();
+            dispatch(deleteCurriculum());
 
         } catch (err) {
             console.error("Fehler beim Löschen", err);
@@ -50,12 +50,13 @@ function CurriculumPage(){
     const handleCreateCurriculum = async () => {
         try {
             const newCurry = { title};
-            await createCurriculum(newCurry).unwrap();
+            await createCurriculumApi(newCurry).unwrap();
             dispatch(createCurriculum(newCurry));
-            setTitle('');
+
         } catch (err){
             console.error("blablabla", err)
         }
+        setTitle('');
     }
 
     if (isLoading) return <div>Lade Curriculums...</div>;
@@ -67,7 +68,7 @@ function CurriculumPage(){
                 <br/>
                 <label for="newCurrName">Name des Curriculums: </label>
                 <input id="newCurrName" type="text" value={title} onChange={(e)=>setTitle(e.target.value)} required></input>
-                <Button onClick={handleCreateCurriculum}>Curriculum erstellen</Button>
+                <Button onClick={handleCreateCurriculum} className={s.button}>Curriculum erstellen</Button>
             </div>
         );
     }
@@ -81,10 +82,10 @@ function CurriculumPage(){
             <p>id: {curriculum.id}</p>
             <h1><strong>{curriculum.title} curryculum</strong></h1>
 
-            <Button onClick={handleDeleteCurriculum}>Curriculum löschen</Button>
+            <Button onClick={handleDeleteCurriculum} className={s.button}>Curriculum löschen</Button>
             <h2>Todos in diesem knackigen Curryculum:</h2>
             {curryTodos.map((todo)=>(
-                <div key={todo.id}>{todo.id}
+                <div key={todo.id} className={s.todoItem}>{todo.id}
                 </div>
             ))}
         </div>
