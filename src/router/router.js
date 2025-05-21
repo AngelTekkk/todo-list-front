@@ -7,6 +7,7 @@ import UpdateTodoPage from "../components/UpdateToDo/UpdateTodoPage.jsx";
 import AllTodo from "../pages/AllTodoPage/AllTodo.jsx";
 import Container from "../components/Container/Container.jsx";
 import DashboardPage from "../pages/dashboard/DashboardPage.jsx";
+import CurriculumPage from "../pages/AllCurriculumPage/CurriculumPage.jsx";
 
 const router = createBrowserRouter([
 
@@ -21,6 +22,7 @@ const router = createBrowserRouter([
             { path: "projects", Component: ProjectsPage },
             { path: "updateToDo/:id", Component: UpdateTodoPage },
             { path: "allTodos", Component: AllTodo },
+            { path: "curriculum", Component: CurriculumPage}
         ]
     },
 
