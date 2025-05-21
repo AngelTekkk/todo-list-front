@@ -8,12 +8,12 @@ export const todoApi = apiSlice.injectEndpoints({
                 method: 'GET'
             })
         }),
-        getTodo: builder.query({
-            query: (id) => ({
-                url: `/todos/${id}`,
-                method: 'GET'
-            })
-        }),
+        // getTodo: builder.query({
+        //     query: (id) => ({
+        //         url: `/todos/${id}`,
+        //         method: 'GET'
+        //     })
+        // }),
         createTodo: builder.mutation({
             query: (newTodo) => ({
                 url: '/todos',

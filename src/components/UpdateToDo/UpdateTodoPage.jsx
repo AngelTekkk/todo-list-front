@@ -1,13 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { useDeleteTodoMutation, useGetTodoQuery, useUpdateTodoMutation } from '../../services/api/todoApi';
-import { useNavigate, useParams } from 'react-router-dom';
+import {
+    // useNavigate,
+    useParams } from 'react-router-dom';
 import s from './UpdateTodoPage.module.scss';
+import {useDispatch} from "react-redux";
+import {removeTodo, setTodos,
+    // toggleTodo
+} from "../../redux/todos/todoSlice.js";
 
 function UpdateTodoPage() {
     const { id } = useParams();
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
+    const dispatch = useDispatch();
 
-    const { data: todo, error, isLoading } = useGetTodoQuery(id);
+
+    const { data: todo,
+        // error,
+        isLoading } = useGetTodoQuery(id);
     const [updateTodo] = useUpdateTodoMutation();
     const [deleteTodo] = useDeleteTodoMutation();
 
@@ -29,12 +39,13 @@ function UpdateTodoPage() {
     }, [todo]);
 
     if (isLoading) return <p>Lade Todo…</p>;
-    if (error) return <p>Fehler beim Laden des Todos: {error.message}</p>;
+    // if (error) return <p>Fehler beim Laden des Todos: {error.message}</p>;
 
     const handleDeleteTodo = async () => {
         try {
             await deleteTodo(id).unwrap();
-            navigate(-1);
+            // navigate(-1);
+            dispatch(removeTodo({id}));
         } catch (err) {
             console.error('Fehler beim Löschen:', err);
             alert('Fehler beim Löschen des Todos.');
@@ -57,7 +68,8 @@ function UpdateTodoPage() {
 
         try {
             await updateTodo({id, updatedTodo}).unwrap();
-            navigate(-1);
+            dispatch(setTodos({id, updatedTodo}));
+
         } catch (err) {
             console.error('Fehler beim Speichern:', err);
             alert('Fehler beim Speichern des Todos.');
@@ -150,12 +162,12 @@ function UpdateTodoPage() {
                         >
                             Speichern
                         </button>
-                        <button
-                            className={`${s.cancelBtn} ${s.text}`}
-                            onClick={() => navigate(-1)}
-                        >
-                            Abbrechen
-                        </button>
+                        {/*<button*/}
+                        {/*    className={`${s.cancelBtn} ${s.text}`}*/}
+                        {/*    onClick={() => navigate(-1)}*/}
+                        {/*>*/}
+                        {/*    Abbrechen*/}
+                        {/*</button>*/}
                     </div>
 
                 </div>
