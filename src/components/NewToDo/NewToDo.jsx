@@ -12,9 +12,7 @@ import { useGetProjectsQuery } from "../../services/api/projectApi";
 function NewToDo({onSuccess}) {
     const dispatch = useDispatch();
     const [title, setTitle] = useState('');
-    const [creator,
-        // setCreator
-    ] = useState('');
+    const [creator] = useState('');
     const [description, setDescription] = useState('');
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
@@ -73,7 +71,6 @@ function NewToDo({onSuccess}) {
 
     return (
         <>
-
 
             <div className={s.newTodoBox}>
                 <h2>Neues ToDo erstellen</h2>

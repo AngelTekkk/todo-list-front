@@ -53,7 +53,7 @@ export const todoApi = apiSlice.injectEndpoints({
 
 export const {
     useGetTodosQuery,
-    useGetTodoQuery,
+    // useGetTodoQuery,
     useCreateTodoMutation,
     useUpdateTodoMutation,
     useDeleteTodoMutation,

@@ -1,24 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { useDeleteTodoMutation, useGetTodoQuery, useUpdateTodoMutation } from '../../services/api/todoApi';
 import {
-    // useNavigate,
-    useParams } from 'react-router-dom';
+    useGetTodosQuery,
+    useDeleteTodoMutation,
+    useUpdateTodoMutation
+} from '../../services/api/todoApi';
 import s from './UpdateTodoPage.module.scss';
-import {useDispatch} from "react-redux";
-import {removeTodo, setTodos,
-    // toggleTodo
-} from "../../redux/todos/todoSlice.js";
+import { useDispatch } from "react-redux";
+import { removeTodo, setTodos } from "../../redux/todos/todoSlice.js";
 
-function UpdateTodoPage() {
-    const { id } = useParams();
-    // const navigate = useNavigate();
+function UpdateTodoPage({ id, onSuccess }) {
     const dispatch = useDispatch();
 
-
-    const { data: todo,
-        // error,
-        isLoading } = useGetTodoQuery(id);
-    const [updateTodo] = useUpdateTodoMutation();
+    const { data: todo, isLoading } = useGetTodosQuery(id);
+    const [updateTodo] = useUpdateTodoMutation(id);
     const [deleteTodo] = useDeleteTodoMutation();
 
     const [title, setTitle] = useState('');
@@ -27,25 +21,23 @@ function UpdateTodoPage() {
     const [endDate, setEndDate] = useState('');
     const [status, setStatus] = useState('');
 
-
     useEffect(() => {
-        if (todo) {
+        if (updateTodo) {
             setTitle(todo.title || '');
             setDescription(todo.description || '');
             setStartDate(todo.startDate || '');
             setEndDate(todo.endDate || '');
             setStatus(todo.status || '');
         }
-    }, [todo]);
+    }, [updateTodo]);
 
     if (isLoading) return <p>Lade Todo…</p>;
-    // if (error) return <p>Fehler beim Laden des Todos: {error.message}</p>;
 
     const handleDeleteTodo = async () => {
         try {
             await deleteTodo(id).unwrap();
-            // navigate(-1);
-            dispatch(removeTodo({id}));
+            dispatch(removeTodo({ id }));
+            onSuccess();
         } catch (err) {
             console.error('Fehler beim Löschen:', err);
             alert('Fehler beim Löschen des Todos.');
@@ -67,9 +59,9 @@ function UpdateTodoPage() {
         };
 
         try {
-            await updateTodo({id, updatedTodo}).unwrap();
-            dispatch(setTodos({id, updatedTodo}));
-
+            await updateTodo({ id, updatedTodo }).unwrap();
+            dispatch(setTodos({ id, updatedTodo }));
+            onSuccess();
         } catch (err) {
             console.error('Fehler beim Speichern:', err);
             alert('Fehler beim Speichern des Todos.');
@@ -79,9 +71,8 @@ function UpdateTodoPage() {
     return (
         <div className={s.bigContainer}>
             <div className={s.newTodoBox}>
-                <h2>TODO ÄNDERN {id}</h2>
+                <h2>TODO ÄNDERN</h2>
                 <div className={s.newTodoWrapper}>
-
                     <div className={s.inputRow}>
                         <label className={s.text}>
                             Titel:
@@ -154,7 +145,7 @@ function UpdateTodoPage() {
                         </label>
                     </div>
 
-                    <div className="btn container">
+                    <div className={s.buttonRow}>
                         <button onClick={handleDeleteTodo}>Löschen</button>
                         <button
                             className={`${s.saveBtn} ${s.text}`}
@@ -162,14 +153,7 @@ function UpdateTodoPage() {
                         >
                             Speichern
                         </button>
-                        {/*<button*/}
-                        {/*    className={`${s.cancelBtn} ${s.text}`}*/}
-                        {/*    onClick={() => navigate(-1)}*/}
-                        {/*>*/}
-                        {/*    Abbrechen*/}
-                        {/*</button>*/}
                     </div>
-
                 </div>
             </div>
         </div>

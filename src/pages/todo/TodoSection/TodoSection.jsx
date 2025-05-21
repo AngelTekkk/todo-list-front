@@ -3,6 +3,9 @@ import { AnimatePresence, motion } from "framer-motion";
 import Button from "../../../components/Button/Button.jsx";
 import s from "./TodoSection.module.scss";
 import CustomSelect from "../../../components/CustomDropdown/CustomDropdown.jsx";
+import {openModal} from "../../../redux/dashboard/dashboardSlice.js";
+import {useDispatch} from "react-redux";
+
 
 const CARD_LIMIT = 5;
 
@@ -12,12 +15,14 @@ function ToDoSection({
                          onSetStatus,
                          // onToggleStatus,
                          onDeleteTodo,
-                         onNavigate,
+                         // onNavigate,
                      }) {
     const todosForThisSection = todos.filter(todo => todo.status === status);
     const sortedTodos = todosForThisSection
         .slice()
         .sort((a, b) => new Date(a.endDate) - new Date(b.endDate));
+
+    const dispatch = useDispatch();
 
 
     const [page, setPage] = useState(0);
@@ -49,9 +54,13 @@ function ToDoSection({
             opacity: 0,
         }),
     };
+    const [selectedTodoId, setSelectedTodoId] = useState(null);
 
 
 
+    const handleUpdateTodo = () => {
+
+    }
 
 
     // const getNextStatus = (currentStatus) => {
@@ -77,6 +86,11 @@ function ToDoSection({
             : daysLeft > 3
                 ? 'rgba(253,220,117,0.1)'
                 : 'rgba(250,108,121,0.1)';
+    };
+
+    const handleOpenModal = (type, id = null) => {
+        if (id) setSelectedTodoId(id);
+        dispatch(openModal(type));
     };
 
     return (
@@ -134,11 +148,18 @@ function ToDoSection({
                                             onChange={(newStatus) => onSetStatus(todo.id, newStatus)}
                                         />
 
+                                        {/*<Button*/}
+                                        {/*    className={s.navigateBtn}*/}
+                                        {/*    onClick={() => handleUpdateTodo(todo.id)}*/}
+                                        {/*    text="Ändern"*/}
+                                        {/*/>*/}
+
                                         <Button
-                                            className={s.navigateBtn}
-                                            onClick={() => onNavigate(todo.id)}
-                                            text="Ändern"
+                                            className={s.goToUpdateTodo}
+                                            onClick={() => handleOpenModal('updateTodo', todo.id)}
+                                            text={'Ändern'}
                                         />
+
                                         <Button
                                             className={s.deleteBtn}
                                             onClick={() => onDeleteTodo(todo.id)}
@@ -178,3 +199,5 @@ function ToDoSection({
 }
 
 export default ToDoSection;
+
+

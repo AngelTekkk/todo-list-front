@@ -82,7 +82,7 @@ function TodoPage() {
                         onSetStatus={handleSetStatus}
                         onToggleStatus={handleToggleStatus}
                         onDeleteTodo={handleDeleteTodo}
-                        onNavigate={(id) => navigate(`/updateTodo/${id}`)}
+                        onUpdateTodo={() => handleOpenModal('updateTodo')}
                     />
 
                 ))}
