@@ -5,11 +5,11 @@ import { AnimatePresence,
 import Button from "../../../components/Button/Button.jsx";
 import s from "./TodoSection.module.scss";
 import CustomSelect from "../../../components/CustomDropdown/CustomDropdown.jsx";
-import {getTodoId, updateTodoModal} from "../../../redux/dashboard/dashboardSlice.js";
+import {updateTodoModal} from "../../../redux/dashboard/dashboardSlice.js";
 import {useDispatch} from "react-redux";
 import {useGetProjectsQuery} from "../../../services/api/projectApi.js";
-// import {getAllProjects} from "../../../redux/projects/projectsSlice.js";
 import {useAssignToProjectMutation, useGetTodosQuery, useUpdateTodoMutation} from "../../../services/api/todoApi.js";
+import {setUpdatedTodo} from "../../../redux/todos/todoSlice.js";
 
 
 const CARD_LIMIT = 5;
@@ -141,6 +141,25 @@ function ToDoSection({
         return project ? project.title : '---';
     };
 
+    const handleFreeTodo = async (todoId) => {
+        const todo = todos?.find(t => t.id === todoId);
+        if (!todo) return;
+
+        const updatedTodo = {
+            ...todo,
+            projectId: null
+        };
+
+        try {
+            await updateTodo({ id: todoId, updatedTodo }).unwrap();
+            dispatch(setUpdatedTodo({ id: todoId, updatedTodo }));
+        } catch (err) {
+            console.error("Fehler beim Trennen vom Projekt:", err);
+            alert("Fehler beim Trennen des Todos vom Projekt.");
+        }
+    };
+
+
 
     return (
         <section className={s.section}>
@@ -181,13 +200,10 @@ function ToDoSection({
 
                                     <h4 className={s.todoTitle}>{todo.title}</h4>
                                     <div className={s.cardStuff}>
-                                        <p className={s.startDate}><strong>Start:</strong> {todo.startDate}</p>
-                                        <p className={s.endDate}><strong>Ende:</strong> {todo.endDate}</p>
-                                        <p className={s.project}>
-                                            <strong>Projekt:</strong> {getProjectTitle(todo.projectId)}
-                                        </p>
-
-                                        <p className={s.description}><strong>Beschreibung:</strong> {todo.description}</p>
+                                        <p className={s.startDate}>{todo.startDate}</p>
+                                        <p className={s.endDate}>{todo.endDate}</p>
+                                        <p className={s.project}>{getProjectTitle(todo.projectId)}{todo.projectId != null && <Button className={s.freeTodo} onClick={() => handleFreeTodo(todo.id, todo.projectId)} >✂️<span className={s.toolTip}>Projekt lösen</span> </Button>}</p>
+                                        <p className={s.description}>{todo.description}</p>
                                     </div>
 
                                     <div className={s.cardActions}>
@@ -212,13 +228,6 @@ function ToDoSection({
                                             ]}
                                             onChange={(newProjectId) => handleProjectChange(todo.id, newProjectId)}
                                         />
-
-
-
-
-
-
-
 
                                         <Button
                                             className={s.updateBtn}
