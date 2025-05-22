@@ -1,20 +1,25 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import {
     useDeleteTodoMutation,
     useGetTodosQuery,
     useUpdateStatusTodoMutation
 } from '../../services/api/todoApi';
-import { allTodos, toggleTodo, removeTodo, getAllTodos } from '../../redux/todos/todoSlice';
+import {allTodos, toggleTodo, getAllTodos, removeTodo} from '../../redux/todos/todoSlice';
 import s from "./AllTodo.module.scss"
+import Button from "../../components/Button/Button.jsx";
+import {updateTodoModal} from "../../redux/dashboard/dashboardSlice.js";
+import CustomSelect from "../../components/CustomDropdown/CustomDropdown.jsx";
+import ModalWindow from "../../components/ModalWindow/ModalWindow.jsx";
+
 
 function AllTodoPage() {
+
+    const fetchedTodos = useSelector(getAllTodos);
     const dispatch = useDispatch();
-    const navigate = useNavigate();
     const { data: todos, error, isLoading } = useGetTodosQuery();
-    const [deleteTodo] = useDeleteTodoMutation();
     const [updateStatus] = useUpdateStatusTodoMutation();
+    const [deleteTodo] = useDeleteTodoMutation();
 
     useEffect(() => {
         if (!isLoading && todos) {
@@ -22,25 +27,28 @@ function AllTodoPage() {
         }
     }, [dispatch, isLoading, todos]);
 
-    const fetchedTodos = useSelector(getAllTodos);
 
     const handleSetStatus = async (id, newStatus) => {
-        const newStatusObject = { status: newStatus };
+        const newStatusObject = {status: newStatus};
         try {
-            await updateStatus({ newStatusObject, id }).unwrap();
-            dispatch(toggleTodo({ id, newStatus }));
+            await updateStatus({newStatusObject, id}).unwrap();
+            dispatch(toggleTodo({id, newStatus}));
         } catch (err) {
-            console.error('Fehler beim Aktualisieren des ToDos:', err);
+            console.error("Fehler beim Aktualisieren des ToDos:", err);
         }
     };
 
-    const handleDelete = async (id) => {
+    const handleDeleteTodo = async (id) => {
         try {
             await deleteTodo(id).unwrap();
             dispatch(removeTodo(id));
         } catch (err) {
-            console.error('Fehler beim Löschen des ToDos:', err);
+            console.error("Fehler beim Löschen des ToDos:", err);
         }
+    };
+
+    const handleOpenModal = (type, todoId = null) => {
+        dispatch(updateTodoModal({type, todoId}));
     };
 
     const renderTable = (status) => {
@@ -49,40 +57,51 @@ function AllTodoPage() {
             .sort((a, b) => new Date(a.endDate) - new Date(b.endDate));
 
         return (
-            <section key={status}>
-                <h3>{status}</h3>
+            <section className={s.allTodoSection} key={status}>
+                <h3 className={s.h3}>{status}</h3>
                 {filteredTodos.length === 0 ? (
-                    <p>Keine ToDos im Status {status}.</p>
+                    <p className={s.infoP}>Keine ToDos im Status {status}.</p>
                 ) : (
                     <table className={s.table}>
                         <thead >
                         <tr>
-                            <th></th>
-                            <th>Titel</th>
-                            <th>Beschreibung</th>
-                            <th>Fällig am</th>
-                            <th>Status</th>
+                            <th className={s.allTodoTh}></th>
+                            <th className={s.allTodoThTitle}>Titel</th>
+                            <th className={s.allTodoThDescription}>Beschreibung</th>
+                            <th className={s.allTodoTh}>Fällig am</th>
+                            <th className={s.allTodoTh}>Status</th>
                         </tr>
                         </thead>
-                        <tbody>
+                        <tbody className={s.allTodoTbody}>
                         {filteredTodos.map((todo) => (
                             <tr key={todo.id}>
-                                <td>
-                                    <button onClick={() => navigate(`/updateTodo/${todo.id}`)}>📝</button>{' '}
-                                    <button onClick={() => handleDelete(todo.id)}>🗑️</button>
+                                <td className={s.allTodoTd}>
+
+                                    <Button
+                                        className={s.updateBtn}
+                                        onClick={() => handleOpenModal('updateTodo', todo.id)}
+                                        text={'📝'}
+                                    />
+
+                                    <Button
+                                        className={s.deleteBtn}
+                                        onClick={() => handleDeleteTodo(todo.id)}
+                                        text={'🗑️'}
+                                    />
                                 </td>
-                                <td>{todo.title}</td>
-                                <td>{todo.description}</td>
-                                <td>{todo.endDate}</td>
-                                <td>
-                                    <select
+                                <td className={s.allTodoTd}>{todo.title}</td>
+                                <td className={s.allTodoTd}>{todo.description}</td>
+                                <td className={s.allTodoTd}>{todo.endDate}</td>
+                                <td className={s.allTodoTd}>
+                                    <CustomSelect
                                         value={todo.status}
-                                        onChange={(e) => handleSetStatus(todo.id, e.target.value)}
-                                    >
-                                        <option value="TODO">TODO</option>
-                                        <option value="DOING">DOING</option>
-                                        <option value="DONE">DONE</option>
-                                    </select>
+                                        options={[
+                                            { value: "TODO", label: "TODO" },
+                                            { value: "DOING", label: "DOING" },
+                                            { value: "DONE", label: "DONE" },
+                                        ]}
+                                        onChange={(newStatus) => handleSetStatus(todo.id, newStatus)}
+                                    />
                                 </td>
                             </tr>
                         ))}
@@ -98,8 +117,8 @@ function AllTodoPage() {
 
     return (
         <div className={s.wrapper}>
-
             {['TODO', 'DOING', 'DONE'].map(renderTable)}
+            <ModalWindow></ModalWindow>
         </div>
     );
 }

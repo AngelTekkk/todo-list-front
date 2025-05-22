@@ -63,12 +63,6 @@ function ToDoSection({
             opacity: 0,
         }),
     };
-    const [selectedTodoId, setSelectedTodoId] = useState(null);
-
-    const handleUpdateTodo = () => {
-
-    }
-
 
     // const getNextStatus = (currentStatus) => {
     //     switch (currentStatus) {
