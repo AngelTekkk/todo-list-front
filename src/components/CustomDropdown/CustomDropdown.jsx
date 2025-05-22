@@ -42,7 +42,7 @@ function CustomSelect({ value, options, onChange }) {
                             className={`${s.customSelectOption} ${opt.value === value ? s.selected : ""}`}
                             onClick={() => handleSelect(opt.value)}
                         >
-                            <div className={s.optionLabel}>🢂 {opt.label}</div>
+                            <div className={s.optionLabel}>{opt.label}</div>
                         </div>
                     ))}
                 </div>
