@@ -63,13 +63,11 @@ function ToDoSection({
             opacity: 0,
         }),
     };
-    // const [selectedTodoId, setSelectedTodoId] = useState(null);
-    //
-    //
-    //
-    // const handleUpdateTodo = () => {
-    //
-    // }
+    const [selectedTodoId, setSelectedTodoId] = useState(null);
+
+    const handleUpdateTodo = () => {
+
+    }
 
 
     // const getNextStatus = (currentStatus) => {
@@ -155,6 +153,12 @@ function ToDoSection({
                                             ]}
                                             onChange={(newStatus) => onSetStatus(todo.id, newStatus)}
                                         />
+
+                                        {/*<Button*/}
+                                        {/*    className={s.navigateBtn}*/}
+                                        {/*    onClick={() => handleUpdateTodo(todo.id)}*/}
+                                        {/*    text="Ändern"*/}
+                                        {/*/>*/}
 
                                         <Button
                                             className={s.updateBtn}
