@@ -18,7 +18,7 @@ function DashboardPage() {
     return (
         <>
             <div className={s.bigContainer}>
-                <h1 className={s.title}>Wilkommen zu unserer krassen TODO-App</h1>
+                <h1 className={s.title}>Willkommen zu unserer krassen TODO-App</h1>
                 {!isAuthenticated &&
                     <div className={s.authContainer}>
                         <Button onClick={() => handleOpenModal('login')} text={'Anmelden'}/>

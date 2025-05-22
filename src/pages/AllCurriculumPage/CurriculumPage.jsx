@@ -13,6 +13,7 @@ import {getAllTodos} from "../../redux/todos/todoSlice.js";
 import {useGetTodosQuery} from "../../services/api/todoApi.js";
 
 
+
 function CurriculumPage() {
     const dispatch = useDispatch();
     // const { data: curriculum, isLoading } = useGetCurriculumForCurrentUserQuery();
