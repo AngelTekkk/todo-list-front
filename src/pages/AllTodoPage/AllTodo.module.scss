@@ -1,90 +1,14 @@
 @use "../../_index.scss" as *;
 
-
 $table-border: 1px solid #e0e0e0;
 $hover-color: rgba(63, 243, 158, 0.15);
 $danger-color: #ef4444;
 $bg-color: #ffffff;
 
 .wrapper {
-  padding: 0;
-  max-width: 1500px;
-  margin: 0 auto;
-}
-
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 1rem 0;
-  background-color: $bg-color;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  border-radius: 1rem;
-  overflow: visible;
-
-  .allTodoTh, .allTodoTd {
-    padding: 0.75rem 1rem;
-    text-align: left;
-    border-bottom: $table-border;
-    color: $primary-color;
-  }
-
-  .allTodoTh {
-    background-color: rgba(63, 243, 158, 0.22);
-    font-weight: 600;
-    font-size: 0.95rem;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    padding: 10px;
-  }
-
-  .allTodoTbody tr:hover {
-    background-color: $hover-color;
-    transition: background-color 0.2s ease-in-out;
-  }
-
-  .allTodoThTitle {
-    min-width: 260px;
-    background-color: rgba(63, 243, 158, 0.22);
-    font-weight: 600;
-    font-size: 0.95rem;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    padding: 10px;
-    text-align: left;
-  }
-
-  .allTodoThDescription {
-    min-width: 814px;
-    background-color: rgba(63, 243, 158, 0.22);
-    font-weight: 600;
-    font-size: 0.95rem;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    padding: 10px;
-    text-align: left;
-  }
-
-  .deleteBtn,
-  .updateBtn {
-    margin-right: 0.25rem;
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 1.1rem;
-
-    &:hover {
-      transform: scale(1.2);
-      transition: transform 0.1s ease-in-out;
-    }
-  }
-
-  .deleteBtn:nth-child(1) {
-    color: $primary-color;
-  }
-
-  .deleteBtn:nth-child(2) {
-    color: $danger-color;
-  }
+  padding: 0 80px;
+  max-width: 2100px;
+  margin: 0;
 }
 
 .allTodoSection {
@@ -106,3 +30,86 @@ $bg-color: #ffffff;
     padding: 0.5rem 1rem;
   }
 }
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  background-color: $bg-color;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border-radius: 1rem;
+  overflow: visible;
+}
+
+.allTodoThead {
+  background-color: rgba(63, 243, 158, 0.22);
+  height: 1rem;
+}
+
+.allTodoTh {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: $table-border;
+  color: $primary-color;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.allTodoThTitle {
+  @extend .allTodoTh;
+  min-width: 260px;
+}
+
+.allTodoThDescription {
+  @extend .allTodoTh;
+  min-width: 814px;
+}
+
+.allTodoThEndDate,
+.allTodoThStatus,
+.allTodoThProject {
+  @extend .allTodoTh;
+  min-width: 150px;
+}
+
+.allTodoThOptions {
+  min-width: 120px;
+}
+
+.allTodoTbody tr:hover {
+  background-color: $hover-color;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.allTodoTd {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: $table-border;
+  color: $primary-color;
+  vertical-align: middle;
+}
+
+.updateBtn,
+.deleteBtn {
+  margin-right: 0.25rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: transform 0.1s ease-in-out;
+
+  &:hover {
+    transform: scale(1.2);
+  }
+}
+
+.updateBtn {
+  color: $primary-color;
+}
+
+.deleteBtn {
+  color: $danger-color;
+}
+

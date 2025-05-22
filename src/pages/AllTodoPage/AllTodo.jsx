@@ -1,25 +1,26 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-    useDeleteTodoMutation,
-    useGetTodosQuery,
-    useUpdateStatusTodoMutation
-} from '../../services/api/todoApi';
-import {allTodos, toggleTodo, getAllTodos, removeTodo} from '../../redux/todos/todoSlice';
+import { useDeleteTodoMutation, useGetTodosQuery, useUpdateStatusTodoMutation } from '../../services/api/todoApi';
+import { allTodos, toggleTodo, getAllTodos, removeTodo } from '../../redux/todos/todoSlice';
 import s from "./AllTodo.module.scss"
 import Button from "../../components/Button/Button.jsx";
-import {updateTodoModal} from "../../redux/dashboard/dashboardSlice.js";
+import { updateTodoModal } from "../../redux/dashboard/dashboardSlice.js";
 import CustomSelect from "../../components/CustomDropdown/CustomDropdown.jsx";
 import ModalWindow from "../../components/ModalWindow/ModalWindow.jsx";
+import { useGetProjectsQuery } from "../../services/api/projectApi.js";
 
 
 function AllTodoPage() {
 
     const fetchedTodos = useSelector(getAllTodos);
     const dispatch = useDispatch();
+    const { data: projectsData, isLoading: isProjectsLoading } = useGetProjectsQuery();
     const { data: todos, error, isLoading } = useGetTodosQuery();
     const [updateStatus] = useUpdateStatusTodoMutation();
     const [deleteTodo] = useDeleteTodoMutation();
+
+
+
 
     useEffect(() => {
         if (!isLoading && todos) {
@@ -51,6 +52,13 @@ function AllTodoPage() {
         dispatch(updateTodoModal({type, todoId}));
     };
 
+    const getProjectTitle = (projectId) => {
+        const project = projectsData?.find(p => p.id === projectId);
+        return project ? project.title : '---';
+    }
+
+    if (isLoading || isProjectsLoading) return <p>Lade Daten…</p>;
+
     const renderTable = (status) => {
         const filteredTodos = fetchedTodos
             .filter((todo) => todo.status === status)
@@ -63,13 +71,14 @@ function AllTodoPage() {
                     <p className={s.infoP}>Keine ToDos im Status {status}.</p>
                 ) : (
                     <table className={s.table}>
-                        <thead >
+                        <thead className={s.allTodoThead} >
                         <tr>
-                            <th className={s.allTodoTh}></th>
+                            <th className={s.allTodoThOptions}></th>
                             <th className={s.allTodoThTitle}>Titel</th>
                             <th className={s.allTodoThDescription}>Beschreibung</th>
-                            <th className={s.allTodoTh}>Fällig am</th>
-                            <th className={s.allTodoTh}>Status</th>
+                            <th className={s.allTodoThProject}>Projekt</th>
+                            <th className={s.allTodoThEndDate}>Fällig am</th>
+                            <th className={s.allTodoThStatus}>Status</th>
                         </tr>
                         </thead>
                         <tbody className={s.allTodoTbody}>
@@ -91,6 +100,7 @@ function AllTodoPage() {
                                 </td>
                                 <td className={s.allTodoTd}>{todo.title}</td>
                                 <td className={s.allTodoTd}>{todo.description}</td>
+                                <td className={s.allTodoTd}>{getProjectTitle(todo.projectId)}</td>
                                 <td className={s.allTodoTd}>{todo.endDate}</td>
                                 <td className={s.allTodoTd}>
                                     <CustomSelect

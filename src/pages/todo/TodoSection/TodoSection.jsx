@@ -5,8 +5,11 @@ import { AnimatePresence,
 import Button from "../../../components/Button/Button.jsx";
 import s from "./TodoSection.module.scss";
 import CustomSelect from "../../../components/CustomDropdown/CustomDropdown.jsx";
-import {updateTodoModal} from "../../../redux/dashboard/dashboardSlice.js";
+import {getTodoId, updateTodoModal} from "../../../redux/dashboard/dashboardSlice.js";
 import {useDispatch} from "react-redux";
+import {useGetProjectsQuery} from "../../../services/api/projectApi.js";
+// import {getAllProjects} from "../../../redux/projects/projectsSlice.js";
+import {useAssignToProjectMutation, useGetTodosQuery, useUpdateTodoMutation} from "../../../services/api/todoApi.js";
 
 
 const CARD_LIMIT = 5;
@@ -25,11 +28,31 @@ function ToDoSection({
 
     const dispatch = useDispatch();
 
+    const {refetch: refetchedTodos} = useGetTodosQuery();
+
 
     const [page, setPage] = useState(0);
     const [direction, setDirection] = useState(0);
 
+    const [updateTodo] = useUpdateTodoMutation();
+    const [assignToProject] = useAssignToProjectMutation();
+
+
     const maxPage = Math.ceil(sortedTodos.length / CARD_LIMIT) - 1;
+
+    // const [projectId, setProjectId] = useState('');
+    // const [availableProjects, setAvailableProjects] = useState([]);
+
+
+
+    const {
+        data: projects = [],
+        isLoading,
+        isError,
+        error,
+    } = useGetProjectsQuery();
+
+
 
     // const paginate = (newDirection) => {
     //     setDirection(newDirection);
@@ -93,6 +116,32 @@ function ToDoSection({
         dispatch(updateTodoModal({type, todoId}));
     };
 
+    const handleProjectChange = async (todoId = null, newProjectId) => {
+        const todo = todos.find((t) => t.id === todoId);
+        if (!todo) return;
+
+        try {
+            const updatedTodo = { ...todo, project: { id: newProjectId } };
+            await updateTodo({ id: todoId, updatedTodo }).unwrap();
+            await assignToProject({ todoId, projectId: newProjectId }).unwrap();
+            await refetchedTodos();
+
+            console.log("Projekt erfolgreich geändert!");
+        } catch (error) {
+            console.error("Fehler beim Aktualisieren des Projekts:", error);
+        }
+    };
+
+
+    if (isLoading) return <p>Lade Projekte…</p>;
+    if (isError) return <p>Fehler: {error?.message || "Unbekannter Fehler"}</p>;
+
+    const getProjectTitle = (projectId) => {
+        const project = projects?.find(p => p.id === projectId);
+        return project ? project.title : '---';
+    };
+
+
     return (
         <section className={s.section}>
             <h3>{status}</h3>
@@ -134,6 +183,10 @@ function ToDoSection({
                                     <div className={s.cardStuff}>
                                         <p className={s.startDate}><strong>Start:</strong> {todo.startDate}</p>
                                         <p className={s.endDate}><strong>Ende:</strong> {todo.endDate}</p>
+                                        <p className={s.project}>
+                                            <strong>Projekt:</strong> {getProjectTitle(todo.projectId)}
+                                        </p>
+
                                         <p className={s.description}><strong>Beschreibung:</strong> {todo.description}</p>
                                     </div>
 
@@ -148,11 +201,24 @@ function ToDoSection({
                                             onChange={(newStatus) => onSetStatus(todo.id, newStatus)}
                                         />
 
-                                        {/*<Button*/}
-                                        {/*    className={s.navigateBtn}*/}
-                                        {/*    onClick={() => handleUpdateTodo(todo.id)}*/}
-                                        {/*    text="Ändern"*/}
-                                        {/*/>*/}
+                                        <CustomSelect
+                                            value={todo.project?.id || ""}
+                                            options={[
+                                                { value: "", label: getProjectTitle(todo.projectId) },
+                                                ...projects.map((project) => ({
+                                                    value: project.id,
+                                                    label: project.title,
+                                                })),
+                                            ]}
+                                            onChange={(newProjectId) => handleProjectChange(todo.id, newProjectId)}
+                                        />
+
+
+
+
+
+
+
 
                                         <Button
                                             className={s.updateBtn}

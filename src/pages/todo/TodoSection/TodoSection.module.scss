@@ -12,7 +12,8 @@
   border-radius: 2rem;
   background-color: transparent;
   position: relative;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  height: 500px;
 }
 
 .carousel {
@@ -26,7 +27,7 @@
 .todoCardWrapper {
   position: relative;
   width: 300px;
-  min-height: 350px;
+  min-height: 450px;
   display: flex;
   justify-content: center;
   align-items: center;
