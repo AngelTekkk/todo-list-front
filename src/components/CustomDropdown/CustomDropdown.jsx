@@ -2,9 +2,10 @@ import React, { useState, useRef, useEffect } from "react";
 import Button from "../Button/Button.jsx";
 import s from "./CustomDropdown.module.scss";
 
-function CustomSelect({ value, options, onChange }) {
+function CustomSelect({ value, options = [], onChange }) {
     const [open, setOpen] = useState(false);
     const ref = useRef();
+
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -23,6 +24,7 @@ function CustomSelect({ value, options, onChange }) {
 
     const selectedOption = options.find((opt) => opt.value === value);
 
+
     return (
         <div className={s.customSelect} ref={ref}>
             <Button
@@ -30,9 +32,10 @@ function CustomSelect({ value, options, onChange }) {
                 className={s.customSelectButton}
                 onClick={() => setOpen((o) => !o)}
             >
-                {selectedOption.label}
+                {selectedOption ? selectedOption.label : "Projekt Auswählen"}
                 <span className={s.arrow}>{open ? "☰" : "☰"}</span>
             </Button>
+
 
             {open && (
                 <div className={s.customSelectOptions}>
