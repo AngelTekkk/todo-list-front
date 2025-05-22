@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence,
+     motion
+} from "framer-motion";
 import Button from "../../../components/Button/Button.jsx";
 import s from "./TodoSection.module.scss";
 import CustomSelect from "../../../components/CustomDropdown/CustomDropdown.jsx";
-import {openModal} from "../../../redux/dashboard/dashboardSlice.js";
+import {updateTodoModal} from "../../../redux/dashboard/dashboardSlice.js";
 import {useDispatch} from "react-redux";
 
 
@@ -15,7 +17,6 @@ function ToDoSection({
                          onSetStatus,
                          // onToggleStatus,
                          onDeleteTodo,
-                         // onNavigate,
                      }) {
     const todosForThisSection = todos.filter(todo => todo.status === status);
     const sortedTodos = todosForThisSection
@@ -30,10 +31,18 @@ function ToDoSection({
 
     const maxPage = Math.ceil(sortedTodos.length / CARD_LIMIT) - 1;
 
+    // const paginate = (newDirection) => {
+    //     setDirection(newDirection);
+    //     setPage((prev) => prev + newDirection);
+    // };
+
     const paginate = (newDirection) => {
+        const nextPage = page + newDirection;
+        if (nextPage < 0 || nextPage > maxPage) return;
         setDirection(newDirection);
-        setPage((prev) => prev + newDirection);
+        setPage(nextPage);
     };
+
 
     const todosToDisplay = sortedTodos.slice(
         page * CARD_LIMIT,
@@ -55,8 +64,6 @@ function ToDoSection({
         }),
     };
     const [selectedTodoId, setSelectedTodoId] = useState(null);
-
-
 
     const handleUpdateTodo = () => {
 
@@ -88,9 +95,8 @@ function ToDoSection({
                 : 'rgba(250,108,121,0.1)';
     };
 
-    const handleOpenModal = (type, id = null) => {
-        if (id) setSelectedTodoId(id);
-        dispatch(openModal(type));
+    const handleOpenModal = (type, todoId = null) => {
+        dispatch(updateTodoModal({type, todoId}));
     };
 
     return (
@@ -121,9 +127,9 @@ function ToDoSection({
                             transition={{ duration: 0.5, ease: "easeInOut" }}
                         >
 
-                            {todosToDisplay.map((todo) => (
+                            {todosToDisplay.map((todo, index) => (
 
-                                <div key={todo.id} className={s.todoCard} style={{backgroundColor: getDaysLeftColor(todo.endDate)}}>
+                                <div key={`${todo.id || `todo-${index}`}-${page}`} className={s.todoCard} style={{backgroundColor: getDaysLeftColor(todo.endDate)}}>
                                     {/*<Button*/}
                                     {/*    className={s.fancyStatus}*/}
                                     {/*    onClick={() => onToggleStatus(todo.id, todo.status)}*/}
@@ -155,7 +161,7 @@ function ToDoSection({
                                         {/*/>*/}
 
                                         <Button
-                                            className={s.goToUpdateTodo}
+                                            className={s.updateBtn}
                                             onClick={() => handleOpenModal('updateTodo', todo.id)}
                                             text={'Ändern'}
                                         />

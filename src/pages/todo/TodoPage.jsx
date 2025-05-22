@@ -57,7 +57,7 @@ function TodoPage() {
     };
 
     const handleOpenModal = (type) => {
-        dispatch(openModal(type));
+        dispatch(openModal({type}));
     }
 
     return (

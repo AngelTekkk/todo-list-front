@@ -140,7 +140,7 @@
 }
 
 .button,
-.navigateBtn,
+.updateBtn,
 .deleteBtn,
 select {
   width: 100%;
@@ -183,11 +183,10 @@ select:hover {
   }
 }
 
-
-
-.goToUpdateTodo {
+.updateBtn {
   background-color: rgba(71, 80, 92, 0.2);
   color: $primary-color;
+
 
   &:hover {
     background-color: rgba(38, 45, 58, 0.5);

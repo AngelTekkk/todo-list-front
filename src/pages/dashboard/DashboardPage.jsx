@@ -12,7 +12,7 @@ function DashboardPage() {
     const isAuthenticated = useSelector(getIsAuthenticated);
 
     const handleOpenModal = (type) => {
-        dispatch(openModal(type)); // 'login' oder 'register'
+        dispatch(openModal({type})); // 'login' oder 'register'
     }
 
     return (
