@@ -10,8 +10,6 @@ import DashboardPage from "../pages/dashboard/DashboardPage.jsx";
 import CurriculumPage from "../pages/AllCurriculumPage/CurriculumPage.jsx";
 
 const router = createBrowserRouter([
-
-
     {
         path: "/",
         Component: Container,

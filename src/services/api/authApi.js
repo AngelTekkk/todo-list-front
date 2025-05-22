@@ -16,6 +16,12 @@ export const authApi = apiSlice.injectEndpoints({
                 body: credentials,
             }),
         }),
+        logout: builder.mutation({
+            query: () => ({
+                url: '/auth/logout',
+                method: 'POST',
+            }),
+        }),
         checkAuth: builder.query({
             query: () => ({
                 url: '/auth/current',
@@ -34,21 +40,8 @@ export const authApi = apiSlice.injectEndpoints({
                 };
             }
         }),
-        test: builder.query({
-            query: () => ({
-                url: '/todos',
-                method: 'GET',
-            }),
-        }),
-        testPost: builder.mutation({
-            query: (todo) => ({
-                url: '/todos',
-                method: 'POST',
-                body: todo
-            }),
-        }),
     }),
 });
 
 
-export const { useLoginMutation, useRegisterMutation, useCheckAuthQuery, useTestQuery, useTestPostMutation } = authApi;
+export const { useLoginMutation, useRegisterMutation, useLogoutMutation, useCheckAuthQuery } = authApi;
