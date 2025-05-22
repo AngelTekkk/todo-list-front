@@ -5,14 +5,16 @@ import {
     useUpdateTodoMutation
 } from '../../services/api/todoApi';
 import s from './UpdateTodoPage.module.scss';
-import { useDispatch } from "react-redux";
-import { removeTodo, setTodos } from "../../redux/todos/todoSlice.js";
+import {useDispatch, useSelector} from "react-redux";
+import { removeTodo, setUpdatedTodo } from "../../redux/todos/todoSlice.js";
+import {getTodoId} from "../../redux/dashboard/dashboardSlice.js";
 
-function UpdateTodoPage({ id, onSuccess }) {
+function UpdateTodoPage({onSuccess}) {
     const dispatch = useDispatch();
+    const id = useSelector(getTodoId);
 
-    const { data: todo, isLoading } = useGetTodosQuery(id);
-    const [updateTodo] = useUpdateTodoMutation(id);
+    const { data: todos, isLoading } = useGetTodosQuery();
+    const [updateTodo] = useUpdateTodoMutation();
     const [deleteTodo] = useDeleteTodoMutation();
 
     const [title, setTitle] = useState('');
@@ -22,14 +24,17 @@ function UpdateTodoPage({ id, onSuccess }) {
     const [status, setStatus] = useState('');
 
     useEffect(() => {
-        if (updateTodo) {
-            setTitle(todo.title || '');
-            setDescription(todo.description || '');
-            setStartDate(todo.startDate || '');
-            setEndDate(todo.endDate || '');
-            setStatus(todo.status || '');
+        if (todos) {
+            const currentTodo = todos.find(t => t.id === id);
+            if (currentTodo) {
+                setTitle(currentTodo.title || '');
+                setDescription(currentTodo.description || '');
+                setStartDate(currentTodo.startDate || '');
+                setEndDate(currentTodo.endDate || '');
+                setStatus(currentTodo.status || '');
+            }
         }
-    }, [updateTodo]);
+    }, [todos, id]);
 
     if (isLoading) return <p>Lade Todo…</p>;
 
@@ -60,7 +65,7 @@ function UpdateTodoPage({ id, onSuccess }) {
 
         try {
             await updateTodo({ id, updatedTodo }).unwrap();
-            dispatch(setTodos({ id, updatedTodo }));
+            dispatch(setUpdatedTodo({ id, updatedTodo }));
             onSuccess();
         } catch (err) {
             console.error('Fehler beim Speichern:', err);
@@ -83,7 +88,7 @@ function UpdateTodoPage({ id, onSuccess }) {
                                 onChange={(e) => setTitle(e.target.value)}
                                 required
                                 minLength={5}
-                                maxLength={255}
+                                maxLength={25}
                             />
                         </label>
                     </div>
@@ -123,7 +128,9 @@ function UpdateTodoPage({ id, onSuccess }) {
                                 className={s.input}
                                 value={endDate}
                                 onChange={(e) => setEndDate(e.target.value)}
+                                min={startDate}
                                 required
+
                             />
                         </label>
                     </div>
@@ -138,9 +145,9 @@ function UpdateTodoPage({ id, onSuccess }) {
                                 required
                             >
                                 <option value="">Bitte wählen...</option>
-                                <option value="TODO">Zu erledigen</option>
-                                <option value="DOING">In Bearbeitung</option>
-                                <option value="DONE">Erledigt</option>
+                                <option value="TODO">TODO</option>
+                                <option value="DOING">DOING</option>
+                                <option value="DONE">DONE</option>
                             </select>
                         </label>
                     </div>

@@ -128,6 +128,7 @@ function NewToDo({onSuccess}) {
                                 className={s.input}
                                 value={endDate}
                                 onChange={(e) => setEndDate(e.target.value)}
+                                min={startDate}
                                 required
                             />
                         </label>
@@ -143,9 +144,9 @@ function NewToDo({onSuccess}) {
                                 required
                             >
                                 <option value="">Bitte wählen...</option>
-                                <option value="TODO">Zu erledigen</option>
-                                <option value="DOING">In Bearbeitung</option>
-                                <option value="DONE">Erledigt</option>
+                                <option value="TODO">TODO</option>
+                                <option value="DOING">DOING</option>
+                                <option value="DONE">DONE</option>
                             </select>
                         </label>
                     </div>

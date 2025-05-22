@@ -19,7 +19,7 @@ function DashboardPage() {
     const handleTest = async () => {
         if (!isAuthenticated) {
             alert("Zuerst anmelden");
-            dispatch(openModal('login'));
+            dispatch(openModal({type: 'login'}));
             return;
         }
 
@@ -48,7 +48,7 @@ function DashboardPage() {
     }
 
     const handleOpenModal = (type) => {
-        dispatch(openModal(type)); // 'login' oder 'register'
+        dispatch(openModal({type})); // 'login' oder 'register'
     }
 
     return (
