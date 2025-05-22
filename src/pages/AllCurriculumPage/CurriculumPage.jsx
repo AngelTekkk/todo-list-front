@@ -10,6 +10,7 @@ import {showCurriculum, createCurriculum, deleteCurriculum} from "../../redux/cu
 import Button from "../../components/Button/Button.jsx";
 import {useState} from "react";
 import {getAllTodos} from "../../redux/todos/todoSlice.js";
+import {getUser} from "../../redux/auth/authSlice.js";
 
 
 function CurriculumPage(){
@@ -20,10 +21,12 @@ function CurriculumPage(){
 
     const [createCurriculumApi] = useCreateCurriculumMutation();
     const [deleteCurriculumApi] = useDeleteCurriculumMutation();
-    const user = useSelector((state) => state.auth.user);
+    const user = useSelector(getUser);
     const allTodos = useSelector(getAllTodos);
 
     let curryTodos = [];
+
+    console.log("user: " + user.toString());
 
     if (curriculum) {
         curryTodos = allTodos

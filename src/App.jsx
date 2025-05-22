@@ -18,7 +18,7 @@ function App() {
 
     useEffect(() => {
         if (isSuccess) {
-            dispatch(oauth(data.user));
+            dispatch(oauth(data));
         }
     }, [isSuccess, data, dispatch]);
 

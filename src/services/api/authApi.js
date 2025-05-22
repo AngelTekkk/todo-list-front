@@ -27,18 +27,18 @@ export const authApi = apiSlice.injectEndpoints({
                 url: '/auth/current',
                 method: 'GET',
             }),
-            transformResponse: (response) => {
-                return {
-                    user: response,
-                    isAuthenticated: true
-                };
-            },
-            transformErrorResponse: () => {
-                return {
-                    user: null,
-                    isAuthenticated: false
-                };
-            }
+            // transformResponse: (response) => {
+            //     return {
+            //         user: response,
+            //         isAuthenticated: true
+            //     };
+            // },
+            // transformErrorResponse: () => {
+            //     return {
+            //         user: null,
+            //         isAuthenticated: false
+            //     };
+            // }
         }),
     }),
 });

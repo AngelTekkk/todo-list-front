@@ -68,19 +68,20 @@
   transition: text-decoration 0.3s ease;
 }
 
-.logoutBtn {
+.headerLink {
   background-color: $background-color;
   color: $primary-color;
   border: none;
   border-radius: 5px;
   padding: 10px 20px;
+  text-decoration: none;
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.logoutBtn:hover {
+.headerLink:hover {
   background-color: tomato;
   color: $primary-color;
   transition: background-color 0.3s ease, color 0.3s ease;
