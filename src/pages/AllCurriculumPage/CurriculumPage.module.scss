@@ -15,7 +15,7 @@
   border-radius: 20px;
   box-shadow: 0 0 40px #ff2aadaa;
   color: #ff2aad;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: $font-family-main;
   text-align: center;
   user-select: none;
 
@@ -122,14 +122,14 @@
 }
 
 /* Label und Input Styling (für den Error-Zustand und "kein Curriculum"-Formular) */
-label {
-  color: #ff2aad;
-  font-weight: 700;
-  font-size: 1.1rem;
-  display: block;
-  margin-bottom: 0.3rem;
-  text-shadow: 0 0 8px #ff2aadbb;
-}
+//label {
+//  color: #ff2aad;
+//  font-weight: 700;
+//  font-size: 1.1rem;
+//  display: block;
+//  margin-bottom: 0.3rem;
+//  text-shadow: 0 0 8px #ff2aadbb;
+//}
 
 input#newCurrName {
   width: 100%;
