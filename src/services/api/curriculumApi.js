@@ -7,7 +7,6 @@ export const curriculumApi = apiSlice.injectEndpoints({
                 url: '/curriculum/current',
                 method: 'GET'
             }),
-            providesTags: ['Curriculum'],
         }),
         createCurriculum: builder.mutation({
             query: (newCurriculum) => ({
@@ -15,14 +14,18 @@ export const curriculumApi = apiSlice.injectEndpoints({
                 method: 'POST',
                 body: newCurriculum
             }),
-            invalidatesTags: ['Curriculum'],
         }),
         deleteCurriculum: builder.mutation({
             query: () => ({
                 url: '/curriculum/current',
                 method: 'DELETE'
             }),
-            invalidatesTags: ['Curriculum'],
+        }),
+        removeTodoFromCurry: builder.mutation({
+            query: (toDoId) => ({
+                url: `/curriculum/current/remove-todo/${toDoId}`,
+                method: 'DELETE'
+            })
         })
     })
 });
@@ -30,6 +33,7 @@ export const curriculumApi = apiSlice.injectEndpoints({
 export const {
     useGetCurriculumForCurrentUserQuery,
     useCreateCurriculumMutation,
-    useDeleteCurriculumMutation
+    useDeleteCurriculumMutation,
+    useRemoveTodoFromCurryMutation
 
 } = curriculumApi;
