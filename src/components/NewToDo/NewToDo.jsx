@@ -6,7 +6,7 @@ import s from "./NewToDo.module.scss";
 import {useDispatch,
     // useSelector
 } from "react-redux";
-import {loadProjects} from '../../redux/projects/projectsSlice';
+//import {loadProjects} from '../../redux/projects/projectsSlice';
 import {useCreateTodoMutation} from "../../services/api/todoApi";
 import {addTodo} from "../../redux/todos/todoSlice.js";
 import Button from "../Button/Button.jsx";
@@ -23,16 +23,16 @@ function NewToDo({onSuccess}) {
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [status, setStatus] = useState('');
-    const [projectId,
-        // setProjectId
-    ] = useState('');
-    //const [curriculumId, setCurriculumId] = useState('');
-    const [availableProjects, setAvailableProjects] = useState([]);
-    //const [availableCurricula, setAvailableCurricula] = useState([]);
-
-    const projects = useSelector((state) => state.projects.items);
-    const projectStatus = useSelector((state) => state.projects.status);
-    const projectError = useSelector((state) => state.projects.error);
+    // const [projectId,
+    //     // setProjectId
+    // ] = useState('');
+    // //const [curriculumId, setCurriculumId] = useState('');
+    // const [availableProjects, setAvailableProjects] = useState([]);
+    // //const [availableCurricula, setAvailableCurricula] = useState([]);
+    //
+    // const projects = useSelector((state) => state.projects.items);
+    // const projectStatus = useSelector((state) => state.projects.status);
+    // const projectError = useSelector((state) => state.projects.error);
 
     const [createTodo] = useCreateTodoMutation();
 
@@ -52,8 +52,8 @@ function NewToDo({onSuccess}) {
                 startDate,
                 endDate,
                 status,
-                projectId: projectId || null,
-                curriculumIds: []
+                // projectId: projectId || null,
+                // curriculumIds: []
             };
 
 
@@ -69,17 +69,17 @@ function NewToDo({onSuccess}) {
         }
     };
 
-    useEffect(() => {
-        if (projectStatus === 'idle') {
-            dispatch(loadProjects());
-        }
-    }, [dispatch, projectStatus]);
-
-    useEffect(() => {
-        if (projects.length > 0) {
-            setAvailableProjects(projects);
-        }
-    }, [projects]);
+    // useEffect(() => {
+    //     if (projectStatus === 'idle') {
+    //         dispatch(loadProjects());
+    //     }
+    // }, [dispatch, projectStatus]);
+    //
+    // useEffect(() => {
+    //     if (projects.length > 0) {
+    //         setAvailableProjects(projects);
+    //     }
+    // }, [projects]);
     //
     // if (projectStatus === 'loading') return <p>Lade Projekte…</p>;
     // if (projectStatus === 'failed') return <p>Fehler: {projectError}</p>;

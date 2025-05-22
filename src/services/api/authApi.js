@@ -47,8 +47,17 @@ export const authApi = apiSlice.injectEndpoints({
                 body: todo
             }),
         }),
+        getUsers: builder.query({
+            query: () => ({ url: "/users", method: "GET" }),
+            // если бэкенд отдаёт { users: […], message: "…" }
+            transformResponse: (response) => response.users,
+            providesTags: (users = []) => [
+                { type: "Users", id: "LIST" },
+                ...users.map((u) => ({ type: "Users", id: u.id })),
+            ],
+        }),
     }),
 });
 
 
-export const { useLoginMutation, useRegisterMutation, useCheckAuthQuery, useTestQuery, useTestPostMutation } = authApi;
+export const { useLoginMutation, useRegisterMutation, useCheckAuthQuery, useTestQuery, useTestPostMutation, useGetUsersQuery, } = authApi;
