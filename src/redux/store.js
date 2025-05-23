@@ -5,8 +5,7 @@ import dashboardReducer from "../redux/dashboard/dashboardSlice.js";
 import todoReducer      from "../redux/todos/todoSlice.js";
 import projectsReducer  from "./projects/projectsSlice.js";
 import { authApi } from '../services/api/authApi.js';
-// import curriculumReducer from "../redux/curriculum/curriculumSlice.js"
-//import {projectApi} from "../services/api/projectApi.js"; // Wozu ist dieses Import?
+import curriculumReducer from "../redux/curriculum/curriculumSlice.js"
 
 export const store = configureStore({
     reducer: {
@@ -14,7 +13,7 @@ export const store = configureStore({
         dashboard: dashboardReducer,
         todos: todoReducer,
         projects:   projectsReducer,
-        // curriculum: curriculumReducer,
+        curriculum: curriculumReducer,
         [authApi.reducerPath]: authApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>

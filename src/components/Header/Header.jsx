@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {Link, NavLink, useLocation} from "react-router-dom";
 
@@ -56,8 +56,8 @@ function Header() {
                             {navLinks
                                 .filter(link => location.pathname !== link.path)
                                 .map(link => (
-                                    <li key={link.path} className={s.navPoint}>
-                                        <NavLink className={s.headerLink} to={link.path}>
+                                    <li key={link.path}>
+                                        <NavLink className={s.navLink} to={link.path}>
                                             {link.label}
                                         </NavLink>
                                     </li>
