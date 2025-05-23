@@ -9,26 +9,20 @@ const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        login: (state) => {
-            state.isAuthenticated = true;
-        },
         logout: (state) => {
-            console.log("LOGOUT");
             state.isAuthenticated = false;
+            state.user = null;
         },
-        oauth: (state) => {
-            console.log("Oauth");
-            state.isAuthenticated = true;
-        },
-        setUser: (state, action) => {
+        oauth: (state, action) => {
             state.user = action.payload;
             state.isAuthenticated = !!action.payload;
-        }
+        },
     }
 });
 
-export const {login, logout, oauth, setUser} = authSlice.actions;
+export const {logout, oauth} = authSlice.actions;
 
 export const getIsAuthenticated = (state) => state.auth.isAuthenticated;
+export const getUser = (state) => state.auth.user;
 
 export default authSlice.reducer;

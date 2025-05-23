@@ -1,10 +1,8 @@
-// src/services/api/todoApi.js
 import { apiSlice } from './apiSlice.js';
 
 export const todoApi = apiSlice.injectEndpoints({
     tagTypes: ['Todos', 'Projects'],
     endpoints: (builder) => ({
-        // — GET /todos
         getTodos: builder.query({
             query: () => ({
                 url: '/todos',
@@ -16,17 +14,6 @@ export const todoApi = apiSlice.injectEndpoints({
             ],
         }),
 
-        // — GET /todos/:id
-        getTodo: builder.query({
-            query: (id) => ({
-                url: `/todos/${id}`,
-                method: 'GET',
-            }),
-            providesTags: (todo) =>
-                todo ? [{ type: 'Todos', id: todo.id }] : [],
-        }),
-
-        // — POST /todos
         createTodo: builder.mutation({
             query: (newTodo) => ({
                 url: '/todos',
@@ -36,13 +23,11 @@ export const todoApi = apiSlice.injectEndpoints({
             invalidatesTags: [{ type: 'Todos', id: 'LIST' }],
         }),
 
-        // — PATCH /todos/:id
-        // теперь принимает { id, ...patch } и body = patch
         updateTodo: builder.mutation({
-            query: ({ id, ...patch }) => ({
+            query: ({ id, updatedTodo }) => ({
                 url: `/todos/${id}`,
                 method: 'PATCH',
-                body: patch,
+                body: updatedTodo,
             }),
             invalidatesTags: (result, error, { id }) => [
                 { type: 'Todos', id },
@@ -50,7 +35,6 @@ export const todoApi = apiSlice.injectEndpoints({
             ],
         }),
 
-        // — DELETE /todos/:id
         deleteTodo: builder.mutation({
             query: (id) => ({
                 url: `/todos/${id}`,
@@ -62,13 +46,10 @@ export const todoApi = apiSlice.injectEndpoints({
             ],
         }),
 
-        // — (опционально) PATCH /todos/:todoId/assign/project/:projectId
-        // если вы хотите отдельный эндпоинт для назначений
         assignToProject: builder.mutation({
             query: ({ todoId, projectId }) => ({
-                url: `/todos/${todoId}`,
+                url: `/todos/${todoId}/assign/project/${projectId}`,
                 method: 'PATCH',
-                body: { projectId },
             }),
             invalidatesTags: (res, err, { todoId, projectId }) => [
                 { type: 'Todos', id: todoId },
@@ -78,7 +59,6 @@ export const todoApi = apiSlice.injectEndpoints({
             ],
         }),
 
-        // — PATCH /todos/:id/status
         updateStatusTodo: builder.mutation({
             query: ({ newStatusObject, id }) => ({
                 url: `/todos/${id}/status`,
@@ -95,7 +75,6 @@ export const todoApi = apiSlice.injectEndpoints({
 
 export const {
     useGetTodosQuery,
-    useGetTodoQuery,
     useCreateTodoMutation,
     useUpdateTodoMutation,
     useDeleteTodoMutation,

@@ -12,7 +12,7 @@
 
 .todoList {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
 }
 
 .todoCards {
@@ -31,7 +31,6 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   display: flex;
   flex-direction: column;
-  //justify-content: space-between;
   gap: 10px;
   width: 300px;
   max-height: 200px;
@@ -39,7 +38,6 @@
   z-index: -1;
   position: relative;
 
-  //overflow: hidden;
 
   &:hover {
     transform: scale(1.5);
@@ -60,14 +58,6 @@
   }
 }
 
-
-//.todoTitle,
-//.fancyStatus,
-//.dueDate {
-//  margin-bottom: 0.5rem;
-//}
-
-
 .hidden {
   margin: 0;
   visibility: hidden;
@@ -76,38 +66,6 @@
   transition: opacity 0.3s ease;
   font-size: 0;
 }
-
-
-//.todoCard {
-//  background-color: $highlight-color;
-//  padding: 1rem;
-//  border-radius: 25px;
-//  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-//  position: relative;
-//  line-height: 0.1rem;
-//  display: flex;
-//  flex-direction: column;
-//  justify-content: flex-end;
-//  width: 350px;
-//
-//  > p {
-//    margin: 0;
-//    padding-top: 5px;
-//    display: flex;
-//    justify-content: space-between;
-//    visibility: hidden;
-//    opacity: 0;
-//    transition: visibility 0.1s 0.4s, opacity 0.4s ease;
-//  }
-//
-//  &:hover > p {
-//    line-height: 1.2rem;
-//    z-index: 10;
-//    visibility: visible;
-//    opacity: 1;
-//    transition-delay: 0s;
-//  }
-//}
 
 .fancyStatus {
   position: absolute;
@@ -150,7 +108,8 @@
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.goToNewToDo {
+.goToNewToDo,
+.goToAllTodos {
   background-color: $background-color;
   color: $primary-color;
   border: none;
@@ -161,16 +120,37 @@
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
   text-decoration: none;
-}
+  width: 100px;
+  margin-top: 2rem;
+  position: relative;
+  left: 10px;
 
-.goToNewToDo:hover {
-  background-color: $highlight-color;
-  color: $primary-color;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  &:hover {
+    background-color: $highlight-color;
+    color: $primary-color;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
 }
 
 .endDate {
   text-decoration: double underline;
+}
+
+.leftSide {
+  display: flex;
+  flex-direction: column;
+  min-width: 120px;
+  padding: 0;
+  margin: 0;
+}
+
+.rightSide {
+  width: 50px;
+}
+
+.todoSections {
+  border: none;
+  outline: none;
 }
 
 

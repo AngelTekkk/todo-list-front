@@ -1,0 +1,152 @@
+@use "../../_index.scss" as *;
+
+.curryContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-top: $header-height + 20px;
+  padding: 40px;
+  background-color: lighten($primary-color, 45%);
+  border-radius: 20px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.8s ease-in-out;
+  color: $primary-color;
+
+  h1{
+    text-align: center;
+  }
+}
+
+.buttonWrapper {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+
+  .button {
+    width: auto;
+    min-width: 200px; // Optional: Einheitlich groß
+  }
+}
+
+.createCurry {
+  margin-top: $header-height + 20px;
+  padding: 40px;
+  background-color: lighten($primary-color, 45%);
+  border-radius: 20px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+.highlightText {
+  font-size: 1.6rem;
+  color: $highlight-color;
+  font-weight: bold;
+  margin: 20px 0;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+  animation: glow 2s ease-in-out infinite alternate;
+}
+
+.button {
+  margin-top: 20px;
+  background-color: $background-color;
+  color: $primary-color;
+  padding: 12px 24px;
+  font-weight: bold;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.button:hover {
+  background-color: lighten($background-color, 10%);
+  transform: scale(1.05);
+}
+
+.todoTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 30px;
+  background-color: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+.todoTable th,
+.todoTable td {
+  padding: 14px 20px;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+}
+
+.todoTable th {
+  background-color: $primary-color;
+  color: white;
+  font-size: 1rem;
+}
+
+.todoRow:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.todoRow:hover {
+  background-color: lighten($background-color, 25%);
+  transition: background-color 0.3s ease;
+}
+
+.tableButton {
+  margin-right: 8px;
+  background-color: $background-color;
+  color: $primary-color;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.tableButton:hover {
+  background-color: darken($accent-color, 10%);
+}
+
+input[type="text"] {
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 6px;
+  border: 1px solid $primary-color;
+  width: 100%;
+  max-width: 400px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus {
+  outline: none;
+  border-color: $accent-color;
+  box-shadow: 0 0 8px rgba(97, 218, 251, 0.5);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes glow {
+  from {
+    text-shadow: 0 0 5px $highlight-color, 0 0 10px $highlight-color;
+  }
+  to {
+    text-shadow: 0 0 15px lighten($highlight-color, 20%), 0 0 30px lighten($highlight-color, 20%);
+  }
+}

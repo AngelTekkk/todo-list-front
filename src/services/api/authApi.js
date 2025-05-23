@@ -16,40 +16,20 @@ export const authApi = apiSlice.injectEndpoints({
                 body: credentials,
             }),
         }),
+        logout: builder.mutation({
+            query: () => ({
+                url: '/auth/logout',
+                method: 'POST',
+            }),
+        }),
         checkAuth: builder.query({
             query: () => ({
                 url: '/auth/current',
                 method: 'GET',
             }),
-            transformResponse: (response) => {
-                return {
-                    user: response,
-                    isAuthenticated: true
-                };
-            },
-            transformErrorResponse: () => {
-                return {
-                    user: null,
-                    isAuthenticated: false
-                };
-            }
-        }),
-        test: builder.query({
-            query: () => ({
-                url: '/todos',
-                method: 'GET',
-            }),
-        }),
-        testPost: builder.mutation({
-            query: (todo) => ({
-                url: '/todos',
-                method: 'POST',
-                body: todo
-            }),
         }),
         getUsers: builder.query({
             query: () => ({ url: "/users", method: "GET" }),
-            // если бэкенд отдаёт { users: […], message: "…" }
             transformResponse: (response) => response.users,
             providesTags: (users = []) => [
                 { type: "Users", id: "LIST" },
@@ -59,5 +39,4 @@ export const authApi = apiSlice.injectEndpoints({
     }),
 });
 
-
-export const { useLoginMutation, useRegisterMutation, useCheckAuthQuery, useTestQuery, useTestPostMutation, useGetUsersQuery, } = authApi;
+export const { useLoginMutation, useRegisterMutation, useLogoutMutation, useCheckAuthQuery, useGetUsersQuery } = authApi;
