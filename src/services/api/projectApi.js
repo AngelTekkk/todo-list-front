@@ -8,11 +8,7 @@ export const projectApi = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
         // 1) GET /projects
         getProjects: builder.query({
-            query: () => ({
-                url: "/projects",
-                method: "GET",
-            }),
-            // из ответа берём поле .projects
+            query: () => ({ url: "/projects", method: "GET" }),
             transformResponse: (response) => response.projects,
             providesTags: (projects = []) => [
                 { type: "Projects", id: "LIST" },
@@ -22,10 +18,7 @@ export const projectApi = apiSlice.injectEndpoints({
 
         // 2) GET /projects/:id
         getProjectById: builder.query({
-            query: (id) => ({
-                url: `/projects/${id}`,
-                method: "GET",
-            }),
+            query: (id) => ({ url: `/projects/${id}`, method: "GET" }),
             transformResponse: (response) => response.project,
             providesTags: (project) =>
                 project ? [{ type: "Projects", id: project.id }] : [],
@@ -51,16 +44,14 @@ export const projectApi = apiSlice.injectEndpoints({
             }),
             transformResponse: (response) => response.project,
             invalidatesTags: (result, error, { id }) => [
-                { type: "Projects", id },
+                { type: "Projects", id },       // обновить детальный кэш
+                { type: "Projects", id: "LIST" } // и общий список
             ],
         }),
 
         // 5) DELETE /projects/:id
         deleteProject: builder.mutation({
-            query: (id) => ({
-                url: `/projects/${id}`,
-                method: "DELETE",
-            }),
+            query: (id) => ({ url: `/projects/${id}`, method: "DELETE" }),
             invalidatesTags: (result, error, id) => [
                 { type: "Projects", id },
                 { type: "Projects", id: "LIST" },
@@ -87,3 +78,4 @@ export const {
     useDeleteProjectMutation,
     useInviteUserMutation,
 } = projectApi;
+

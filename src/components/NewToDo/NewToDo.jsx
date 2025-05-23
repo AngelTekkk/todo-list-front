@@ -6,9 +6,6 @@ import {addTodo} from "../../redux/todos/todoSlice.js";
 import Button from "../Button/Button.jsx";
 import { useGetProjectsQuery } from "../../services/api/projectApi";
 
-
-
-
 function NewToDo({onSuccess}) {
     const dispatch = useDispatch();
     const [title, setTitle] = useState('');
@@ -67,7 +64,6 @@ function NewToDo({onSuccess}) {
 
     if (isLoading) return <p>Lade Projekte…</p>;
     if (isError) return <p>Fehler: {error?.message || "Unbekannter Fehler"}</p>;
-
 
     return (
         <>
@@ -183,10 +179,8 @@ function NewToDo({onSuccess}) {
                     </div>
                 </div>
             </div>
-
         </>
     );
-
 }
 
 export default NewToDo;

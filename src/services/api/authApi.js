@@ -27,21 +27,16 @@ export const authApi = apiSlice.injectEndpoints({
                 url: '/auth/current',
                 method: 'GET',
             }),
-            // transformResponse: (response) => {
-            //     return {
-            //         user: response,
-            //         isAuthenticated: true
-            //     };
-            // },
-            // transformErrorResponse: () => {
-            //     return {
-            //         user: null,
-            //         isAuthenticated: false
-            //     };
-            // }
+        }),
+        getUsers: builder.query({
+            query: () => ({ url: "/users", method: "GET" }),
+            transformResponse: (response) => response.users,
+            providesTags: (users = []) => [
+                { type: "Users", id: "LIST" },
+                ...users.map((u) => ({ type: "Users", id: u.id })),
+            ],
         }),
     }),
 });
 
-
-export const { useLoginMutation, useRegisterMutation, useLogoutMutation, useCheckAuthQuery } = authApi;
+export const { useLoginMutation, useRegisterMutation, useLogoutMutation, useCheckAuthQuery, useGetUsersQuery } = authApi;

@@ -86,3 +86,73 @@
   border-bottom: none;
 }
 
+.editForm {
+  margin: 1em 0;
+}
+.input, .textarea {
+  width: 100%;
+  padding: 0.5em;
+  margin-bottom: 0.5em;
+}
+.buttons button {
+  margin-right: 0.5em;
+}
+.error {
+  color: tomato;
+  margin-top: 0.5rem;
+}
+
+.newBtn {
+  margin-bottom: 1rem;
+}
+
+.newForm {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.field {
+  margin-bottom: 0.5rem;
+}
+
+.buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* …existing… */
+
+.cardActions {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.addTodosSection {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.addTodoList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.addTodoList li {
+  margin-bottom: 0.5rem;
+}
+
+.addButtons {
+  margin-top: 0.5rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+
+
+
