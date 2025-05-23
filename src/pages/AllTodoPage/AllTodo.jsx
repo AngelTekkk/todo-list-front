@@ -1,33 +1,23 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useDeleteTodoMutation, useGetTodosQuery, useUpdateStatusTodoMutation } from '../../services/api/todoApi';
-import { allTodos, toggleTodo, getAllTodos, removeTodo } from '../../redux/todos/todoSlice';
+import { useDeleteTodoMutation, useUpdateStatusTodoMutation } from '../../services/api/todoApi';
+import { toggleTodo, getAllTodos, removeTodo } from '../../redux/todos/todoSlice';
 import s from "./AllTodo.module.scss"
 import Button from "../../components/Button/Button.jsx";
 import { updateTodoModal } from "../../redux/dashboard/dashboardSlice.js";
 import CustomSelect from "../../components/CustomDropdown/CustomDropdown.jsx";
 import ModalWindow from "../../components/ModalWindow/ModalWindow.jsx";
-import { useGetProjectsQuery } from "../../services/api/projectApi.js";
+import {getAllProjects} from "../../redux/projects/projectsSlice.js";
 
 
 function AllTodoPage() {
 
     const fetchedTodos = useSelector(getAllTodos);
     const dispatch = useDispatch();
-    const { data: projectsData, isLoading: isProjectsLoading } = useGetProjectsQuery();
-    const { data: todos, error, isLoading } = useGetTodosQuery();
     const [updateStatus] = useUpdateStatusTodoMutation();
     const [deleteTodo] = useDeleteTodoMutation();
 
-
-
-
-    useEffect(() => {
-        if (!isLoading && todos) {
-            dispatch(allTodos(todos));
-        }
-    }, [dispatch, isLoading, todos]);
-
+    const projectsFromState = useSelector(getAllProjects);
 
     const handleSetStatus = async (id, newStatus) => {
         const newStatusObject = {status: newStatus};
@@ -53,11 +43,9 @@ function AllTodoPage() {
     };
 
     const getProjectTitle = (projectId) => {
-        const project = projectsData?.find(p => p.id === projectId);
+        const project = projectsFromState.find(p => p.id === projectId);
         return project ? project.title : '---';
     }
-
-    if (isLoading || isProjectsLoading) return <p>Lade Daten…</p>;
 
     const renderTable = (status) => {
         const filteredTodos = fetchedTodos
@@ -121,9 +109,6 @@ function AllTodoPage() {
             </section>
         );
     };
-
-    if (isLoading) return <p>Lade ToDos…</p>;
-    if (error) return <p>Fehler beim Laden der ToDos: {error.message}</p>;
 
     return (
         <div className={s.wrapper}>
