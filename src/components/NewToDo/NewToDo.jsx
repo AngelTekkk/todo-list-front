@@ -6,9 +6,6 @@ import {addTodo} from "../../redux/todos/todoSlice.js";
 import Button from "../Button/Button.jsx";
 import { useGetProjectsQuery } from "../../services/api/projectApi";
 
-
-
-
 function NewToDo({onSuccess}) {
     const dispatch = useDispatch();
     const [title, setTitle] = useState('');
@@ -45,8 +42,8 @@ function NewToDo({onSuccess}) {
                 startDate,
                 endDate,
                 status,
-                // projectId: projectId || null,
-                // curriculumIds: []
+                projectId: projectId || null,
+                curriculumIds: []
             };
 
             const response = await createTodo(newTodo).unwrap();
@@ -182,10 +179,8 @@ function NewToDo({onSuccess}) {
                     </div>
                 </div>
             </div>
-
         </>
     );
-
 }
 
 export default NewToDo;
