@@ -1,7 +1,5 @@
-import React, { useState } from "react";
-import { AnimatePresence,
-     motion
-} from "framer-motion";
+import React, {useState} from "react";
+import {AnimatePresence, motion} from "framer-motion";
 import Button from "../../../components/Button/Button.jsx";
 import s from "./TodoSection.module.scss";
 import CustomSelect from "../../../components/CustomDropdown/CustomDropdown.jsx";
@@ -44,14 +42,12 @@ function ToDoSection({
     // const [availableProjects, setAvailableProjects] = useState([]);
 
 
-
     const {
         data: projects = [],
         isLoading,
         isError,
         error,
     } = useGetProjectsQuery();
-
 
 
     // const paginate = (newDirection) => {
@@ -117,13 +113,9 @@ function ToDoSection({
     };
 
     const handleProjectChange = async (todoId = null, newProjectId) => {
-        const todo = todos.find((t) => t.id === todoId);
-        if (!todo) return;
 
         try {
-            const updatedTodo = { ...todo, project: { id: newProjectId } };
-            await updateTodo({ id: todoId, updatedTodo }).unwrap();
-            await assignToProject({ todoId, projectId: newProjectId }).unwrap();
+            await assignToProject({todoId, projectId: newProjectId}).unwrap();
             await refetchedTodos();
 
             console.log("Projekt erfolgreich geändert!");
@@ -138,7 +130,7 @@ function ToDoSection({
 
     const getProjectTitle = (projectId) => {
         const project = projects?.find(p => p.id === projectId);
-        return project ? project.title : '---';
+        return project ? project.title : 'Projekt wählen';
     };
 
     const handleFreeTodo = async (todoId) => {
@@ -151,8 +143,8 @@ function ToDoSection({
         };
 
         try {
-            await updateTodo({ id: todoId, updatedTodo }).unwrap();
-            dispatch(setUpdatedTodo({ id: todoId, updatedTodo }));
+            await updateTodo({id: todoId, updatedTodo}).unwrap();
+            dispatch(setUpdatedTodo({id: todoId, updatedTodo}));
         } catch (err) {
             console.error("Fehler beim Trennen vom Projekt:", err);
             alert("Fehler beim Trennen des Todos vom Projekt.");
@@ -160,116 +152,125 @@ function ToDoSection({
     };
 
 
-
     return (
-        <section className={s.section}>
-            <h3>{status}</h3>
+        <div className={s.todoSections}>
+            <section className={s.section}>
+                <h3 className={s.h3Status}>{status}</h3>
 
-            <div className={s.carousel}>
-                <Button
-                    onClick={() => paginate(-1)}
-                    className={s.arrowLeft}
-                    disabled={page === 0}
-                >
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                        <path d="M15 6L9 12L15 18" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                </Button>
-
-                <div className={s.todoCardGroup}>
-                    <AnimatePresence custom={direction} mode="wait">
-                        <motion.div
-                            key={page}
-                            className={s.todoCardSet}
-                            custom={direction}
-                            variants={variants}
-                            initial="enter"
-                            animate="center"
-                            exit="exit"
-                            transition={{ duration: 0.5, ease: "easeInOut" }}
-                        >
-
-                            {todosToDisplay.map((todo, index) => (
-
-                                <div key={`${todo.id || `todo-${index}`}-${page}`} className={s.todoCard} style={{backgroundColor: getDaysLeftColor(todo.endDate)}}>
-                                    {/*<Button*/}
-                                    {/*    className={s.fancyStatus}*/}
-                                    {/*    onClick={() => onToggleStatus(todo.id, todo.status)}*/}
-                                    {/*    text={getNextStatus(todo.status)}*/}
-                                    {/*/>*/}
-
-                                    <h4 className={s.todoTitle}>{todo.title}</h4>
-                                    <div className={s.cardStuff}>
-                                        <p className={s.startDate}>{todo.startDate}</p>
-                                        <p className={s.endDate}>{todo.endDate}</p>
-                                        <p className={s.project}>{getProjectTitle(todo.projectId)}{todo.projectId != null && <Button className={s.freeTodo} onClick={() => handleFreeTodo(todo.id, todo.projectId)} >✂️<span className={s.toolTip}>Projekt lösen</span> </Button>}</p>
-                                        <p className={s.description}>{todo.description}</p>
-                                    </div>
-
-                                    <div className={s.cardActions}>
-                                        <CustomSelect
-                                            value={todo.status}
-                                            options={[
-                                                { value: "TODO", label: "TODO" },
-                                                { value: "DOING", label: "DOING" },
-                                                { value: "DONE", label: "DONE" },
-                                            ]}
-                                            onChange={(newStatus) => onSetStatus(todo.id, newStatus)}
-                                        />
-
-                                        <CustomSelect
-                                            value={todo.project?.id || ""}
-                                            options={[
-                                                { value: "", label: getProjectTitle(todo.projectId) },
-                                                ...projects.map((project) => ({
-                                                    value: project.id,
-                                                    label: project.title,
-                                                })),
-                                            ]}
-                                            onChange={(newProjectId) => handleProjectChange(todo.id, newProjectId)}
-                                        />
-
-                                        <Button
-                                            className={s.updateBtn}
-                                            onClick={() => handleOpenModal('updateTodo', todo.id)}
-                                            text={'Ändern'}
-                                        />
-
-                                        <Button
-                                            className={s.deleteBtn}
-                                            onClick={() => onDeleteTodo(todo.id)}
-                                            text="Löschen"
-                                        />
-                                    </div>
-                                </div>
-                            ))}
-                        </motion.div>
-                    </AnimatePresence>
-                </div>
-
-                <Button
-                    onClick={() => paginate(1)}
-                    className={s.arrowRight}
-                    disabled={page === maxPage}
-                >
-                    <svg
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
+                <div className={s.carousel}>
+                    <Button
+                        onClick={() => paginate(-1)}
+                        className={s.arrowLeft}
+                        disabled={page === 0}
                     >
-                        <path
-                            d="M9 6L15 12L9 18"
-                            stroke="#333"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                        />
-                    </svg>
-                </Button>
-            </div>
-        </section>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M15 6L9 12L15 18" stroke="#333" strokeWidth="2" strokeLinecap="round"
+                                  strokeLinejoin="round"/>
+                        </svg>
+                    </Button>
+
+                    <div className={s.todoCardGroup}>
+                        <AnimatePresence custom={direction} mode="wait">
+                            <motion.div
+                                key={page}
+                                className={s.todoCardSet}
+                                custom={direction}
+                                variants={variants}
+                                initial="enter"
+                                animate="center"
+                                exit="exit"
+                                transition={{duration: 0.5, ease: "easeInOut"}}
+                            >
+
+                                {todosToDisplay.map((todo, index) => (
+
+                                    <div key={`${todo.id || `todo-${index}`}-${page}`} className={s.todoCard}
+                                         style={{backgroundColor: getDaysLeftColor(todo.endDate)}}>
+                                        {/*<Button*/}
+                                        {/*    className={s.fancyStatus}*/}
+                                        {/*    onClick={() => onToggleStatus(todo.id, todo.status)}*/}
+                                        {/*    text={getNextStatus(todo.status)}*/}
+                                        {/*/>*/}
+
+                                        <h4 className={s.todoTitle}>{todo.title}</h4>
+                                        <div className={s.cardStuff}>
+                                            <p className={s.startDate}>{todo.startDate}</p>
+                                            <p className={s.endDate}>{todo.endDate}</p>
+                                            <p className={s.project}>{getProjectTitle(todo.projectId)}{todo.projectId != null &&
+                                                <Button className={s.freeTodo}
+                                                        onClick={() => handleFreeTodo(todo.id, todo.projectId)}>✂️<span
+                                                    className={s.toolTip}>Projekt lösen</span></Button>}</p>
+                                            <p className={s.description}>{todo.description}</p>
+                                        </div>
+
+                                        <div className={s.cardActions}>
+                                            <CustomSelect
+                                                value={todo.status}
+                                                options={[
+                                                    {value: "TODO", label: "TODO"},
+                                                    {value: "DOING", label: "DOING"},
+                                                    {value: "DONE", label: "DONE"},
+                                                ]}
+                                                onChange={(newStatus) => onSetStatus(todo.id, newStatus)}
+                                            />
+
+                                            <CustomSelect
+                                                value={todo.project?.id || ""}
+                                                options={[
+                                                    {value: "", label: getProjectTitle(todo.projectId)},
+                                                    ...projects.map((project) => ({
+                                                        value: project.id,
+                                                        label: project.title,
+                                                    })),
+                                                ]}
+                                                onChange={(newProjectId) => handleProjectChange(todo.id, newProjectId)}
+
+                                            />
+
+                                            <div className={s.cardButtons}>
+                                                <Button
+                                                    className={s.updateBtn}
+                                                    onClick={() => handleOpenModal('updateTodo', todo.id)}
+                                                    text={'Ändern'}
+                                                />
+
+                                                <Button
+                                                    className={s.deleteBtn}
+                                                    onClick={() => onDeleteTodo(todo.id)}
+                                                    text="Löschen"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </motion.div>
+                        </AnimatePresence>
+                    </div>
+
+                    <Button
+                        onClick={() => paginate(1)}
+                        className={s.arrowRight}
+                        disabled={page === maxPage}
+                    >
+                        <svg
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                d="M9 6L15 12L9 18"
+                                stroke="#333"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            />
+                        </svg>
+                    </Button>
+                </div>
+            </section>
+        </div>
     );
 }
 
