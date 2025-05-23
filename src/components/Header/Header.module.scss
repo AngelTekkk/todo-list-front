@@ -1,6 +1,5 @@
 @use "../../_index.scss" as *;
 
-
 .header {
   height: $header-height;
   background-color: $primary-color;
@@ -16,7 +15,7 @@
   z-index: 5;
 }
 
-.h1 {
+.title {
   font-size: 32px;
   margin: 0;
   padding: 10px;
@@ -25,14 +24,14 @@
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.h1:hover {
+.title:hover {
   background-color: $background-color;
   color: $primary-color;
   cursor: progress;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.h1 > a {
+.title > a {
   font-family: 'Consolas', monospace;
   text-decoration: none;
   color: inherit;
@@ -40,6 +39,7 @@
 
 .navList {
   list-style: none;
+  padding: 0;
   gap: 60px;
   display: flex;
   justify-content: space-evenly;

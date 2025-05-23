@@ -1,6 +1,6 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {Link, NavLink} from "react-router-dom";
+import {Link, NavLink, useLocation} from "react-router-dom";
 
 import s from "./Header.module.scss";
 import Button from "../Button/Button.jsx";
@@ -13,6 +13,14 @@ function Header() {
     const dispatch = useDispatch();
     const isAuthenticated = useSelector(getIsAuthenticated);
     const [logout] = useLogoutMutation();
+    const location = useLocation();
+
+    const navLinks = [
+        {path: '/todos', label: "MY TODO'S"},
+        {path: '/projects', label: 'PROJECTS'},
+        {path: '/curriculum', label: 'CURRICULUM'},
+        {path: '/completed', label: 'COMPLETED'}
+    ];
 
     const handleOpenModal = (type) => {
         dispatch(openModal(type));
@@ -28,7 +36,6 @@ function Header() {
                 console.log(resp);
 
                 window.history.replaceState(null, null, '/');
-
                 window.location.reload();
             } catch (err) {
                 console.error("Fehler beim Abmelden:", err);
@@ -40,32 +47,21 @@ function Header() {
 
     return (
         <header className={s.header}>
-            <h1 className={s.h1}><a className="h1-link" href="https://www.youtube.com/watch?v=pOWCtIv9LK8"
+            <h1 className={s.title}><a className="h1-link" href="https://www.youtube.com/watch?v=pOWCtIv9LK8"
                                     target="_blank" rel="noopener noreferrer">🥚🍷🍰 ToDo's</a></h1>
             {isAuthenticated ?
                 <>
                     <nav>
                         <ul className={s.navList}>
-                            {location.pathname !== '/todos' && (
-                                <li className={s.navPoint}>
-                                    <NavLink className={s.headerLink} to={'/todos'}>MY TODO'S</NavLink>
-                                </li>
-                            )}
-                            {location.pathname !== '/projects' && (
-                                <li className={s.navPoint}>
-                                    <NavLink className={s.headerLink} to={'/projects'}>PROJECTS</NavLink>
-                                </li>
-                            )}
-                            {location.pathname !== '/curriculum' && (
-                                <li className={s.navPoint}>
-                                    <NavLink className={s.headerLink} to={'/curriculum'}>CURRICULUM</NavLink>
-                                </li>
-                            )}
-                            {location.pathname !== '/completed' && (
-                                <li className={s.navPoint}>
-                                    <NavLink className={s.headerLink} to={'/completed'}>COMPLETED</NavLink>
-                                </li>
-                            )}
+                            {navLinks
+                                .filter(link => location.pathname !== link.path)
+                                .map(link => (
+                                    <li key={link.path} className={s.navPoint}>
+                                        <NavLink className={s.headerLink} to={link.path}>
+                                            {link.label}
+                                        </NavLink>
+                                    </li>
+                                ))}
                         </ul>
                     </nav>
                     <Link className={s.headerLink} onClick={handleLogout} to={'/'}>Abmelden</Link>
