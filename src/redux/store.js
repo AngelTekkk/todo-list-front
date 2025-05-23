@@ -7,6 +7,7 @@ import projectsReducer  from "./projects/projectsSlice.js";
 import { authApi } from '../services/api/authApi.js';
 import curriculumReducer from "../redux/curriculum/curriculumSlice.js"
 
+
 export const store = configureStore({
     reducer: {
         auth: authReducer,

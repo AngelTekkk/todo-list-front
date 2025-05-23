@@ -39,13 +39,21 @@ const todoSlice = createSlice({
         setStatus: (state, action) => {
             state.status = action.payload;
         },
+        deleteTodoFromCurry: (state, action) => {
+           state.todos = [...state.todos].map(todo =>{
+               if(todo.id === action.payload.todoId) {
+                   todo.curriculumIds = todo.curriculumIds.filter(id => id !== action.payload.curriculum.id);
+               }
+               return todo;
+           })
+        },
         setError: (state, action) => {
             state.error = action.payload;
         },
     },
 });
 
-export const {allTodos, addTodo, removeTodo, toggleTodo,setUpdatedTodo, setStatus, setError } = todoSlice.actions;
+export const {allTodos, addTodo, removeTodo, toggleTodo,setUpdatedTodo, setStatus, deleteTodoFromCurry, setError } = todoSlice.actions;
 
 export const getAllTodos = (state) => state.todos.todos;
 export default todoSlice.reducer;
