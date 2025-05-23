@@ -9,36 +9,40 @@ import {useDispatch, useSelector} from "react-redux";
 import {showCurriculum, createCurriculum, deleteCurriculum} from "../../redux/curriculum/curriculumSlice.js";
 import Button from "../../components/Button/Button.jsx";
 import {useState} from "react";
-import {getAllTodos} from "../../redux/todos/todoSlice.js";
 import {useGetTodosQuery} from "../../services/api/todoApi.js";
-
-
+import {updateTodoModal} from "../../redux/dashboard/dashboardSlice.js";
+import ModalWindow from "../../components/ModalWindow/ModalWindow.jsx";
+import {allTodos, deleteTodoFromCurry, getAllTodos} from "../../redux/todos/todoSlice.js";
 
 function CurriculumPage() {
     const dispatch = useDispatch();
     // const { data: curriculum, isLoading } = useGetCurriculumForCurrentUserQuery();
     const {data: curriculum, isLoading, isError} = useGetCurriculumForCurrentUserQuery();
     const [title, setTitle] = useState('');
-    const { data: todos, refetch: refetchTodos } = useGetTodosQuery();
+    const { data: todos, refetch: refetchTodos, isLoading: isTodosLoading } = useGetTodosQuery();
 
     const [createCurriculumApi] = useCreateCurriculumMutation();
     const [deleteCurriculumApi] = useDeleteCurriculumMutation();
     const [removeTodoFromCurryMutationApi] = useRemoveTodoFromCurryMutation();
     const user = useSelector((state) => state.auth.user);
+    const allTodosInState = useSelector(getAllTodos);
 
-    let curryTodos = [];
 
-    if (curriculum && todos) {
-        curryTodos = todos
-            .filter(todo => todo.curriculumIds.includes(curriculum.id))
-            .sort((a, b) => a.id - b.id);
-    }
+    // let curryTodos = [];
+    //
+    // if (curriculum && todos) {
+    //     curryTodos = todos
+    //         .filter(todo => todo.curriculumIds.includes(curriculum.id))
+    //         .sort((a, b) => a.id - b.id);
+    // }
 
     useEffect(() => {
-        if (!isLoading && curriculum) {
+        if (!isLoading && curriculum && !isTodosLoading && todos) {
             dispatch(showCurriculum(curriculum));
+            dispatch(allTodos(todos));
         }
-    }, [dispatch, isLoading, curriculum]);
+
+    }, [dispatch, isLoading, isTodosLoading, todos, curriculum]);
 
     const handleDeleteCurriculum = async () => {
         try {
@@ -64,13 +68,17 @@ function CurriculumPage() {
 
     const handleRemoveTodoFromCurry = async(todoId = null) => {
         try {
-            await removeTodoFromCurryMutationApi(todoId)
+            await removeTodoFromCurryMutationApi(todoId);
             await refetchTodos();
-            // dispatch(showCurriculum(curriculum));
+            dispatch(deleteTodoFromCurry({todoId, curriculum}));
         } catch (err) {
             console.error("blablabla", err)
         }
     }
+
+    const handleOpenModal = (type, todoId = null) => {
+        dispatch(updateTodoModal({type, todoId}));
+    };
 
     if (isLoading) return <div>Lade Curriculums...</div>;
 
@@ -78,7 +86,7 @@ function CurriculumPage() {
         return (
             <div className={s.createCurry}>
                 <h1>Hey {user.username}, du hast noch kein Curriculum!</h1>
-                <label for="newCurrName">Name des Curriculums: </label>
+                <label htmlFor="newCurrName">Name des Curriculums: </label>
                 <input id="newCurrName" type="text" value={title} onChange={(e) => setTitle(e.target.value)}
                        required></input>
                 <Button onClick={handleCreateCurriculum} className={s.button}>Curriculum erstellen</Button>
@@ -108,14 +116,20 @@ function CurriculumPage() {
                 </tr>
                 </thead>
                 <tbody>
-                {curryTodos.map((todo) => (
+                {allTodosInState
+                    .filter(todo => todo.curriculumIds
+                        .includes(curriculum.id))
+                    .sort((a, b) => a.id - b.id).map((todo) => (
                     <tr key={todo.id} className={s.todoRow}>
                         <td >{todo.title}</td>
                         <td >{todo.startDate}</td>
                         <td >{todo.endDate}</td>
                         <td >{todo.status}</td>
                         <td >
-                            <Button className={s.tableButton}>Ansehen</Button>
+                            <Button className={s.tableButton}
+                                    onClick={() => handleOpenModal('showTodo', todo.id)}
+                                    text={'Ansehen'}>
+                            </Button>
                             <Button className={s.tableButton}
                                     onClick={() => handleRemoveTodoFromCurry(todo.id)}
                                     text={'Entfernen'}>
@@ -126,7 +140,10 @@ function CurriculumPage() {
                 ))}
                 </tbody>
             </table>
+            <ModalWindow></ModalWindow>
+
         </div>
+
     );
 }
 
