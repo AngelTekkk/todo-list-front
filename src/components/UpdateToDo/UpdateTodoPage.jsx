@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useDeleteTodoMutation, useGetTodosQuery, useUpdateTodoMutation} from '../../services/api/todoApi';
 import s from './UpdateTodoPage.module.scss';
 import {useDispatch, useSelector} from "react-redux";
-import {removeTodo, setUpdatedTodo} from "../../redux/todos/todoSlice.js";
+import {getAllTodos, removeTodo, setUpdatedTodo} from "../../redux/todos/todoSlice.js";
 import {getTodoId} from "../../redux/dashboard/dashboardSlice.js";
 import CustomSelect from "../CustomDropdown/CustomDropdown.jsx";
 import {useGetProjectsQuery} from "../../services/api/projectApi.js";
@@ -26,7 +26,6 @@ function UpdateTodoPage({onSuccess}) {
     const [projectId, setProjectId] = useState('');
 
 
-    const todo = todos?.find(t => t.id === id);
 
     const {
         data: projects = [],

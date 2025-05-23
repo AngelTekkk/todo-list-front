@@ -1,0 +1,55 @@
+@use "../../index.scss" as *;
+
+.todoContainer {
+  background: radial-gradient(circle at center, #1a1a1a, #000000);
+  //min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  font-family: 'Orbitron', sans-serif;
+  color: #fff;
+}
+
+.todoCard {
+  background: linear-gradient(135deg, #ff00cc, #3333ff);
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 0 30px rgba(255, 0, 255, 0.5);
+  transition: all 0.4s ease-in-out;
+  max-width: 600px;
+  width: 100%;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.todoCard:hover {
+  transform: scale(1.03) rotateZ(1deg);
+  background: linear-gradient(135deg, #00ff99, #0099ff);
+  box-shadow: 0 0 50px rgba(0, 255, 255, 0.9);
+}
+
+.todoTitle {
+  font-size: 2.5rem;
+  text-align: center;
+  text-shadow: 0 0 10px #ffffff, 0 0 20px #00ffff, 0 0 30px #ff00ff;
+  margin-bottom: 1rem;
+}
+
+.rainbowText {
+  background: linear-gradient(90deg, red, orange, yellow, green, cyan, blue, violet);
+  background-size: 400% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: rainbow 5s linear infinite;
+}
+
+@keyframes rainbow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+.glowText {
+  text-shadow: 0 0 5px #fff, 0 0 10px #ff00cc, 0 0 20px #ff00cc, 0 0 40px #ff00cc;
+  font-size: 1.2rem;
+}
+
