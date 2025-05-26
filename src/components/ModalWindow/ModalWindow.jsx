@@ -41,7 +41,7 @@ function ModalWindow() {
             {modalType === 'register' && <AuthForm type={modalType} onSuccess={handleClose}/>}
             {modalType === 'newTodo' && <NewToDo type={modalType} onSuccess={handleClose}/>}
             {modalType === 'updateTodo' && <UpdateTodoPage type={modalType} onSuccess={handleClose} />}
-            {modalType === 'showTodo' && <ShowTodo type={modalType} onSuccess={handleClose} />}
+            {modalType === 'showTodo' && <ShowTodo type={modalType} onSuccess={handleClose}/>}
 
         </ReactModal>
     )
