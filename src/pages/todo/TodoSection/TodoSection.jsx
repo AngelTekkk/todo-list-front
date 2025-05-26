@@ -102,10 +102,10 @@ function ToDoSection({
         const daysLeft = Math.ceil((end - today) / (1000 * 60 * 60 * 24));
 
         return daysLeft > 7
-            ? 'rgba(72,204,104,0.1)'
+            ? 'rgb(72,204,104)'
             : daysLeft > 3
-                ? 'rgba(253,220,117,0.1)'
-                : 'rgba(250,108,121,0.1)';
+                ? 'rgb(253,220,117)'
+                : 'rgb(250,108,121)';
     };
 
     const handleOpenModal = (type, todoId = null) => {
@@ -185,7 +185,7 @@ function ToDoSection({
                                 {todosToDisplay.map((todo, index) => (
 
                                     <div key={`${todo.id || `todo-${index}`}-${page}`} className={s.todoCard}
-                                         style={{backgroundColor: getDaysLeftColor(todo.endDate)}}>
+                                         style={{ borderTop: `24px solid ${getDaysLeftColor(todo.endDate)}` }}>
                                         {/*<Button*/}
                                         {/*    className={s.fancyStatus}*/}
                                         {/*    onClick={() => onToggleStatus(todo.id, todo.status)}*/}
