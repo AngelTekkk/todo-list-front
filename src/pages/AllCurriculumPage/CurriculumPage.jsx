@@ -1,6 +1,6 @@
 import {
     useDeleteCurriculumMutation,
-    useCreateCurriculumMutation, useRemoveTodoFromCurryMutation
+    useCreateCurriculumMutation, useRemoveTodoFromCurryMutation, useAddTodoToCurryMutation
 } from "../../services/api/curriculumApi.js";
 import s from './CurriculumPage.module.scss';
 import React from "react";
@@ -10,8 +10,9 @@ import Button from "../../components/Button/Button.jsx";
 import {useState} from "react";
 import {updateTodoModal} from "../../redux/dashboard/dashboardSlice.js";
 import ModalWindow from "../../components/ModalWindow/ModalWindow.jsx";
-import {deleteTodoFromCurry, getAllTodos} from "../../redux/todos/todoSlice.js";
+import {addTodoToCurry, deleteTodoFromCurry, getAllTodos} from "../../redux/todos/todoSlice.js";
 import {getUser} from "../../redux/auth/authSlice.js";
+import CustomSelect from "../../components/CustomDropdown/CustomDropdown.jsx";
 
 function CurriculumPage() {
     const dispatch = useDispatch();
@@ -23,6 +24,7 @@ function CurriculumPage() {
     const [createCurriculumApi] = useCreateCurriculumMutation();
     const [deleteCurriculumApi] = useDeleteCurriculumMutation();
     const [removeTodoFromCurryMutationApi] = useRemoveTodoFromCurryMutation();
+    const [addTodoToCurryMutationApi] = useAddTodoToCurryMutation();
 
     const handleDeleteCurriculum = async () => {
         try {
@@ -41,7 +43,7 @@ function CurriculumPage() {
             dispatch(createCurriculum(newCurry));
 
         } catch (err) {
-            console.error("blablabla", err)
+            console.error("curry erstellen hat net geklappt", err)
         }
         setTitle('');
     }
@@ -51,9 +53,18 @@ function CurriculumPage() {
             await removeTodoFromCurryMutationApi(todoId);
             dispatch(deleteTodoFromCurry({todoId, curriculum}));
         } catch (err) {
-            console.error("blablabla", err)
+            console.error("todo vom curry entfernen hat net geklappt", err)
         }
     }
+    const handleAssignCurry = async (toDoId, curryId) => {
+        try{
+            await addTodoToCurryMutationApi({toDoId, curryId});
+            dispatch(addTodoToCurry({toDoId, curryId}))
+        } catch (err) {
+            console.error("todo zum curry hinzufügen hat net geklappt.", err)
+        }
+    }
+
 
     const handleOpenModal = (type, todoId = null) => {
         dispatch(updateTodoModal({type, todoId}));
@@ -118,6 +129,27 @@ function CurriculumPage() {
                 ))}
                 </tbody>
             </table>
+            <div className={s.assignTodo}>
+                <p>Todo hinzufügen: </p>
+                <CustomSelect
+                    value={
+                    curriculum.id || ""}
+                    options={[
+                        {value: "", label: "Bitte wählen"},
+                        ...allTodosInState.filter(todo=>
+                        todo.creator === user.username && !todo.curriculumIds.includes(curriculum.id)
+                        )
+                            .map(todo => ({
+                            value: todo.id,
+                            label: todo.title,
+                        }))
+                    ]}
+                    onChange={(toDoId) => handleAssignCurry(toDoId, curriculum.id)}
+
+                />
+
+
+            </div>
             <ModalWindow></ModalWindow>
 
         </div>
