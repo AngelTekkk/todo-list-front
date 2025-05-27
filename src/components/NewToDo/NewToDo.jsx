@@ -8,6 +8,7 @@ import {getAllProjects} from "../../redux/projects/projectsSlice.js";
 import CustomDropdown from "../CustomDropdown/CustomDropdown.jsx";
 import CustomSelect from "../CustomDropdown/CustomDropdown.jsx";
 import {getUser} from "../../redux/auth/authSlice.js";
+import {closeModal} from "../../redux/dashboard/dashboardSlice.js";
 
 
 function NewToDo({onSuccess}) {
@@ -53,6 +54,10 @@ function NewToDo({onSuccess}) {
             alert("Fehler beim Speichern des ToDos");
         }
     };
+
+    const handleCancelAddTodo = async () => {
+        dispatch(closeModal());
+    }
 
     return (
         <div className={s.newTodoBox}>
@@ -135,7 +140,7 @@ function NewToDo({onSuccess}) {
 
                 <div className={s.buttonBox}>
                     <Button className={s.saveBtn} onClick={handleAddTodo} text={'Speichern'}/>
-                    <Button className={s.cancelBtn} text={'Abbrechen'}/>
+                    <Button className={s.cancelBtn} onClick={handleCancelAddTodo} text={'Abbrechen'}/>
                 </div>
             </div>
         </div>
