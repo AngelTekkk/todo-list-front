@@ -26,6 +26,13 @@ export const curriculumApi = apiSlice.injectEndpoints({
                 url: `/curriculum/current/remove-todo/${toDoId}`,
                 method: 'DELETE'
             })
+        }),
+        addTodoToCurry: builder.mutation({
+            query: ({toDoId, curryId}) => ({
+                url: `/todos/${toDoId}`,
+                method: 'PATCH',
+                body: { curriculumIds: [curryId] }
+            })
         })
     })
 });
@@ -34,5 +41,6 @@ export const {
     useGetCurriculumForCurrentUserQuery,
     useCreateCurriculumMutation,
     useDeleteCurriculumMutation,
-    useRemoveTodoFromCurryMutation
+    useRemoveTodoFromCurryMutation,
+    useAddTodoToCurryMutation
 } = curriculumApi;
