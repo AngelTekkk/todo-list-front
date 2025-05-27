@@ -1,7 +1,7 @@
 import {useState} from "react";
 import {useDispatch} from "react-redux";
 
-import {useLoginMutation, useRegisterMutation} from "../../services/api/authApi.js";
+import {useCheckAuthQuery, useLoginMutation, useRegisterMutation} from "../../services/api/authApi.js";
 import {oauth} from "../../redux/auth/authSlice.js";
 
 function AuthForm({ type = 'login', onSuccess }) {
@@ -19,6 +19,8 @@ function AuthForm({ type = 'login', onSuccess }) {
     const [errors, setErrors] = useState({});
     const [login] = useLoginMutation();
     const [register] = useRegisterMutation();
+
+    const { refetch: checkAuth } = useCheckAuthQuery();
 
     const validate = () => {
         const newErrors = {};
@@ -62,7 +64,9 @@ function AuthForm({ type = 'login', onSuccess }) {
             const result = isLogin
                 ? await login(payload).unwrap()
                 : await register(payload).unwrap();
-            console.log("✅ Erfolg:", result);
+            const user = await checkAuth().unwrap();
+            dispatch(oauth(user));
+            console.log("✅ Erfolg:", result, user);
             onSuccess();
         } catch (err) {
             console.error("❌ Fehler:", err);
