@@ -23,4 +23,6 @@ const curriculumSlice = createSlice({
 })
 export const { showCurriculum, createCurriculum, deleteCurriculum } = curriculumSlice.actions;
 
+export const getCurriculum = (state) => state.curriculum.curriculum;
+
 export default curriculumSlice.reducer;

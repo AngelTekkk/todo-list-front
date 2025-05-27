@@ -9,10 +9,13 @@ import {useGetProjectsQuery} from "./services/api/projectApi.js";
 import {useGetTodosQuery} from "./services/api/todoApi.js";
 import {allTodos} from "./redux/todos/todoSlice.js";
 import {allProjects} from "./redux/projects/projectsSlice.js";
+import {useGetCurriculumForCurrentUserQuery} from "./services/api/curriculumApi.js";
+import {showCurriculum} from "./redux/curriculum/curriculumSlice.js";
 
 function App() {
     const [skip, setSkip] = useState(true);
     const dispatch = useDispatch();
+
     const {data, isSuccess, isLoading} = useCheckAuthQuery(undefined, {
         refetchOnMountOrArgChange: false,
         refetchOnFocus: false,
@@ -33,6 +36,15 @@ function App() {
         refetchOnReconnect: false
     });
 
+    const {data: curriculum, isSuccess: curriculumIsSuccess} = useGetCurriculumForCurrentUserQuery(
+        undefined, {
+        skip,
+        refetchOnMountOrArgChange: false,
+        refetchOnFocus: false,
+        refetchOnReconnect: false
+    });
+
+
     useEffect(() => {
         if (isSuccess) {
             dispatch(oauth(data));
@@ -51,6 +63,12 @@ function App() {
             dispatch(allProjects(projects));
         }
     }, [projectsIsSuccess, projects, dispatch]);
+
+    useEffect(() => {
+        if (curriculumIsSuccess) {
+            dispatch(showCurriculum(curriculum));
+        }
+    }, [curriculumIsSuccess, curriculum, dispatch]);
 
     return (
         <>

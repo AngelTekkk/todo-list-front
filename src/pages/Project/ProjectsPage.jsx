@@ -1,4 +1,3 @@
-// src/pages/Project/ProjectsPage.jsx
 import React, { useState, useEffect } from "react";
 import {
     useGetProjectsQuery,
@@ -13,7 +12,6 @@ import {
 import s from "./ProjectsPage.module.scss";
 
 export default function ProjectsPage() {
-    // — RTK-Query hooks —
     const {
         data: projects = [],
         isLoading: isLoadingProjects,
