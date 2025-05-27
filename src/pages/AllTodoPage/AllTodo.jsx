@@ -8,6 +8,7 @@ import { updateTodoModal } from "../../redux/dashboard/dashboardSlice.js";
 import CustomSelect from "../../components/CustomDropdown/CustomDropdown.jsx";
 import ModalWindow from "../../components/ModalWindow/ModalWindow.jsx";
 import {getAllProjects} from "../../redux/projects/projectsSlice.js";
+import {useNavigate} from "react-router-dom";
 
 
 function AllTodoPage() {
@@ -16,6 +17,7 @@ function AllTodoPage() {
     const dispatch = useDispatch();
     const [updateStatus] = useUpdateStatusTodoMutation();
     const [deleteTodo] = useDeleteTodoMutation();
+    const navigate = useNavigate();
 
     const projectsFromState = useSelector(getAllProjects);
 
@@ -54,7 +56,9 @@ function AllTodoPage() {
 
         return (
             <section className={s.allTodoSection} key={status}>
+
                 <h3 className={s.h3}>{status}</h3>
+
                 {filteredTodos.length === 0 ? (
                     <p className={s.infoP}>Keine ToDos im Status {status}.</p>
                 ) : (
@@ -112,8 +116,21 @@ function AllTodoPage() {
 
     return (
         <div className={s.wrapper}>
+
+            <div className={s.leftSide}>
+
+                <Button className={s.goToNewToDo} onClick={() => handleOpenModal('newTodo')} text={'neues Todo'}/>
+
+                <Button className={s.goToAllTodos} onClick={() => navigate(`/todos`)} text={`Kartenansicht`}/>
+
+            </div>
+
             {['TODO', 'DOING', 'DONE'].map(renderTable)}
+
+            <div className={s.rightSide}></div>
+
             <ModalWindow></ModalWindow>
+
         </div>
     );
 }

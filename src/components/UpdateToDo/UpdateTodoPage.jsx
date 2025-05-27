@@ -8,7 +8,7 @@ import CustomSelect from "../CustomDropdown/CustomDropdown.jsx";
 import {getAllProjects} from "../../redux/projects/projectsSlice.js";
 
 
-function UpdateTodoPage(onSuccess) {
+function UpdateTodoPage({onSuccess}) {
     const dispatch = useDispatch();
     const id = useSelector(getTodoId);
     const allTodos = useSelector(getAllTodos);
@@ -64,6 +64,7 @@ function UpdateTodoPage(onSuccess) {
         };
 
         try {
+            console.log(updatedTodo)
             await updateTodo({id, updatedTodo}).unwrap();
             dispatch(setUpdatedTodo({id, updatedTodo}));
             onSuccess();
@@ -171,8 +172,11 @@ function UpdateTodoPage(onSuccess) {
                     />
 
                     <div className={s.buttonRow}>
-                        <button className={s.deleteBtn} onClick={handleDeleteTodo}>Löschen</button>
+
                         <button className={s.saveBtn} onClick={handleUpdateTodo}>Speichern</button>
+
+                        <button className={s.deleteBtn} onClick={handleDeleteTodo}>Löschen</button>
+
                     </div>
                 </div>
             </div>

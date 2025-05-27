@@ -66,11 +66,11 @@ function TodoPage() {
             <div className={s.leftSide}>
 
 
-                <Button className={s.goToNewToDo} onClick={() => handleOpenModal('newTodo')}
-                        text={'neues Todo'}/>
-
+                <Button className={s.goToNewToDo} onClick={() => handleOpenModal('newTodo')} text={'neues Todo'}/>
 
                 <Button className={s.goToAllTodos} onClick={() => navigate(`/allTodos`)} text={`Todo Liste`}/>
+
+
             </div>
 
             <div className={s.todoSections}>
@@ -89,9 +89,7 @@ function TodoPage() {
 
             </div>
 
-            <div className={s.rightSide}>
-
-            </div>
+            <div className={s.rightSide}></div>
 
             <ModalWindow></ModalWindow>
 
