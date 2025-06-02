@@ -1,44 +1,30 @@
 import {
-    useGetCurriculumForCurrentUserQuery,
     useDeleteCurriculumMutation,
-    useCreateCurriculumMutation, useRemoveTodoFromCurryMutation
+    useCreateCurriculumMutation, useRemoveTodoFromCurryMutation, useAddTodoToCurryMutation
 } from "../../services/api/curriculumApi.js";
 import s from './CurriculumPage.module.scss';
-import React, {useEffect} from "react";
+import React from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {showCurriculum, createCurriculum, deleteCurriculum} from "../../redux/curriculum/curriculumSlice.js";
+import {createCurriculum, deleteCurriculum, getCurriculum} from "../../redux/curriculum/curriculumSlice.js";
 import Button from "../../components/Button/Button.jsx";
 import {useState} from "react";
-import {getAllTodos} from "../../redux/todos/todoSlice.js";
-import {useGetTodosQuery} from "../../services/api/todoApi.js";
-
-
+import {updateTodoModal} from "../../redux/dashboard/dashboardSlice.js";
+import ModalWindow from "../../components/ModalWindow/ModalWindow.jsx";
+import {addTodoToCurry, deleteTodoFromCurry, getAllTodos} from "../../redux/todos/todoSlice.js";
+import {getUser} from "../../redux/auth/authSlice.js";
+import CustomSelect from "../../components/CustomDropdown/CustomDropdown.jsx";
 
 function CurriculumPage() {
     const dispatch = useDispatch();
-    // const { data: curriculum, isLoading } = useGetCurriculumForCurrentUserQuery();
-    const {data: curriculum, isLoading, isError} = useGetCurriculumForCurrentUserQuery();
     const [title, setTitle] = useState('');
-    const { data: todos, refetch: refetchTodos } = useGetTodosQuery();
+    const user = useSelector(getUser);
+    const allTodosInState = useSelector(getAllTodos);
+    const curriculum = useSelector(getCurriculum);
 
     const [createCurriculumApi] = useCreateCurriculumMutation();
     const [deleteCurriculumApi] = useDeleteCurriculumMutation();
     const [removeTodoFromCurryMutationApi] = useRemoveTodoFromCurryMutation();
-    const user = useSelector((state) => state.auth.user);
-
-    let curryTodos = [];
-
-    if (curriculum && todos) {
-        curryTodos = todos
-            .filter(todo => todo.curriculumIds.includes(curriculum.id))
-            .sort((a, b) => a.id - b.id);
-    }
-
-    useEffect(() => {
-        if (!isLoading && curriculum) {
-            dispatch(showCurriculum(curriculum));
-        }
-    }, [dispatch, isLoading, curriculum]);
+    const [addTodoToCurryMutationApi] = useAddTodoToCurryMutation();
 
     const handleDeleteCurriculum = async () => {
         try {
@@ -57,28 +43,39 @@ function CurriculumPage() {
             dispatch(createCurriculum(newCurry));
 
         } catch (err) {
-            console.error("blablabla", err)
+            console.error("curry erstellen hat net geklappt", err)
         }
         setTitle('');
     }
 
     const handleRemoveTodoFromCurry = async(todoId = null) => {
         try {
-            await removeTodoFromCurryMutationApi(todoId)
-            await refetchTodos();
-            // dispatch(showCurriculum(curriculum));
+            await removeTodoFromCurryMutationApi(todoId);
+            dispatch(deleteTodoFromCurry({todoId, curriculum}));
         } catch (err) {
-            console.error("blablabla", err)
+            console.error("todo vom curry entfernen hat net geklappt", err)
+        }
+    }
+    const handleAssignCurry = async (toDoId, curryId) => {
+        try{
+            await addTodoToCurryMutationApi({toDoId, curryId});
+            dispatch(addTodoToCurry({toDoId, curryId}))
+        } catch (err) {
+            console.error("todo zum curry hinzufügen hat net geklappt.", err)
         }
     }
 
-    if (isLoading) return <div>Lade Curriculums...</div>;
 
-    if (isError || !curriculum) {
+    const handleOpenModal = (type, todoId = null) => {
+        dispatch(updateTodoModal({type, todoId}));
+    };
+
+
+    if (!curriculum) {
         return (
             <div className={s.createCurry}>
                 <h1>Hey {user.username}, du hast noch kein Curriculum!</h1>
-                <label for="newCurrName">Name des Curriculums: </label>
+                <label htmlFor="newCurrName">Name des Curriculums: </label>
                 <input id="newCurrName" type="text" value={title} onChange={(e) => setTitle(e.target.value)}
                        required></input>
                 <Button onClick={handleCreateCurriculum} className={s.button}>Curriculum erstellen</Button>
@@ -108,14 +105,20 @@ function CurriculumPage() {
                 </tr>
                 </thead>
                 <tbody>
-                {curryTodos.map((todo) => (
+                {allTodosInState
+                    .filter(todo => todo.curriculumIds
+                        .includes(curriculum.id))
+                    .sort((a, b) => a.id - b.id).map((todo) => (
                     <tr key={todo.id} className={s.todoRow}>
                         <td >{todo.title}</td>
                         <td >{todo.startDate}</td>
                         <td >{todo.endDate}</td>
                         <td >{todo.status}</td>
                         <td >
-                            <Button className={s.tableButton}>Ansehen</Button>
+                            <Button className={s.tableButton}
+                                    onClick={() => handleOpenModal('showTodo', todo.id)}
+                                    text={'Ansehen'}>
+                            </Button>
                             <Button className={s.tableButton}
                                     onClick={() => handleRemoveTodoFromCurry(todo.id)}
                                     text={'Entfernen'}>
@@ -126,7 +129,31 @@ function CurriculumPage() {
                 ))}
                 </tbody>
             </table>
+            <div className={s.assignTodo}>
+                <p>Todo hinzufügen: </p>
+                <CustomSelect
+                    value={
+                    curriculum.id || ""}
+                    options={[
+                        {value: "", label: "Bitte wählen"},
+                        ...allTodosInState.filter(todo=>
+                        todo.creator === user.username && !todo.curriculumIds.includes(curriculum.id)
+                        )
+                            .map(todo => ({
+                            value: todo.id,
+                            label: todo.title,
+                        }))
+                    ]}
+                    onChange={(toDoId) => handleAssignCurry(toDoId, curriculum.id)}
+
+                />
+
+
+            </div>
+            <ModalWindow></ModalWindow>
+
         </div>
+
     );
 }
 

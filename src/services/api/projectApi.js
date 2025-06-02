@@ -1,12 +1,8 @@
-// src/api/projectApi.js
 import { apiSlice } from "./apiSlice";
 
-// Подключаем наши проекты к RTK Query
 export const projectApi = apiSlice.injectEndpoints({
-    // добавляем новые тэги к существующим
     tagTypes: ["Projects"],
     endpoints: (builder) => ({
-        // 1) GET /projects
         getProjects: builder.query({
             query: () => ({ url: "/projects", method: "GET" }),
             transformResponse: (response) => response.projects,
@@ -15,16 +11,12 @@ export const projectApi = apiSlice.injectEndpoints({
                 ...projects.map(({ id }) => ({ type: "Projects", id })),
             ],
         }),
-
-        // 2) GET /projects/:id
         getProjectById: builder.query({
             query: (id) => ({ url: `/projects/${id}`, method: "GET" }),
             transformResponse: (response) => response.project,
             providesTags: (project) =>
                 project ? [{ type: "Projects", id: project.id }] : [],
         }),
-
-        // 3) POST /projects
         createProject: builder.mutation({
             query: (payload) => ({
                 url: "/projects",
@@ -34,8 +26,6 @@ export const projectApi = apiSlice.injectEndpoints({
             transformResponse: (response) => response.project,
             invalidatesTags: [{ type: "Projects", id: "LIST" }],
         }),
-
-        // 4) PATCH /projects/:id
         updateProject: builder.mutation({
             query: ({ id, ...patch }) => ({
                 url: `/projects/${id}`,
@@ -48,8 +38,6 @@ export const projectApi = apiSlice.injectEndpoints({
                 { type: "Projects", id: "LIST" } // и общий список
             ],
         }),
-
-        // 5) DELETE /projects/:id
         deleteProject: builder.mutation({
             query: (id) => ({ url: `/projects/${id}`, method: "DELETE" }),
             invalidatesTags: (result, error, id) => [
@@ -57,8 +45,6 @@ export const projectApi = apiSlice.injectEndpoints({
                 { type: "Projects", id: "LIST" },
             ],
         }),
-
-        // 6) POST /projects/{projectId}/invite/{userId}
         inviteUser: builder.mutation({
             query: ({ projectId, userId }) => ({
                 url: `/projects/${projectId}/invite/${userId}`,
@@ -69,7 +55,6 @@ export const projectApi = apiSlice.injectEndpoints({
     }),
 });
 
-// Хуки, которые потом можно использовать в компонентах:
 export const {
     useGetProjectsQuery,
     useGetProjectByIdQuery,

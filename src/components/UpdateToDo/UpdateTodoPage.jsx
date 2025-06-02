@@ -1,18 +1,20 @@
 import React, {useEffect, useState} from 'react';
-import {useDeleteTodoMutation, useGetTodosQuery, useUpdateTodoMutation} from '../../services/api/todoApi';
+import {useDeleteTodoMutation, useUpdateTodoMutation} from '../../services/api/todoApi';
 import s from './UpdateTodoPage.module.scss';
 import {useDispatch, useSelector} from "react-redux";
-import {removeTodo, setUpdatedTodo} from "../../redux/todos/todoSlice.js";
+import {getAllTodos, removeTodo, setUpdatedTodo} from "../../redux/todos/todoSlice.js";
 import {getTodoId} from "../../redux/dashboard/dashboardSlice.js";
 import CustomSelect from "../CustomDropdown/CustomDropdown.jsx";
-import {useGetProjectsQuery} from "../../services/api/projectApi.js";
+import {getAllProjects} from "../../redux/projects/projectsSlice.js";
 
 
 function UpdateTodoPage({onSuccess}) {
     const dispatch = useDispatch();
     const id = useSelector(getTodoId);
+    const allTodos = useSelector(getAllTodos);
+    const projects = useSelector(getAllProjects);
+    const todoForUpdate = allTodos.find((todo) => todo.id === id);
 
-    const {data: todos, isLoading} = useGetTodosQuery();
     const [updateTodo] = useUpdateTodoMutation();
     const [deleteTodo] = useDeleteTodoMutation();
 
@@ -20,36 +22,20 @@ function UpdateTodoPage({onSuccess}) {
     const [description, setDescription] = useState('');
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
-    const [
-        status,
-        setStatus] = useState('');
+    const [status, setStatus] = useState('');
     const [projectId, setProjectId] = useState('');
 
 
-    const todo = todos?.find(t => t.id === id);
-
-    const {
-        data: projects = [],
-        isLoadingProjects,
-        isError,
-        error,
-    } = useGetProjectsQuery();
-
     useEffect(() => {
-        if (todos) {
-            const currentTodo = todos.find(t => t.id === id);
-            if (currentTodo) {
-                setTitle(currentTodo.title || '');
-                setDescription(currentTodo.description || '');
-                setStartDate(currentTodo.startDate || '');
-                setEndDate(currentTodo.endDate || '');
-                setStatus(currentTodo.status || '');
-                setProjectId(currentTodo.project?.id || '');
-            }
+        if (todoForUpdate) {
+                setTitle(todoForUpdate.title || '');
+                setDescription(todoForUpdate.description || '');
+                setStartDate(todoForUpdate.startDate || '');
+                setEndDate(todoForUpdate.endDate || '');
+                setStatus(todoForUpdate.status || '');
+                setProjectId(todoForUpdate.project?.id || '');
         }
-    }, [todos, id]);
-
-    if (isLoading) return <p>Lade Todo…</p>;
+    }, [todoForUpdate]);
 
     const handleDeleteTodo = async () => {
         try {
@@ -78,6 +64,7 @@ function UpdateTodoPage({onSuccess}) {
         };
 
         try {
+            console.log(updatedTodo)
             await updateTodo({id, updatedTodo}).unwrap();
             dispatch(setUpdatedTodo({id, updatedTodo}));
             onSuccess();
@@ -92,9 +79,6 @@ function UpdateTodoPage({onSuccess}) {
         return project ? project.title : '---';
     };
 
-    if (isLoadingProjects) return <p>Lade Projekte…</p>;
-    if (isError) return <p>Fehler: {error?.message || "Unbekannter Fehler"}</p>;
-
     const onSetStatus = (id, status) => {
         setStatus(status);
     };
@@ -102,7 +86,6 @@ function UpdateTodoPage({onSuccess}) {
     const handleProjectChange = (id, projectId) => {
         setProjectId(projectId);
     };
-
 
     return (
         <div className={s.bigContainer}>
@@ -167,35 +150,33 @@ function UpdateTodoPage({onSuccess}) {
                     </div>
 
                     <CustomSelect
-                        value={todo.status}
+                        value={todoForUpdate.status}
                         options={[
                             {value: "TODO", label: "TODO"},
                             {value: "DOING", label: "DOING"},
                             {value: "DONE", label: "DONE"},
                         ]}
-                        onChange={(newStatus) => onSetStatus(todo.id, newStatus)}
+                        onChange={(newStatus) => onSetStatus(todoForUpdate.id, newStatus)}
                     />
 
                     <CustomSelect
-                        value={todo.project?.id || ""}
+                        value={todoForUpdate.project?.id || ""}
                         options={[
-                            {value: "", label: getProjectTitle(todo.projectId)},
+                            {value: "", label: getProjectTitle(todoForUpdate.projectId)},
                             ...projects.map((project) => ({
                                 value: project.id,
                                 label: project.title,
                             })),
                         ]}
-                        onChange={(newProjectId) => handleProjectChange(todo.id, newProjectId)}
+                        onChange={(newProjectId) => handleProjectChange(todoForUpdate.id, newProjectId)}
                     />
 
                     <div className={s.buttonRow}>
-                        <button onClick={handleDeleteTodo}>Löschen</button>
-                        <button
-                            className={`${s.saveBtn} ${s.text}`}
-                            onClick={handleUpdateTodo}
-                        >
-                            Speichern
-                        </button>
+
+                        <button className={s.saveBtn} onClick={handleUpdateTodo}>Speichern</button>
+
+                        <button className={s.deleteBtn} onClick={handleDeleteTodo}>Löschen</button>
+
                     </div>
                 </div>
             </div>
