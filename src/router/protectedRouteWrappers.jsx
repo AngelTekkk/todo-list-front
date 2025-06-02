@@ -3,8 +3,9 @@ import TodoPage from "../pages/todo/TodoPage.jsx";
 import NewToDo from "../components/NewToDo/NewToDo.jsx";
 import ProjectsPage from "../pages/Project/ProjectsPage.jsx";
 import UpdateTodoPage from "../components/UpdateToDo/UpdateTodoPage.jsx";
-import AllTodo from "../pages/AllTodoPage/AllTodo.jsx";
+import AllTodo from "../pages/TodoCalendar/TodoCalendar.jsx";
 import CurriculumPage from "../pages/AllCurriculumPage/CurriculumPage.jsx";
+import TodoCalendar from "../pages/TodoCalendar/TodoCalendar.jsx";
 
 export const ProtectedTodoPage = () => (
     <ProtectedRoute>
@@ -30,9 +31,9 @@ export const ProtectedUpdateTodoPage = () => (
     </ProtectedRoute>
 );
 
-export const ProtectedAllTodo = () => (
+export const ProtectedTodoCalendar = () => (
     <ProtectedRoute>
-        <AllTodo />
+        <TodoCalendar />
     </ProtectedRoute>
 );
 

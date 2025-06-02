@@ -1,7 +1,9 @@
 import React from 'react';
 import {useDeleteTodoMutation, useUpdateStatusTodoMutation} from '../../services/api/todoApi';
 import s from './TodoPage.module.scss';
-import {useNavigate} from "react-router-dom";
+import {NavLink,
+    // useNavigate
+} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {getAllTodos, removeTodo, toggleTodo} from "../../redux/todos/todoSlice.js";
 import ToDoSection from "./TodoSection/TodoSection.jsx";
@@ -12,7 +14,7 @@ import {openModal} from "../../redux/dashboard/dashboardSlice.js";
 function TodoPage() {
     const [deleteTodo] = useDeleteTodoMutation();
     const [updateStatus] = useUpdateStatusTodoMutation();
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
     const dispatch = useDispatch();
     const fetchedTodos = useSelector(getAllTodos);
 
@@ -38,6 +40,7 @@ function TodoPage() {
         try {
             await deleteTodo(id).unwrap();
             dispatch(removeTodo(id));
+            console.log("Dein Todo isch im eimer")
         } catch (err) {
             console.error("Fehler beim Löschen des ToDos:", err);
         }
@@ -50,8 +53,7 @@ function TodoPage() {
     return (
         <div className={s.todoList}>
             <div className={s.leftSide}>
-                <Button className={s.goToNewToDo} onClick={() => handleOpenModal('newTodo')} text={'neues Todo'}/>
-                <Button className={s.goToAllTodos} onClick={() => navigate(`/allTodos`)} text={`Todo Liste`}/>
+                <Button className={s.openNewTodoForm} onClick={() => handleOpenModal('newTodo')} text={'neues Todo'}/>
             </div>
             <div className={s.todoSections}>
                 {["TODO", "DOING", "DONE"].map((status) => (

@@ -28,24 +28,25 @@ function UpdateTodoPage({onSuccess}) {
 
     useEffect(() => {
         if (todoForUpdate) {
-                setTitle(todoForUpdate.title || '');
-                setDescription(todoForUpdate.description || '');
-                setStartDate(todoForUpdate.startDate || '');
-                setEndDate(todoForUpdate.endDate || '');
-                setStatus(todoForUpdate.status || '');
-                setProjectId(todoForUpdate.project?.id || '');
+            setTitle(todoForUpdate.title || '');
+            setDescription(todoForUpdate.description || '');
+            setStartDate(todoForUpdate.startDate || '');
+            setEndDate(todoForUpdate.endDate || '');
+            setStatus(todoForUpdate.status || '');
+            setProjectId(todoForUpdate.project?.id || '');
         }
     }, [todoForUpdate]);
 
     const handleDeleteTodo = async () => {
         try {
             await deleteTodo(id).unwrap();
-            dispatch(removeTodo({id}));
+            dispatch(removeTodo(id));
             onSuccess();
         } catch (err) {
             console.error('Fehler beim Löschen:', err);
             alert('Fehler beim Löschen des Todos.');
         }
+        console.log("Dein Todo isch im eimer")
     };
 
     const handleUpdateTodo = async () => {
@@ -88,99 +89,87 @@ function UpdateTodoPage({onSuccess}) {
     };
 
     return (
-        <div className={s.bigContainer}>
-            <div className={s.newTodoBox}>
-                <h2>TODO ÄNDERN</h2>
-                <div className={s.newTodoWrapper}>
-                    <div className={s.inputRow}>
-                        <label className={s.text}>
-                            Titel:
-                            <input
-                                type="text"
-                                className={s.inputDescription}
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
-                                required
-                                minLength={5}
-                                maxLength={25}
-                            />
-                        </label>
-                    </div>
 
-                    <div className={s.inputRow}>
-                        <label className={s.text}>
-                            Beschreibung:
-                            <textarea
-                                className={`${s.textarea} ${s.text}`}
-                                value={description}
-                                onChange={(e) => setDescription(e.target.value)}
-                                required
-                                minLength={5}
-                                maxLength={255}
-                            />
-                        </label>
-                    </div>
+        <div className={s.updateTodoBox}>
 
-                    <div className={s.inputRow}>
-                        <label className={s.text}>
-                            Startdatum:
-                            <input
-                                type="date"
-                                className={s.input}
-                                value={startDate}
-                                onChange={(e) => setStartDate(e.target.value)}
-                                required
-                            />
-                        </label>
-                    </div>
+            <h2 className={s.h2Todo}>TODO ÄNDERN</h2>
 
-                    <div className={s.inputRow}>
-                        <label className={s.text}>
-                            Enddatum:
-                            <input
-                                type="date"
-                                className={s.input}
-                                value={endDate}
-                                onChange={(e) => setEndDate(e.target.value)}
-                                min={startDate}
-                                required
+            <label className={s.title}>
+                <input
+                    type="text"
+                    className={s.inputTitle}
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    required
+                    minLength={5}
+                    maxLength={25}
+                />
+            </label>
 
-                            />
-                        </label>
-                    </div>
+            <label className={s.description}>
+                <textarea
+                    className={s.inputDescription}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    required
+                    minLength={5}
+                    maxLength={255}
+                />
+            </label>
 
-                    <CustomSelect
-                        value={todoForUpdate.status}
-                        options={[
-                            {value: "TODO", label: "TODO"},
-                            {value: "DOING", label: "DOING"},
-                            {value: "DONE", label: "DONE"},
-                        ]}
-                        onChange={(newStatus) => onSetStatus(todoForUpdate.id, newStatus)}
-                    />
+            <label className={s.startDate}>
+                <input
+                    type="date"
+                    className={s.inputStartDate}
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    required
+                />
+            </label>
 
-                    <CustomSelect
-                        value={todoForUpdate.project?.id || ""}
-                        options={[
-                            {value: "", label: getProjectTitle(todoForUpdate.projectId)},
-                            ...projects.map((project) => ({
-                                value: project.id,
-                                label: project.title,
-                            })),
-                        ]}
-                        onChange={(newProjectId) => handleProjectChange(todoForUpdate.id, newProjectId)}
-                    />
+            <label className={s.endDate}>
+                <input
+                    type="date"
+                    className={s.inputEndDate}
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    min={startDate}
+                    required
 
-                    <div className={s.buttonRow}>
+                />
+            </label>
 
-                        <button className={s.saveBtn} onClick={handleUpdateTodo}>Speichern</button>
+            <CustomSelect
+                value={todoForUpdate.status}
+                options={[
+                    {value: "TODO", label: "TODO"},
+                    {value: "DOING", label: "DOING"},
+                    {value: "DONE", label: "DONE"},
+                ]}
+                onChange={(newStatus) => onSetStatus(todoForUpdate.id, newStatus)}
+            />
 
-                        <button className={s.deleteBtn} onClick={handleDeleteTodo}>Löschen</button>
+            <CustomSelect
+                value={todoForUpdate.project?.id || ""}
+                options={[
+                    {value: "", label: getProjectTitle(todoForUpdate.projectId)},
+                    ...projects.map((project) => ({
+                        value: project.id,
+                        label: project.title,
+                    })),
+                ]}
+                onChange={(newProjectId) => handleProjectChange(todoForUpdate.id, newProjectId)}
+            />
 
-                    </div>
-                </div>
+            <div className={s.buttonBox}>
+
+                <button className={s.saveBtn} onClick={handleUpdateTodo}>Speichern</button>
+
+                <button className={s.deleteBtn} value={todoForUpdate.id} onClick={handleDeleteTodo}>Löschen</button>
+
             </div>
         </div>
+
     );
 }
 

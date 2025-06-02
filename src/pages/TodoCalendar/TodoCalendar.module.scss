@@ -1,0 +1,247 @@
+@use "../../_index.scss" as *;
+
+.calendarWrapper {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-auto-rows: 120px;
+  gap: 8px;
+  padding: 16px;
+  background-color: #f9f9f9;
+}
+
+.monthSwitcher {
+  margin-top: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.monthButtons {
+  margin-bottom: 15px;
+  display: flex;
+  column-gap: 25px;
+}
+
+.monthName {
+  font-style: oblique;
+  font-size: 24px;
+  background-color: $primary-color;
+  color: $highlight-color;
+  padding: 10px 25px;
+  border-radius: 15px;
+}
+
+.calendarDay {
+  position: relative;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 8px;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+
+  .dateLabel {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: #444;
+    margin-bottom: 6px;
+  }
+
+  .todoCubes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    position: relative;
+  }
+
+  .todoCube {
+    position: relative;
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+
+
+    .todoPopup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      min-width: 200px;
+      min-height: 200px;
+      padding: 16px;
+      border-radius: 12px;
+      background-color: white;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      border: 1px solid #e0e0e0;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: all 0.3s ease;
+      overflow: visible;
+      font-size: 14px;
+      color: #333;
+      z-index: 999;
+
+      &::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 0, 0, 0.2);
+        border-radius: 4px;
+
+        &:hover {
+          background-color: rgba(0, 0, 0, 0.3);
+        }
+      }
+
+      .popupTitle {
+        font-weight: bold;
+        font-size: 1.1rem;
+        margin-bottom: 12px;
+        color: #2c3e50;
+        border-bottom: 2px solid #ecf0f1;
+        padding-bottom: 8px;
+      }
+
+      .popupDescription {
+        font-size: 0.9rem;
+        color: #555;
+        margin-bottom: 16px;
+        line-height: 1.5;
+      }
+
+      .popupMeta {
+        font-size: 0.85rem;
+        color: #777;
+
+        span {
+          display: block;
+          margin-bottom: 6px;
+          padding: 4px 8px;
+          background-color: #f8f9fa;
+          border-radius: 4px;
+
+          &:last-child {
+            margin-bottom: 0;
+          }
+        }
+      }
+    }
+
+    &:hover .todoPopup {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .calendarWrapper {
+    grid-auto-rows: 100px;
+    gap: 4px;
+    padding: 8px;
+  }
+
+  .calendarDay {
+    padding: 4px;
+
+    .dateLabel {
+      font-size: 0.8rem;
+      margin-bottom: 4px;
+    }
+
+    .todoCube {
+      width: 12px;
+      height: 12px;
+
+      .todoPopup {
+        width: 280px;
+        max-width: 280px;
+        height: 320px;
+        max-height: 320px;
+        padding: 12px;
+
+        .popupTitle {
+          font-size: 1rem;
+        }
+
+        .popupDescription {
+          font-size: 0.85rem;
+        }
+      }
+    }
+  }
+}
+
+.calendarDay {
+  animation: fadeInUp 0.4s ease forwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.calendarDayTodoDate {
+  color: tomato;
+}
+
+.calendarDayTodoDescription {
+  margin: 15px 0;
+}
+
+.calendarDayTodoTitle {
+  font-size: 24px;
+}
+
+.calendarDayTodoStatus {
+  font-style: oblique;
+}
+
+.dayName {
+  color: lightslategray;
+}
+
+@keyframes pulseShadow {
+  0% {
+    box-shadow: 0 0 8px 2px rgb(243, 217, 44);
+  }
+  25% {
+    box-shadow: 0 0 16px 6px rgba(255, 69, 0, 1);
+  }
+  50% {
+    box-shadow: 0 0 8px 2px rgb(44, 211, 85);
+  }
+  75% {
+    box-shadow: 0 0 16px 6px rgba(255, 69, 0, 1);
+  }
+  100% {
+    box-shadow: 0 0 8px 2px rgb(243, 217, 44);
+  }
+}
+
+.todayHighlight {
+  animation: pulseShadow 3s infinite;
+  border-radius: 12px;
+}
+
+

@@ -1,26 +1,24 @@
 @use "../../_index.scss" as *;
 
-.customSelect {
+.customSelect,
+.customSelectButton {
   position: relative;
   width: 100%;
-
-  &Button {
-    width: 100%;
-    padding: 0.5rem 1rem;
-    font-weight: 600;
-    border: none;
-    cursor: pointer;
-    background-color: rgba(119, 136, 153, 0.3);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-radius: 99px;
-  }
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 99px;
+  border: none;
 }
 
-.arrow {
-  margin-left: 0.5rem;
-  font-size: 0.9rem;
+.customSelectButton {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.22);
+  &:hover {
+    outline: 1px solid $accent-color;
+  }
 }
 
 .customSelectOptions {
@@ -37,12 +35,11 @@
   cursor: pointer;
   display: flex;
   align-items: center;
-  background-color: rgba(119, 136, 153, 1);
-
+  background-color: rgba(177, 177, 177, 1);
 
 
   &:hover {
-    background-color: rgba(42, 182, 20, 1);
+    background-color: $highlight-color;
   }
 
   &:first-child {
@@ -63,8 +60,6 @@
 
 
 .optionLabel {
-  font-size: 0.95rem;
-  font-weight: 300;
   color: $primary-color;
   display: flex;
   align-items: center;
@@ -72,9 +67,9 @@
 }
 
 .selected {
-  background-color: rgba(42, 182, 20, 1);
+  background-color: #3ff39e;
   color: $primary-color;
-  font-weight: 800;
+  font-weight: bold;
 }
 
 .selected::before {

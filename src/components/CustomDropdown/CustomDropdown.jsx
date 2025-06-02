@@ -33,7 +33,7 @@ function CustomSelect({ value, options = [], onChange }) {
                 onClick={() => setOpen((o) => !o)}
             >
                 {selectedOption ? selectedOption.label : ""}
-                <span className={s.arrow}>{open ? "☰" : "☰"}</span>
+                <span className={s.dropdownIcon}>{open ? "☰" : "☰"}</span>
             </Button>
 
 

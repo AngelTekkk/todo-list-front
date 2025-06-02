@@ -1,0 +1,29 @@
+@use "../../../_index.scss" as *;
+
+.card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 12px;
+  margin-top: 25px;
+  min-width: 350px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+
+}
+
+.name {
+  margin: 0;
+  font-weight: bold;
+}

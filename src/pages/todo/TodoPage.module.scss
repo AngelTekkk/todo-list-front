@@ -108,8 +108,8 @@
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.goToNewToDo,
-.goToAllTodos {
+.openNewTodoForm,
+.navLinkTodoList {
   background-color: $background-color;
   color: $primary-color;
   border: none;

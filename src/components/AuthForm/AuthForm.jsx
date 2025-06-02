@@ -1,10 +1,12 @@
+import s from "./AuthForm.module.scss";
 import {useState} from "react";
 import {useDispatch} from "react-redux";
 
 import {useCheckAuthQuery, useLoginMutation, useRegisterMutation} from "../../services/api/authApi.js";
 import {oauth} from "../../redux/auth/authSlice.js";
+import Button from "../Button/Button.jsx";
 
-function AuthForm({ type = 'login', onSuccess }) {
+function AuthForm({type = 'login', onSuccess}) {
     const dispatch = useDispatch();
     const isLogin = type === 'login';
 
@@ -20,7 +22,7 @@ function AuthForm({ type = 'login', onSuccess }) {
     const [login] = useLoginMutation();
     const [register] = useRegisterMutation();
 
-    const { refetch: checkAuth } = useCheckAuthQuery();
+    const {refetch: checkAuth} = useCheckAuthQuery();
 
     const validate = () => {
         const newErrors = {};
@@ -42,8 +44,8 @@ function AuthForm({ type = 'login', onSuccess }) {
     };
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
+        const {name, value} = e.target;
+        setFormData((prev) => ({...prev, [name]: value}));
     };
 
     const handleSubmit = async (e) => {
@@ -51,7 +53,7 @@ function AuthForm({ type = 'login', onSuccess }) {
         if (!validate()) return;
 
         const payload = isLogin
-            ? { username: formData.username, password: formData.password }
+            ? {username: formData.username, password: formData.password}
             : {
                 firstName: formData.firstName,
                 lastName: formData.lastName,
@@ -70,49 +72,55 @@ function AuthForm({ type = 'login', onSuccess }) {
             onSuccess();
         } catch (err) {
             console.error("❌ Fehler:", err);
-            setErrors({ form: "Authentifizierung fehlgeschlagen" });
+            setErrors({form: "Authentifizierung fehlgeschlagen"});
         }
     };
 
     return (
         <form onSubmit={handleSubmit} noValidate>
-            {errors.form && <p style={{ color: 'red' }}>{errors.form}</p>}
+            {errors.form && <p style={{color: 'red'}}>{errors.form}</p>}
+
+            {isLogin ? <h2 className={s.loginTopic}>Gib deine Benutzerdaten ein um dich anzumelden</h2> : <h2 className={s.registerTopic}>Registrieren</h2>}
 
             {!isLogin && (
                 <>
                     <label>
                         Vorname:
                         <input type="text" name="firstName" value={formData.firstName} onChange={handleChange}/>
-                        {errors.firstName && <span style={{ color: 'red' }}>{errors.firstName}</span>}
+                        {errors.firstName && <span style={{color: 'red'}}>{errors.firstName}</span>}
                     </label>
 
                     <label>
                         Nachname:
                         <input type="text" name="lastName" value={formData.lastName} onChange={handleChange}/>
-                        {errors.lastName && <span style={{ color: 'red' }}>{errors.lastName}</span>}
+                        {errors.lastName && <span style={{color: 'red'}}>{errors.lastName}</span>}
                     </label>
 
                     <label>
                         E-Mail:
                         <input type="email" name="email" value={formData.email} onChange={handleChange}/>
-                        {errors.email && <span style={{ color: 'red' }}>{errors.email}</span>}
+                        {errors.email && <span style={{color: 'red'}}>{errors.email}</span>}
                     </label>
                 </>
             )}
 
-            <label>
-                Benutzername:
-                <input type="text" name="username" value={formData.username} onChange={handleChange}/>
-                {errors.username && <span style={{ color: 'red' }}>{errors.username}</span>}
-            </label>
+            <div className={s.loginRegisterModal}>
+                <label htmlFor={"username"}>
+                    <h3 className={s.userNameH3}>Benutzername:</h3>
+                    <input className={s.userName} type="text" name="username" value={formData.username}
+                           onChange={handleChange}/>
+                    {errors.username && <span style={{color: 'red'}}>{errors.username}</span>}
+                </label>
 
-            <label>
-                Passwort:
-                <input type="password" name="password" value={formData.password} onChange={handleChange}/>
-                {errors.password && <span style={{ color: 'red' }}>{errors.password}</span>}
-            </label>
+                <label htmlFor={"password"}>
+                    <h3 className={s.passWordH3}>Passwort:</h3>
+                    <input  className={s.passWord} type="password" name="password" value={formData.password}
+                           onChange={handleChange}/>
+                    {errors.password && <span style={{color: 'red'}}>{errors.password}</span>}
+                </label>
 
-            <button type="submit">{isLogin ? "Einloggen" : "Registrieren"}</button>
+                <Button className={s.submitBtn} type="submit" text={isLogin ? "Einloggen" : "Registrieren"} />
+            </div>
         </form>
     );
 }

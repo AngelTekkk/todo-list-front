@@ -6,13 +6,13 @@
   justify-content: center;
   margin-top: $header-height + 20px;
   padding: 40px;
-  background-color: lighten($primary-color, 45%);
+  background-color: lightslategray;
   border-radius: 20px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
   animation: fadeIn 0.8s ease-in-out;
   color: $primary-color;
 
-  h1{
+  .curryH1{
     text-align: center;
   }
 }
@@ -24,14 +24,14 @@
 
   .button {
     width: auto;
-    min-width: 200px; // Optional: Einheitlich groß
+    min-width: 200px;
   }
 }
 
 .createCurry {
   margin-top: $header-height + 20px;
   padding: 40px;
-  background-color: lighten($primary-color, 45%);
+  background-color: lightslategray;
   border-radius: 20px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
   animation: fadeIn 0.8s ease-in-out;
@@ -62,7 +62,7 @@
 }
 
 .button:hover {
-  background-color: lighten($background-color, 10%);
+  background-color: $background-color;
   transform: scale(1.05);
 }
 
@@ -95,7 +95,7 @@
 }
 
 .todoRow:hover {
-  background-color: lighten($background-color, 25%);
+  background-color: whitesmoke;
   transition: background-color 0.3s ease;
 }
 
@@ -112,25 +112,25 @@
 }
 
 .tableButton:hover {
-  background-color: darken($accent-color, 10%);
+  background-color: $accent-color;
 }
 
-input[type="text"] {
-  padding: 10px;
-  margin-top: 10px;
-  border-radius: 6px;
-  border: 1px solid $primary-color;
-  width: 100%;
-  max-width: 400px;
-  font-size: 1rem;
-  transition: border-color 0.3s ease;
-}
+//input[type="text"] {
+//  padding: 10px;
+//  margin-top: 10px;
+//  border-radius: 6px;
+//  border: 1px solid $primary-color;
+//  width: 100%;
+//  max-width: 400px;
+//  font-size: 1rem;
+//  transition: border-color 0.3s ease;
+//}
 
-input[type="text"]:focus {
-  outline: none;
-  border-color: $accent-color;
-  box-shadow: 0 0 8px rgba(97, 218, 251, 0.5);
-}
+//input[type="text"]:focus {
+//  outline: none;
+//  border-color: $accent-color;
+//  box-shadow: 0 0 8px rgba(97, 218, 251, 0.5);
+//}
 
 @keyframes fadeIn {
   from {
@@ -148,6 +148,6 @@ input[type="text"]:focus {
     text-shadow: 0 0 5px $highlight-color, 0 0 10px $highlight-color;
   }
   to {
-    text-shadow: 0 0 15px lighten($highlight-color, 20%), 0 0 30px lighten($highlight-color, 20%);
+    text-shadow: 0 0 15px $highlight-color, 0 0 30px $highlight-color;
   }
 }

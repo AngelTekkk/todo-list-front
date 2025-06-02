@@ -1,0 +1,26 @@
+@use "../../../_index.scss" as *;
+
+.statCardBoard {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 20px;
+  padding: 15px;
+
+  border-top: 5px solid $background-color;
+  border-left: 2px solid $background-color;
+  border-right: 2px solid $background-color;
+  border-bottom: 5px solid $background-color;
+  border-radius: 10px;
+
+  box-shadow: 12px 15px 10px rgba(0, 0, 0, 0.18);
+
+
+  background-color: #fff;
+}
+
+.statCardH3 {
+  margin: 0;
+  font-style: oblique;
+
+}

@@ -1,0 +1,67 @@
+@use "../../../_index.scss" as *;
+
+
+.card {
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  margin-bottom: 12px;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-right: 0.5rem;
+  color: black;
+}
+
+.done {
+  color: #10b981;
+}
+
+.doing {
+  color: #f59e0b;
+}
+
+.todo {
+  color: #9ca3af;
+}
+
+
+.description {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 12px;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #777;
+}
+
+.project {
+  font-weight: bold;
+  color: midnightblue;
+}
+
+.deadline {
+  color: tomato;
+  font-style: italic;
+  font-weight: bolder;
+  margin-left: 50px;
+}

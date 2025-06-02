@@ -15,12 +15,17 @@ function Header() {
     const [logout] = useLogoutMutation();
     const location = useLocation();
 
+
     const navLinks = [
-        {path: '/todos', label: "MY TODO'S"},
+        {path: '/', label: 'DASHBOARD'},
+        {path: '/todos', label: 'MY TODOS'},
+        {path: '/todoCalendar', label: 'KALENDER'},
         {path: '/projects', label: 'PROJECTS'},
         {path: '/curriculum', label: 'CURRICULUM'},
-        {path: '/completed', label: 'COMPLETED'}
+        {path: '/completed', label: 'COMPLETED'},
+
     ];
+
 
     const handleOpenModal = (type) => {
         dispatch(openModal(type));
