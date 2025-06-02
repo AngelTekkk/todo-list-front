@@ -1,15 +1,42 @@
 @use "../../_index.scss" as *;
+@import url('https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap');
 
 .bigContainer {
   padding: 20px 15px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+
+  background-image: url("../../assets/img/dashboardbackground/dashboardbackground.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
+
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.45); // Helles Overlay
+    backdrop-filter: blur(2px); // Weichzeichnen
+    z-index: 0;
+  }
+
+  > * {
+    position: relative;
+    z-index: 1;
+  }
 }
 
+
 .title {
-  text-align : center;
-  margin-bottom: 20px;
-  font-size: 32px;
-  font-weight: bold;
-  color: $primary-color;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  color: #111827;
+  text-align: center;
 }
 
 .authContainer {
@@ -18,4 +45,78 @@
   gap: 20px;
   margin: 0 auto;
   padding: 20px;
+}
+
+.beforeLogin {
+  z-index: 0;
+}
+
+.infos {
+  margin-top: 10rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  z-index: 0;
+}
+
+.redInfo,
+.yellowInfo,
+.greenInfo {
+  text-align: center;
+  margin: 0 100px;
+  font-family: 'Shadows Into Light', sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  color: midnightblue;
+}
+
+.todoPartWrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  justify-content: center;
+  align-items: flex-start;
+  margin-top: 75px;
+}
+
+.statCarousel {
+  display: flex;
+  flex-direction: column;
+  min-height: 150px;
+  min-width: 250px;
+}
+
+.nextTodoSection,
+.projectSection,
+.currySection {
+  background-color: #ffffff;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
+
+  .dashboardH2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #1e293b;
+  }
+
+}
+
+@media (max-width: 768px) {
+  .statGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .authContainer {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+.deadline {
+  font-size: 24px;
+  font-weight: 800;
+  color: tomato;
 }

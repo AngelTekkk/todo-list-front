@@ -7,7 +7,7 @@ import {
     ProtectedNewToDo,
     ProtectedProjectsPage,
     ProtectedUpdateTodoPage,
-    ProtectedAllTodo,
+    ProtectedTodoCalendar,
     ProtectedCurriculumPage
 } from "./protectedRouteWrappers.jsx";
 
@@ -38,8 +38,8 @@ const router = createBrowserRouter([
                 Component: ProtectedUpdateTodoPage
             },
             {
-                path: "allTodos",
-                Component: ProtectedAllTodo
+                path: "todoCalendar",
+                Component: ProtectedTodoCalendar
             },
             {
                 path: "curriculum",

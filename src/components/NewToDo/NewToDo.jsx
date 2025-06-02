@@ -60,24 +60,25 @@ function NewToDo({onSuccess}) {
     }
 
     return (
+
         <div className={s.newTodoBox}>
-            <h2>Neues ToDo erstellen</h2>
-            <div className={s.newTodoWrapper}>
 
-                <label className={s.title}>
-                    <input
-                        type="text"
-                        className={s.inputTitle}
-                        placeholder="Gib einen Titel ein..."
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        required
-                        minLength={5}
-                        maxLength={25}
-                    />
-                </label>
+            <h2 className={s.h2NewTodo}>Neues ToDo erstellen</h2>
 
-                <label className={s.description}>
+            <label className={s.title}>
+                <input
+                    type="text"
+                    className={s.inputTitle}
+                    placeholder="Gib einen Titel ein..."
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    required
+                    minLength={5}
+                    maxLength={25}
+                />
+            </label>
+
+            <label className={s.description}>
                             <textarea
                                 className={s.inputDescription}
                                 placeholder="Gib eine Beschreibung ein..."
@@ -87,62 +88,59 @@ function NewToDo({onSuccess}) {
                                 minLength={5}
                                 maxLength={255}
                             />
-                </label>
+            </label>
 
-                <label className={s.startDate}>
-                    <input
-                        type="date"
-                        className={s.inputStartDate}
-                        value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
-                        required
-                    />
-                </label>
-
-                <label className={s.endDate}>
-                    <input
-                        type="date"
-                        className={s.inputEndDate}
-                        value={endDate}
-                        onChange={(e) => setEndDate(e.target.value)}
-                        min={startDate}
-                        required
-                    />
-                </label>
-
-                <label className={s.status}>
-                    <CustomDropdown
-                        className={s.dropDownStatus}
-                        value={status}
-                        onChange={(chosenStatus) => setStatus(chosenStatus)}
-                        required
-                        options={[
-                            {value: "", label: "Status wählen"},
-                            {value: "TODO", label: "TODO"},
-                            {value: "DOING", label: "DOING"},
-                            {value: "DONE", label: "DONE"},
-                        ]}
-                    />
-                </label>
-
-                <CustomSelect
-                    className={s.dropdownProject}
-                    value={projectId}
-                    options={[
-                        {value: "", label: "Projekt wählen (optional)"},
-                        ...projects.map((project) => ({
-                            value: project.id,
-                            label: project.title,
-                        })),
-                    ]}
-                    onChange={(projectId) => setProjectId(projectId)}
+            <label className={s.startDate}>
+                <input
+                    type="date"
+                    className={s.inputStartDate}
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    required
                 />
+            </label>
 
-                <div className={s.buttonBox}>
-                    <Button className={s.saveBtn} onClick={handleAddTodo} text={'Speichern'}/>
-                    <Button className={s.cancelBtn} onClick={handleCancelAddTodo} text={'Abbrechen'}/>
-                </div>
+            <label className={s.endDate}>
+                <input
+                    type="date"
+                    className={s.inputEndDate}
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    min={startDate}
+                    required
+                />
+            </label>
+
+            <CustomDropdown
+                value={status}
+                required
+                options={[
+                    {value: "", label: "Status wählen"},
+                    {value: "TODO", label: "TODO"},
+                    {value: "DOING", label: "DOING"},
+                    {value: "DONE", label: "DONE"},
+                ]}
+
+                onChange={(chosenStatus) => setStatus(chosenStatus)}
+            />
+
+            <CustomSelect
+                value={projectId}
+                options={[
+                    {value: "", label: "Projekt wählen (optional)"},
+                    ...projects.map((project) => ({
+                        value: project.id,
+                        label: project.title,
+                    })),
+                ]}
+                onChange={(projectId) => setProjectId(projectId)}
+            />
+
+            <div className={s.buttonBox}>
+                <Button className={s.saveBtn} onClick={handleAddTodo} text={'Speichern'}/>
+                <Button className={s.cancelBtn} onClick={handleCancelAddTodo} text={'Abbrechen'}/>
             </div>
+
         </div>
     );
 }

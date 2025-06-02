@@ -74,9 +74,9 @@ function CurriculumPage() {
 
     return (
         <div className={s.curryContainer}>
-            <h1>{user.username} mit der Rückennummer {user.id}</h1>
+            <h1 className={s.curryH1}>{user.username} mit der Rückennummer {user.id}</h1>
             <h2 className={s.highlightText}>präsentiert</h2>
-            <h1><strong>{curriculum.title} curryculum</strong></h1>
+            <h2><strong>{curriculum.title} curryculum</strong></h2>
 
             <div className={s.buttonWrapper}>
                 <Button onClick={handleDeleteCurriculum} className={s.button}>Curriculum löschen</Button>

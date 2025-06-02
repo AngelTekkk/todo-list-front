@@ -12,13 +12,17 @@ import ShowTodo from "../ShowTodo/ShowTodo.jsx";
 
 const customStyles = {
     content: {
+        borderRadius: '15px',
+        border: 'none',
+        boxShadow: '0 4px 10px rgba(0,0,0,0.7)',
         top: '50%',
         left: '50%',
         right: 'auto',
         bottom: 'auto',
         marginRight: '-50%',
         transform: 'translate(-50%, -50%)',
-        color: 'black'
+        color: 'black',
+        overflow: 'visible'
     },
 };
 
@@ -42,7 +46,6 @@ function ModalWindow() {
             {modalType === 'newTodo' && <NewToDo type={modalType} onSuccess={handleClose}/>}
             {modalType === 'updateTodo' && <UpdateTodoPage type={modalType} onSuccess={handleClose} />}
             {modalType === 'showTodo' && <ShowTodo type={modalType} onSuccess={handleClose}/>}
-
         </ReactModal>
     )
 }

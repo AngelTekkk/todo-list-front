@@ -8,15 +8,16 @@ import {useDispatch} from "react-redux";
 import {useGetProjectsQuery} from "../../../services/api/projectApi.js";
 import {useAssignToProjectMutation, useGetTodosQuery, useUpdateTodoMutation} from "../../../services/api/todoApi.js";
 import {setUpdatedTodo} from "../../../redux/todos/todoSlice.js";
+import {getDaysLeftColor} from "../../../components/LeftDaysColor/GetLeftDaysColor.js";
 
 
 const CARD_LIMIT = 5;
+
 
 function ToDoSection({
                          status,
                          todos,
                          onSetStatus,
-                         // onToggleStatus,
                          onDeleteTodo,
                      }) {
     const todosForThisSection = todos.filter(todo => todo.status === status);
@@ -62,7 +63,6 @@ function ToDoSection({
         setPage(nextPage);
     };
 
-
     const todosToDisplay = sortedTodos.slice(
         page * CARD_LIMIT,
         page * CARD_LIMIT + CARD_LIMIT
@@ -95,18 +95,6 @@ function ToDoSection({
     //             return "🢂 TODO";
     //     }
     // };
-
-    const getDaysLeftColor = (endDate) => {
-        const today = new Date();
-        const end = new Date(endDate);
-        const daysLeft = Math.ceil((end - today) / (1000 * 60 * 60 * 24));
-
-        return daysLeft > 7
-            ? 'rgb(72,204,104)'
-            : daysLeft > 3
-                ? 'rgb(253,220,117)'
-                : 'rgb(250,108,121)';
-    };
 
     const handleOpenModal = (type, todoId = null) => {
         dispatch(updateTodoModal({type, todoId}));
@@ -185,7 +173,7 @@ function ToDoSection({
                                 {todosToDisplay.map((todo, index) => (
 
                                     <div key={`${todo.id || `todo-${index}`}-${page}`} className={s.todoCard}
-                                         style={{ borderTop: `24px solid ${getDaysLeftColor(todo.endDate)}` }}>
+                                         style={{borderTop: `24px solid ${getDaysLeftColor(todo.endDate)}`}}>
                                         {/*<Button*/}
                                         {/*    className={s.fancyStatus}*/}
                                         {/*    onClick={() => onToggleStatus(todo.id, todo.status)}*/}
