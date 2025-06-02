@@ -46,6 +46,7 @@ function ToDoSection({
         data: projects = [],
         isLoading,
         isError,
+
         error,
     } = useGetProjectsQuery();
 
