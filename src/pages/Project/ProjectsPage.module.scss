@@ -1,60 +1,98 @@
-/* src/pages/Project/ProjectsPage.module.scss */
+@use "../../_index.scss" as *;
+
+/* общие отступы под зафиксированный header */
 .page {
-  padding-top: 80px; /* отступ под фиксированный header */
-  max-width: 800px;
+  padding-top: 40px;
+  //max-width: 1200px;
   margin: 0 auto;
+  flex: 1;
 }
 
+/* Заголовок страницы */
 .heading {
   margin-bottom: 1rem;
   font-size: 2rem;
+  text-align: center;
+  color: #545963;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-.createBtn,
+/* Кнопка «Neues Projekt herstellen» */
+.newBtn {
+  display: inline-block;
+  margin: 5px 0;
+  padding: 0.5rem 1rem;
+  background-color: $background-color;
+  color: $primary-color;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  &:hover {
+    background-color: $highlight-color;
+  }
+}
+
+/* Стили для самой таблицы */
+.table {
+  width: 100%;
+  border-collapse: collapse; /* объединяем границы */
+  font-family: Arial, sans-serif;
+  table-layout: auto !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* Заголовки столбцов */
+.table th {
+  background-color: rgba(63, 243, 158, 0.5);
+  color: #333;
+  text-align: center;
+  padding: 12px 15px;
+  border-bottom: 2px solid #ddd;
+}
+
+/* Обычные ячейки */
+.table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #ddd;
+  border: 2px solid #A88F6B !important;
+}
+
+/* Убираем перенос для столбца описания (если надо) */
+.td {
+  &.description {
+    white-space: nowrap;
+  }
+}
+
+/* Ряд таблицы */
+.tr {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+    background-color: #FFEBC8;
+  }
+}
+
+/* Кнопка «← Zurück zu Projekte» */
 .backBtn {
+  display: inline-block;
   margin: 1rem 0;
   padding: 0.5rem 1rem;
   background-color: #007bff;
-  border: none;
   color: white;
+  border: none;
   border-radius: 4px;
   cursor: pointer;
-}
-
-.createBtn:hover,
-.backBtn:hover {
-  background-color: #0056b3;
-}
-
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 1rem;
-}
-
-.th,
-.td {
-  border: 1px solid #ccc;
-  padding: 0.5rem;
-}
-
-.tr {
-  cursor: pointer;
-}
-
-.tr:hover {
-  background: #f5f5f5;
-}
-
-.card {
-  margin-top: 2rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  overflow: hidden;
+  &:hover {
+    background-color: #0056b3;
+  }
 }
 
 .cardHeader {
-  background: #f0f0f0;
+  //background: #f0f0f0;
   padding: 1rem;
 }
 
@@ -66,47 +104,9 @@
   padding: 1rem;
 }
 
-.noProjects,
-.noTasks {
-  font-style: italic;
-  color: #777;
-}
-
-.taskList {
-  list-style: none;
-  padding: 0;
-}
-
-.taskItem {
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #eee;
-}
-
-.taskItem:last-child {
-  border-bottom: none;
-}
-
+/* Форма создания/редактирования */
+.newForm,
 .editForm {
-  margin: 1em 0;
-}
-.input, .textarea {
-  width: 100%;
-  padding: 0.5em;
-  margin-bottom: 0.5em;
-}
-.buttons button {
-  margin-right: 0.5em;
-}
-.error {
-  color: tomato;
-  margin-top: 0.5rem;
-}
-
-.newBtn {
-  margin-bottom: 1rem;
-}
-
-.newForm {
   margin-bottom: 1rem;
   padding: 1rem;
   border: 1px solid #ccc;
@@ -117,42 +117,228 @@
   margin-bottom: 0.5rem;
 }
 
+.input,
+.textarea {
+  width: 100%;
+  padding: 0.5rem;
+}
+
 .buttons {
   display: flex;
   gap: 0.5rem;
 }
 
-/* …existing… */
-
 .cardActions {
   display: flex;
+  flex-direction: row;
   gap: 0.5rem;
-  margin-bottom: 1rem;
+  width: 100%;
 }
 
-.addTodosSection {
+
+.updateBtn,
+.deleteBtn,
+.curryBtn {
+  width: 50%;
+  padding: 0.5rem 0.5rem;
+  font-size: 1rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.25s ease-in-out;
+}
+
+.cardBtn {
+  width: 100%;
+  padding: 0.5rem 0.5rem;
+  margin-bottom: 5px;
+  font-size: 1.5rem;
+  text-align: left;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+    background-color: #FFEBC8;
+  }
+}
+
+.cardTitle {
+  font-family: "Akrobat ExtraBold", sans-serif;
+  font-size: 2rem;
+  text-decoration: blink;
+}
+
+.updateBtn {
+  background-color: rgba(71, 80, 92, 0.2);
+  color: $primary-color;
+
+  &:hover {
+    background-color: rgba(38, 45, 58, 0.5);
+    transform: scale(1.02);
+    color: #fff;
+    text-transform: uppercase;
+  }
+
+  &:active {
+    transform: scale(0.97);
+  }
+}
+
+.deleteBtn {
+  background-color: rgba(255, 0, 0, 0.2);
+  color: $primary-color;
+
+  &:hover {
+    background-color: rgba(255, 0, 0, 0.5);
+    transform: scale(1.02);
+    color: #fff;
+    text-transform: uppercase;
+  }
+
+  &:active {
+    transform: scale(0.97);
+  }
+}
+
+.error {
+  color: tomato;
+  font-style: normal;
+  margin-top: 0.5rem;
+}
+
+.section {
+  width: 100%;
   margin-top: 1rem;
   padding: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  box-sizing: border-box;
+  justify-content: center;
+  background-color: transparent;
+  border-radius: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  min-height: 10px;
 }
 
-.addTodoList {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+.sectionNewForm {
+  margin-bottom: 20px;
+  width: 100%;
+  padding: 1rem;
+  box-sizing: border-box;
+  justify-content: center;
+  background-color: transparent;
+  border-radius: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  min-height: 10px;
 }
 
-.addTodoList li {
-  margin-bottom: 0.5rem;
-}
-
-.addButtons {
-  margin-top: 0.5rem;
+.carousel {
   display: flex;
-  gap: 0.5rem;
+  align-items: center;
+  gap: 1rem;         /* расстояние между стрелками и каруселью */
 }
 
+.todoCardGroup {
+  position: relative;
+  width: calc(300px * 5 + 1rem * 4);
+  height: 420px;
+  overflow: visible;
+  align-items: center;
+}
 
+.todoCardSet {
+  height: 100%;
+  display: flex;
+  gap: 1rem;         /* расстояние между карточками */
+}
 
+.todoCard {
+  flex: 1;           /* каждая занимает ровно 1/количество_видимых */
+  min-width: 0;      /* чтобы flex не «ломал» их ширину при переполнении */
+  background-color: #fff;
+  border-radius: 1rem;
+  padding: 1rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+    background-color: #FFEBC8;
+  }
+}
+
+.projectCard {
+  width: 100%;
+  align-items: center;
+  background-color: #fff;
+  border-radius: 1rem;
+  padding: 1rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+    background-color: #FFEBC8;
+  }
+}
+
+.arrowLeft,
+.arrowRight {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.arrowIcon {
+  width: 50px;
+  height: 50px;
+}
+
+.todoCardPlaceholder {
+  flex: 1;
+  flex-shrink: 0;
+  min-width: 0;
+  width: 300px;
+  height: 400px;
+  background-color: #f8f8f8;
+  border: 2px dashed #ccc;
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+    background-color: #FFEBC8;
+  }
+}
+
+/* плюсик внутри плейсхолдера */
+.plus {
+  font-size: 2.5rem;
+  color: #888;
+}
 
