@@ -71,7 +71,7 @@ function CurriculumPage() {
     };
 
 
-    if (!curriculum) {
+    if (!curriculum.title) {
         return (
             <div className={s.createCurry}>
                 <h1>Hey {user.username}, du hast noch kein Curriculum!</h1>
