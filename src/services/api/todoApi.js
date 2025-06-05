@@ -59,6 +59,19 @@ export const todoApi = apiSlice.injectEndpoints({
             ],
         }),
 
+        removeFromProject: builder.mutation({
+            query: ({ todoId, projectId }) => ({
+                url: `/todos/${todoId}/assign/project/${projectId}`,
+                method: 'DELETE',
+            }),
+            invalidatesTags: (res, err, { todoId, projectId }) => [
+                { type: 'Todos', id: todoId },
+                { type: 'Todos', id: 'LIST' },
+                { type: 'Projects', id: projectId },
+                { type: 'Projects', id: 'LIST' },
+            ],
+        }),
+
         updateStatusTodo: builder.mutation({
             query: ({ newStatusObject, id }) => ({
                 url: `/todos/${id}/status`,
@@ -79,5 +92,6 @@ export const {
     useUpdateTodoMutation,
     useDeleteTodoMutation,
     useAssignToProjectMutation,
+    useRemoveFromProjectMutation,
     useUpdateStatusTodoMutation,
 } = todoApi;

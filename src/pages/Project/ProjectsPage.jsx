@@ -1,3 +1,4 @@
+// src/pages/Project/ProjectsPage.jsx
 import React, { useState, useEffect } from "react";
 import {
     useGetProjectsQuery,
@@ -6,10 +7,10 @@ import {
     useDeleteProjectMutation,
 } from "../../services/api/projectApi.js";
 import {
-    useGetTodosQuery,
     useAssignToProjectMutation,
-    useUpdateTodoMutation,
-} from "../../services/api/todoApi.js";
+    useRemoveFromProjectMutation,
+    useGetTodosQuery,
+} from '../../services/api/todoApi.js';
 import { AnimatePresence, motion } from "framer-motion";
 import Button from "../../components/Button/Button.jsx";
 import s from "./ProjectsPage.module.scss";
@@ -24,6 +25,7 @@ const variants = {
 };
 
 export default function ProjectsPage() {
+    // RTK Query hooks
     const {
         data: projects = [],
         isLoading: isLoadingProjects,
@@ -37,10 +39,14 @@ export default function ProjectsPage() {
     const [deleteProject, { isLoading: isDeleting, isError: deleteError }] =
         useDeleteProjectMutation();
 
+    // Получаем «все todo» для возможности их добавлять в проекты
     const { data: allTodos = [] } = useGetTodosQuery();
+
+    // Этот эндпоинт теперь создаёт/удаляет только связь todo ↔ project (многие‐ко‐многим)
     const [assignToProject, { isLoading: isAssigning, isError: assignError }] =
         useAssignToProjectMutation();
-    const [updateTodo] = useUpdateTodoMutation();  // ← добавили для удаления задачи из проекта
+    const [removeFromProject, { isLoading: isRemoving, isError: removeError }] =
+        useRemoveFromProjectMutation();
 
     // UI state
     const [viewMode, setViewMode] = useState("table"); // "table" | "cards"
@@ -48,14 +54,15 @@ export default function ProjectsPage() {
     const [isEditing, setIsEditing] = useState(false);
     const [showNewForm, setShowNewForm] = useState(false);
 
-    // form fields
+    // form fields (новый проект)
     const [newTitle, setNewTitle] = useState("");
     const [newDescription, setNewDescription] = useState("");
+
+    // form fields (редактирование проекта)
     const [editTitle, setEditTitle] = useState("");
     const [editDescription, setEditDescription] = useState("");
 
-    // for add-tasks checkboxes
-    const [checkedIds, setCheckedIds] = useState(new Set())
+    // для добавления/удаления задач при редактировании проекта
     const [addIds, setAddIds] = useState(new Set());
     const [removeIds, setRemoveIds] = useState(new Set());
 
@@ -64,32 +71,43 @@ export default function ProjectsPage() {
     const [direction, setDirection] = useState(0);
     const maxPage = Math.ceil(projects.length / CARD_LIMIT) - 1;
 
-    // selected project & its local tasks
+    // выбранный проект и его локальные задачи
     const selectedProject =
         projects.find((p) => p.id === selectedId) || null;
     const [localTasks, setLocalTasks] = useState([]);
 
-    // when switch to a project, reset local UI
+    // при выборе проекта сбрасываем некоторые состояния
     useEffect(() => {
         if (selectedProject) {
+            // берем актуальный список задач, привязанных к этому проекту
             setLocalTasks(selectedProject.tasks || []);
-            setCheckedIds(new Set());
+            setAddIds(new Set());
+            setRemoveIds(new Set());
+            setShowNewForm(false);
             setIsEditing(false);
-        }
-    }, [selectedProject]);
 
-    // prefill edit form
+            // поставить карусель на индекс выбранного проекта
+            const idx = projects.findIndex((p) => p.id === selectedProject.id);
+            if (idx !== -1) {
+                setPage(idx);
+            }
+        }
+    }, [selectedProject, projects]);
+
+    // при входе в режим "редактирование" заполняем поля
     useEffect(() => {
         if (isEditing && selectedProject) {
             setEditTitle(selectedProject.title);
             setEditDescription(selectedProject.description);
+            setAddIds(new Set());
+            setRemoveIds(new Set());
         }
     }, [isEditing, selectedProject]);
 
     if (isLoadingProjects) return <p>Loading projects…</p>;
     if (isErrorProjects) return <p>Error loading projects</p>;
 
-    // date-range helpers
+    // date‐range helpers
     const getEarliest = (tasks = []) =>
         tasks.length
             ? tasks.reduce(
@@ -108,17 +126,16 @@ export default function ProjectsPage() {
     // === Функция переключения карусели ===
     const paginate = (dir) => {
         if (selectedProject) {
-            // режим детального просмотра: сдвигаем по списку projects
-            const currentIndex = projects.findIndex(p => p.id === selectedId);
+            // — детальный просмотр: прокрутимся к соседнему проекту
+            const currentIndex = projects.findIndex((p) => p.id === selectedId);
             const nextIndex = currentIndex + dir;
             if (nextIndex < 0 || nextIndex >= projects.length) return;
             setDirection(dir);
             setPage(nextIndex);
             setSelectedId(projects[nextIndex].id);
-            // сброс режима редактирования
             setIsEditing(false);
         } else {
-            // ваш прежний код для табличной карусели
+            // — табличная карусель
             const next = page + dir;
             if (next < 0 || next > maxPage) return;
             setDirection(dir);
@@ -126,7 +143,7 @@ export default function ProjectsPage() {
         }
     };
 
-    // toggle between table and cards
+    // переключение вида (таблица / карточки)
     const toggleView = () =>
         setViewMode((m) => (m === "table" ? "cards" : "table"));
 
@@ -134,103 +151,240 @@ export default function ProjectsPage() {
     const handleCreate = async (e) => {
         e.preventDefault();
         if (!newTitle.trim() || !newDescription.trim()) return;
-        await createProject({
-            title: newTitle.trim(),
-            description: newDescription.trim(),
-        }).unwrap();
-        setShowNewForm(false);
-        setNewTitle("");
-        setNewDescription("");
+        try {
+            await createProject({
+                title: newTitle.trim(),
+                description: newDescription.trim(),
+            }).unwrap();
+            setShowNewForm(false);
+            setNewTitle("");
+            setNewDescription("");
+            await refetchProjects();
+        } catch (err) {
+            console.error("Fehler beim Erstellen des Projekts:", err);
+        }
     };
 
     // delete project
     const handleDelete = async (id) => {
         if (!window.confirm("Wollen wir das Projekt wirklich löschen?")) return;
-        await deleteProject(id).unwrap();
-        setSelectedId(null);
+        try {
+            await deleteProject(id).unwrap();
+            setSelectedId(null);
+            await refetchProjects();
+        } catch {
+            // игнорируем
+        }
     };
 
-    // save edits
+    // save edits (title/description + задачи)
     const handleSaveProject = async (e) => {
         e.preventDefault();
-        // 1. Сохраняем title/description
-        await updateProject({
-            id: selectedProject.id,
-            title: editTitle.trim(),
-            description: editDescription.trim(),
-        }).unwrap();
+        try {
+            // 1) Обновляем title/description
+            await updateProject({ id: selectedProject.id, title: editTitle.trim(), description: editDescription.trim() }).unwrap();
 
-        // 2. Удаляем выбранные задачи
-        if (removeIds.size > 0) {
-            await Promise.all(
-                Array.from(removeIds).map(todoId =>
-                    updateTodo({
-                        id: todoId,
-                        updatedTodo: { projectId: null }
-                    }).unwrap()
-                )
-            );
+            // 2) Удаляем связи из проекта:
+            if (removeIds.size > 0) {
+                await Promise.all(
+                    Array.from(removeIds).map((todoId) =>
+                        removeFromProject({ todoId, projectId: selectedProject.id }).unwrap()
+                    )
+                );
+            }
+
+            // 3) Добавляем задачи в проект:
+            if (addIds.size > 0) {
+                await Promise.all(
+                    Array.from(addIds).map((todoId) =>
+                        assignToProject({ todoId, projectId: selectedProject.id }).unwrap()
+                    )
+                );
+            }
+
+            // 4) Сбрасываем стейт и рефетчим
+            setRemoveIds(new Set());
+            setAddIds(new Set());
+            setIsEditing(false);
+            await refetchProjects();
+        } catch (err) {
+            console.error("Ошибка при сохранении проекта:", err);
         }
-
-        // 3. Добавляем выбранные задачи
-        if (addIds.size > 0) {
-            await Promise.all(
-                Array.from(addIds).map(todoId =>
-                    assignToProject({
-                        todoId,
-                        projectId: selectedProject.id,
-                    }).unwrap()
-                )
-            );
-        }
-
-        // 4. Сбрасываем форму и рефетчим
-        setRemoveIds(new Set());
-        setAddIds(new Set());
-        setIsEditing(false);
-        await refetchProjects();
     };
 
-
-    // add tasks logic
+    // список задач, которые ещё _не_ принадлежат данному проекту
+    // (но могут уже находиться в других проектах)
     const available = allTodos.filter(
         (t) => !localTasks.some((x) => x.id === t.id)
     );
+
+    // toggle «добавить» галочку
     const toggleAdd = (id) => {
-        setAddIds(prev => {
+        setAddIds((prev) => {
             const next = new Set(prev);
             next.has(id) ? next.delete(id) : next.add(id);
             return next;
-            });
-        };
-    const toggleRemove = (id) => {
-        setRemoveIds(prev => {
-            const next = new Set(prev);
-            next.has(id) ? next.delete(id) : next.add(id);
-            return next;
-            });
-        };
-    const handleAddTasks = async () => {
-        try {
-            await Promise.all(
-                Array.from(checkedIds).map((todoId) =>
-                    assignToProject({ todoId, projectId: selectedProject.id }).unwrap()
-                )
-            );
-            await refetchProjects();
-            setCheckedIds(new Set());
-        } catch {
-            console.error("Fehler beim Hinzufügen der Aufgaben");
-        }
+        });
     };
 
-    // — selected project card —
+    // toggle «удалить» галочку
+    const toggleRemove = (id) => {
+        setRemoveIds((prev) => {
+            const next = new Set(prev);
+            next.has(id) ? next.delete(id) : next.add(id);
+            return next;
+        });
+    };
+
+    // === Если выбран отдельный проект ===
     if (selectedProject) {
         const { title, description } = selectedProject;
         const tasks = localTasks;
 
+        // 1) если isEditing === true → показываем модалку с формой редактирования
+        if (isEditing) {
+            return (
+                <div className={s.page}>
+                    {/* Фоновая карточка (просто для визуального фона) */}
+                    <div className={s.projectCardBackdrop}>
+                        <div className={s.cardHeader}>
+                            <h2 className={s.cardTitle}>{title}</h2>
+                        </div>
+                        <div className={s.cardBody}>
+                            <p>
+                                <strong>Beschreibung:</strong> {description}
+                            </p>
+                            <p>
+                                <strong>Zeitraum:</strong>{" "}
+                                {tasks.length
+                                    ? `${getEarliest(tasks)} – ${getLatest(tasks)}`
+                                    : "—"}
+                            </p>
+                            <h3>Aufgaben:</h3>
+                            {tasks.length ? (
+                                <ul className={s.taskList}>
+                                    {tasks.map((t) => (
+                                        <li key={t.id} className={s.taskItem}>
+                                            <strong>{t.title}</strong> ({t.startDate} – {t.endDate})
+                                        </li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                <p className={s.noTasks}>Keine Aufgaben.</p>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Модальное окно редактирования */}
+                    <div className={s.modalOverlay}>
+                        <div className={s.modalContent}>
+                            <form onSubmit={handleSaveProject} className={s.editForm}>
+                                <h2 className={s.modalTitle}>Projekt bearbeiten</h2>
+
+                                {/* — Редактирование title/description — */}
+                                <div className={s.field}>
+                                    <label htmlFor="title">Titel:</label>
+                                    <input
+                                        id="title"
+                                        type="text"
+                                        value={editTitle}
+                                        onChange={(e) => setEditTitle(e.target.value)}
+                                        disabled={isUpdating}
+                                        className={s.input}
+                                    />
+                                </div>
+                                <div className={s.field}>
+                                    <label htmlFor="description">Beschreibung:</label>
+                                    <textarea
+                                        id="description"
+                                        value={editDescription}
+                                        onChange={(e) => setEditDescription(e.target.value)}
+                                        disabled={isUpdating}
+                                        className={s.textarea}
+                                    />
+                                </div>
+
+                                {/* — Удалить задачи из проекта — */}
+                                <div className={s.addTasks}>
+                                    <h4>Aufgabe löschen:</h4>
+                                    <ul className={s.taskList}>
+                                        {tasks.map((t) => (
+                                            <li key={t.id} className={s.taskItem}>
+                                                <label>
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={removeIds.has(t.id)}
+                                                        onChange={() => toggleRemove(t.id)}
+                                                    />{" "}
+                                                    {t.title} ({t.startDate} – {t.endDate})
+                                                </label>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+
+                                {/* — Добавить задачи в проект — */}
+                                <div className={s.addTasks}>
+                                    <h4>Aufgabe hinzufügen:</h4>
+                                    <ul className={s.taskList}>
+                                        {available.map((t) => (
+                                            <li key={t.id} className={s.taskItem}>
+                                                <label>
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={addIds.has(t.id)}
+                                                        onChange={() => toggleAdd(t.id)}
+                                                    />{" "}
+                                                    {t.title} ({t.startDate} – {t.endDate})
+                                                </label>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+
+                                {/* — Общие кнопки — */}
+                                <div className={s.buttons}>
+                                    <button
+                                        type="submit"
+                                        disabled={isUpdating || isAssigning}
+                                        className={s.updateBtn}
+                                    >
+                                        {isUpdating || isAssigning ? "Bestätigen…" : "Bestätigen"}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setIsEditing(false);
+                                            setRemoveIds(new Set());
+                                            setAddIds(new Set());
+                                        }}
+                                        disabled={isUpdating || isAssigning}
+                                        className={s.deleteBtn}
+                                    >
+                                        Absagen
+                                    </button>
+                                </div>
+
+                                {(updateError || assignError || removeError) && (
+                                    <p className={s.error}>
+                                        {updateError
+                                            ? "Fehler beim Speichern des Projekts."
+                                            : assignError || removeError
+                                                ? "Fehler при изменении привязки задач."
+                                                : null}
+                                    </p>
+                                )}
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // 2) isEditing === false → обычный просмотр + карусель
         return (
             <div className={s.page}>
+                {/* ← Zurück zu Projekte */}
                 <button
                     className={s.backBtn}
                     onClick={() => {
@@ -246,162 +400,62 @@ export default function ProjectsPage() {
                         <Button
                             className={s.arrowLeft}
                             onClick={() => paginate(-1)}
-                            disabled={page === 0}  // если на первой карточке — влево неактивно
+                            disabled={page === 0}
                         >
                             <img src={arrowLeftSrc} alt="←" className={s.arrowIcon} />
                         </Button>
+
                         <div className={s.projectCard}>
-                            {isEditing ? (
-                                <form onSubmit={handleSaveProject} className={s.editForm}>
-                                    {/* — Мета проекта — */}
-                                    <div className={s.field}>
-                                        <label htmlFor="title">Titel:</label>
-                                        <input
-                                            id="title"
-                                            type="text"
-                                            value={editTitle}
-                                            onChange={(e) => setEditTitle(e.target.value)}
-                                            disabled={isUpdating}
-                                            className={s.input}
-                                        />
-                                    </div>
-                                    <div className={s.field}>
-                                        <label htmlFor="description">Beschreibung:</label>
-                                        <textarea
-                                            id="description"
-                                            value={editDescription}
-                                            onChange={(e) => setEditDescription(e.target.value)}
-                                            disabled={isUpdating}
-                                            className={s.textarea}
-                                        />
-                                    </div>
+                            {/* — Просмотр мета — */}
+                            <div className={s.cardHeader}>
+                                <h2 className={s.cardTitle}>{title}</h2>
+                            </div>
+                            <div className={s.cardBody}>
+                                <p>
+                                    <strong>Beschreibung:</strong> {description}
+                                </p>
+                                <p>
+                                    <strong>Zeitraum:</strong>{" "}
+                                    {tasks.length
+                                        ? `${getEarliest(tasks)} – ${getLatest(tasks)}`
+                                        : "—"}
+                                </p>
+                                <h3>Aufgaben:</h3>
+                                {tasks.length ? (
+                                    <ul className={s.taskList}>
+                                        {tasks.map((t) => (
+                                            <li key={t.id} className={s.taskItem}>
+                                                <strong>{t.title}</strong> ({t.startDate} – {t.endDate})
+                                            </li>
+                                        ))}
+                                    </ul>
+                                ) : (
+                                    <p className={s.noTasks}>Keine Aufgaben.</p>
+                                )}
+                            </div>
 
-                                    {/* — Удалить задачи из проекта — */}
-                                    <div className={s.addTasks}>
-                                        <h4>Aufgabe löschen:</h4>
-                                        <ul className={s.taskList}>
-                                            {tasks.map((t) => (
-                                                <li key={t.id} className={s.taskItem}>
-                                                    <label>
-                                                        <input
-                                                            type="checkbox"
-                                                            checked={removeIds.has(t.id)}
-                                                            onChange={() => toggleRemove(t.id)}
-                                                        />{" "}
-                                                        {t.title} ({t.startDate} – {t.endDate})
-                                                    </label>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-
-                                    {/* — Добавить задачи в проект — */}
-                                    <div className={s.addTasks}>
-                                        <h4>Aufgabe hinzufügen:</h4>
-                                        <ul className={s.taskList}>
-                                            {available.map((t) => (
-                                                <li key={t.id} className={s.taskItem}>
-                                                    <label>
-                                                        <input
-                                                            type="checkbox"
-                                                            checked={addIds.has(t.id)}
-                                                            onChange={() => toggleAdd(t.id)}
-                                                        />{" "}
-                                                        {t.title} ({t.startDate} – {t.endDate})
-                                                    </label>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-
-                                    {/* — Общие кнопки — */}
-                                    <div className={s.buttons}>
-                                        <button
-                                            type="submit"
-                                            disabled={isUpdating || isAssigning}
-                                        >
-                                            {isUpdating || isAssigning
-                                                ? "Bestätigen…"
-                                                : "Bestätigen"}
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-                                                setIsEditing(false);
-                                                setRemoveIds(new Set());
-                                                setAddIds(new Set());
-                                            }}
-                                            disabled={isUpdating || isAssigning}
-                                        >
-                                            Absagen
-                                        </button>
-                                    </div>
-
-                                    {(updateError || assignError) && (
-                                        <p className={s.error}>
-                                            {updateError
-                                                ? "Fehler beim Speichern des Projekts."
-                                                : "Fehler beim Anpassen der Aufgaben."}
-                                        </p>
-                                    )}
-                                </form>
-
-                            ) : (
-                                <>
-                                    {/* — Просмотр мета — */}
-                                    <div className={s.cardHeader}>
-                                        <h2 className={s.cardTitle}>{title}</h2>
-                                    </div>
-                                    <div className={s.cardBody}>
-                                        <button className={s.cardBtn}>
-                                            <strong>Beschreibung:</strong> {description}
-                                        </button>
-                                        <button className={s.cardBtn}>
-                                            <strong>Zeitraum:</strong>{" "}
-                                            {tasks.length
-                                                ? `${getEarliest(tasks)} – ${getLatest(tasks)}`
-                                                : "—"}
-                                        </button>
-                                        <button className={s.cardBtn}>
-                                        <h3>Aufgaben:</h3>
-                                        {tasks.length ? (
-                                            <ul className={s.taskList}>
-                                                {tasks.map((t) => (
-                                                    <li key={t.id} className={s.taskItem}>
-                                                        <strong>{t.title}</strong> (
-                                                        {t.startDate} – {t.endDate})
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        ) : (
-                                            <p className={s.noTasks}>Keine Aufgaben.</p>
-                                        )}
-                                        </button>
-                                    </div>
-
-                                    {/* — Действия — */}
-                                    <div className={s.cardActions}>
-                                        <button
-                                            className={s.updateBtn}
-                                            onClick={() => setIsEditing(true)}
-                                        >
-                                            Korrigieren
-                                        </button>
-                                        <button
-                                            className={s.deleteBtn}
-                                            onClick={() => handleDelete(selectedProject.id)}
-                                            disabled={isDeleting}
-                                        >
-                                            {isDeleting ? "Löschen…" : "Löschen"}
-                                        </button>
-                                    </div>
-                                </>
-                            )}
+                            {/* — Действия — */}
+                            <div className={s.cardActions}>
+                                <button
+                                    className={s.updateBtn}
+                                    onClick={() => setIsEditing(true)}
+                                >
+                                    Korrigieren
+                                </button>
+                                <button
+                                    className={s.deleteBtn}
+                                    onClick={() => handleDelete(selectedProject.id)}
+                                    disabled={isDeleting}
+                                >
+                                    {isDeleting ? "Löschen…" : "Löschen"}
+                                </button>
+                            </div>
                         </div>
+
                         <Button
                             className={s.arrowRight}
                             onClick={() => paginate(1)}
-                            disabled={page === projects.length - 1} // если на последней — вправо неактивно
+                            disabled={page === projects.length - 1}
                         >
                             <img src={arrowRightSrc} alt="→" className={s.arrowIcon} />
                         </Button>
@@ -411,106 +465,118 @@ export default function ProjectsPage() {
         );
     }
 
-    // — Список или карточки —
+    // — Список или карусель списка проектов (основной экран) —
     return (
         <div className={s.page}>
+            {/* Заголовок */}
             <div className={s.headerRow}>
                 <h1 className={s.heading}>Deine Projekte</h1>
+            </div>
+
+            {/* Ряд кнопок: слева «Neues Projekt herstellen», справа «Card View / List View» */}
+            <div className={s.controlsRow}>
+                {/* Слева: кнопка создания проекта */}
+                <button className={s.newBtn} onClick={() => setShowNewForm(true)}>
+                    Neues Projekt herstellen
+                </button>
+
+                {/* Справа: кнопка переключения вида */}
                 <button onClick={toggleView} className={s.newBtn}>
                     {viewMode === "table" ? "Card View" : "List View"}
                 </button>
             </div>
-            {!showNewForm ? (
-                <button
-                    className={s.newBtn}
-                    onClick={() => setShowNewForm(true)}
-                >
-                    Neues Projekt herstellen
-                </button>
-            ) : (
-                <section className={s.sectionNewForm}>
-                    <form onSubmit={handleCreate} className={s.newForm}>
-                        {/* форма создания */}
-                        <div className={s.field}>
-                            <label htmlFor="newTitle">Titel:</label>
-                            <input
-                                id="newTitle"
-                                type="text"
-                                value={newTitle}
-                                onChange={(e) => setNewTitle(e.target.value)}
-                                disabled={isCreating}
-                                className={s.input}
-                            />
-                        </div>
-                        <div className={s.field}>
-                            <label htmlFor="newDescription">Beschreibung:</label>
-                            <textarea
-                                id="newDescription"
-                                value={newDescription}
-                                onChange={(e) => setNewDescription(e.target.value)}
-                                disabled={isCreating}
-                                className={s.textarea}
-                            />
-                        </div>
-                        <div className={s.buttons}>
-                            <button type="submit" disabled={isCreating}>
-                                {isCreating ? "Bestätigen…" : "Bestätigen"}
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => setShowNewForm(false)}
-                                disabled={isCreating}
-                            >
-                                Absagen
-                            </button>
-                        </div>
-                        {createError && <p className={s.error}>Fehler beim Erstellen.</p>}
-                    </form>
-                </section>
+
+            {/* --- Модальное окно «Новый проект» --- */}
+            {showNewForm && (
+                <div className={s.modalOverlay}>
+                    <div className={s.modalContent}>
+                        <form onSubmit={handleCreate} className={s.newForm}>
+                            <h2 className={s.modalTitle}>Neues Projekt erstellen</h2>
+
+                            <div className={s.field}>
+                                <label htmlFor="newTitle">Titel:</label>
+                                <input
+                                    id="newTitle"
+                                    type="text"
+                                    value={newTitle}
+                                    onChange={(e) => setNewTitle(e.target.value)}
+                                    disabled={isCreating}
+                                    className={s.input}
+                                />
+                            </div>
+                            <div className={s.field}>
+                                <label htmlFor="newDescription">Beschreibung:</label>
+                                <textarea
+                                    id="newDescription"
+                                    value={newDescription}
+                                    onChange={(e) => setNewDescription(e.target.value)}
+                                    disabled={isCreating}
+                                    className={s.textarea}
+                                />
+                            </div>
+
+                            <div className={s.buttons}>
+                                <button
+                                    type="submit"
+                                    disabled={isCreating}
+                                    className={s.updateBtn}
+                                >
+                                    {isCreating ? "Bestätigen…" : "Bestätigen"}
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setShowNewForm(false)}
+                                    disabled={isCreating}
+                                    className={s.deleteBtn}
+                                >
+                                    Absagen
+                                </button>
+                            </div>
+                            {createError && <p className={s.error}>Fehler beim Erstellen.</p>}
+                        </form>
+                    </div>
+                </div>
             )}
 
             {viewMode === "table" ? (
-                <>
-                    <section className={s.section}>
-                        <table className={s.table}>
-                            <thead>
-                            <tr>
-                                <th className={s.th}>#</th>
-                                <th className={s.th}>Titel</th>
-                                <th className={s.th}>Beschreibung</th>
-                                <th className={s.th}>Zeitraum</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {projects.map((p, idx) => {
-                                const tasks = p.tasks || [];
-                                return (
-                                    <tr
-                                        key={p.id}
-                                        className={s.tr}
-                                        onClick={() => {
-                                            setSelectedId(p.id);
-                                            setShowNewForm(false);
-                                            setPage(idx);
-                                        }}
-                                    >
-                                        <td className={s.td}>{idx + 1}</td>
-                                        <td className={s.td}>{p.title}</td>
-                                        <td className={s.td}>{p.description}</td>
-                                        <td className={s.td}>
-                                            {tasks.length
-                                                ? `${getEarliest(tasks)} – ${getLatest(tasks)}`
-                                                : "—"}
-                                        </td>
-                                    </tr>
-                                );
-                            })}
-                            </tbody>
-                        </table>
-                    </section>
-                </>
+                <section className={s.section}>
+                    <table className={s.table}>
+                        <thead>
+                        <tr className={s.theadTr}>
+                            <th className={s.th}>#</th>
+                            <th className={s.th}>Titel</th>
+                            <th className={s.th}>Beschreibung</th>
+                            <th className={s.th}>Zeitraum</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {projects.map((p, idx) => {
+                            const tasks = p.tasks || [];
+                            return (
+                                <tr
+                                    key={p.id}
+                                    className={s.tr}
+                                    onClick={() => {
+                                        setSelectedId(p.id);
+                                        setShowNewForm(false);
+                                        setPage(idx);
+                                    }}
+                                >
+                                    <td className={s.td}>{idx + 1}</td>
+                                    <td className={s.td}>{p.title}</td>
+                                    <td className={s.td}>{p.description}</td>
+                                    <td className={s.td}>
+                                        {tasks.length
+                                            ? `${getEarliest(tasks)} – ${getLatest(tasks)}`
+                                            : "—"}
+                                    </td>
+                                </tr>
+                            );
+                        })}
+                        </tbody>
+                    </table>
+                </section>
             ) : (
-                // CARDS VIEW
                 <section className={s.section}>
                     <div className={s.carousel}>
                         <Button
@@ -518,11 +584,7 @@ export default function ProjectsPage() {
                             onClick={() => paginate(-1)}
                             disabled={page === 0}
                         >
-                            <img
-                                src={arrowLeftSrc}
-                                alt="←"
-                                className={s.arrowIcon}
-                            />
+                            <img src={arrowLeftSrc} alt="←" className={s.arrowIcon} />
                         </Button>
 
                         <div className={s.todoCardGroup}>
@@ -543,17 +605,39 @@ export default function ProjectsPage() {
                                             const tasks = p.tasks || [];
                                             return (
                                                 <div key={p.id} className={s.todoCard}>
-                                                    <h4 className={s.todoTitle}>{p.title}</h4>
+                                                    <div className={s.todoTitle}>
+                                                        <h4>{p.title}</h4>
+                                                    </div>
                                                     <div className={s.cardStuff}>
-                                                        <p>
-                                                            <strong>Beschreibung:</strong> {p.description}
+                                                        <p className={s.beschreibung}>
+                                                            <strong>Beschreibung:</strong>
                                                         </p>
-                                                        <p>
-                                                            <strong>Zeitraum:</strong>{" "}
-                                                            {tasks.length
-                                                                ? `${getEarliest(tasks)} – ${getLatest(tasks)}`
-                                                                : "—"}
+                                                        <div className={s.cardBeschreibung}>
+                                                            {p.description}
+                                                        </div>
+                                                        <p className={s.zeitraum}>
+                                                            <strong>Zeitraum:</strong>
                                                         </p>
+                                                        <div className={s.startDate}>
+                                                            {tasks.length ? (
+                                                                <>
+                                                                    Start:&nbsp;
+                                                                    <span>{getEarliest(tasks)}</span>
+                                                                </>
+                                                            ) : (
+                                                                "Start: —"
+                                                            )}
+                                                        </div>
+                                                        <div className={s.endDate}>
+                                                            {tasks.length ? (
+                                                                <>
+                                                                    Ende:&nbsp;
+                                                                    <span>{getLatest(tasks)}</span>
+                                                                </>
+                                                            ) : (
+                                                                "Ende: —"
+                                                            )}
+                                                        </div>
                                                     </div>
                                                     <div className={s.cardButtons}>
                                                         <Button
@@ -572,7 +656,7 @@ export default function ProjectsPage() {
                                                 </div>
                                             );
                                         })}
-                                    {/** placeholders **/}
+                                    {/* placeholders */}
                                     {Array.from({
                                         length:
                                             CARD_LIMIT -
@@ -601,11 +685,7 @@ export default function ProjectsPage() {
                             onClick={() => paginate(1)}
                             disabled={page === maxPage}
                         >
-                            <img
-                                src={arrowRightSrc}
-                                alt="→"
-                                className={s.arrowIcon}
-                            />
+                            <img src={arrowRightSrc} alt="→" className={s.arrowIcon} />
                         </Button>
                     </div>
                 </section>
@@ -613,5 +693,3 @@ export default function ProjectsPage() {
         </div>
     );
 }
-
-

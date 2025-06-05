@@ -8,6 +8,13 @@
   flex: 1;
 }
 
+.controlsRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem; /* отступ под кнопками */
+}
+
 /* Заголовок страницы */
 .heading {
   margin-bottom: 1rem;
@@ -20,16 +27,22 @@
 /* Кнопка «Neues Projekt herstellen» */
 .newBtn {
   display: inline-block;
+  width: 10rem;
+  height: 3rem;
   margin: 5px 0;
   padding: 0.5rem 1rem;
-  background-color: $background-color;
+  background-color: rgba(63, 243, 158, 0.5);
   color: $primary-color;
-  border: none;
+  font-weight: 600;
+  border: 2px solid #A88F6B;
   border-radius: 4px;
   cursor: pointer;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
   &:hover {
-    background-color: $highlight-color;
+    background-color: rgba(6, 114, 67, 1);
+    transform: scale(1.02);
+    color: #fff;
+    text-transform: uppercase;
   }
 }
 
@@ -42,19 +55,28 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
+.theadTr {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  &:hover {
+    background-color: rgba(6, 114, 67, 1);
+    color: #fff;
+    text-transform: uppercase;
+  }
+}
+
 /* Заголовки столбцов */
 .table th {
   background-color: rgba(63, 243, 158, 0.5);
   color: #333;
   text-align: center;
   padding: 12px 15px;
-  border-bottom: 2px solid #ddd;
+  border: 2px solid #A88F6B !important;
 }
 
 /* Обычные ячейки */
 .table td {
   padding: 12px 15px;
-  border-bottom: 1px solid #ddd;
   border: 2px solid #A88F6B !important;
 }
 
@@ -73,6 +95,7 @@
     transform: translateY(-5px);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
     background-color: #FFEBC8;
+    text-transform: uppercase;
   }
 }
 
@@ -100,21 +123,36 @@
   margin: 0;
 }
 
+.todoTitle {
+  min-height: 60px;
+  text-align: center;
+  text-decoration: underline;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #2e2e2e;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
 .cardBody {
   padding: 1rem;
+  width: 100%;
 }
 
 /* Форма создания/редактирования */
-.newForm,
-.editForm {
-  margin-bottom: 1rem;
-  padding: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
+//.newForm,
+//.editForm {
+//  margin-bottom: 1rem;
+//  padding: 1rem;
+//  border: 1px solid #ccc;
+//  border-radius: 6px;
+//}
 
 .field {
-  margin-bottom: 0.5rem;
+  height: 100%;
+  margin-bottom: 1rem;
+  align-content: space-between;
 }
 
 .input,
@@ -173,6 +211,43 @@
   font-family: "Akrobat ExtraBold", sans-serif;
   font-size: 2rem;
   text-decoration: blink;
+}
+
+.beschreibung, .zeitraum {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #2e2e2e;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.cardBeschreibung {
+  height: 80px;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  border: 2px solid #A88F6B;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  &:hover {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+    background-color: #FFEBC8;
+    background-color: rgba(6, 114, 67, 1);
+    transform: scale(1.2);
+    color: #fff;
+    text-transform: uppercase;
+  }
+}
+
+.startDate span {
+  color: green;
+  margin-bottom: 0.5rem;
+}
+
+.endDate span {
+  color: red;
+  margin-bottom: 0.5rem;
 }
 
 .updateBtn {
@@ -259,6 +334,7 @@
 
 .todoCard {
   flex: 1;           /* каждая занимает ровно 1/количество_видимых */
+  border-top: 24px solid rgb(250, 108, 121);
   min-width: 0;      /* чтобы flex не «ломал» их ширину при переполнении */
   background-color: #fff;
   border-radius: 1rem;
@@ -340,5 +416,64 @@
 .plus {
   font-size: 2.5rem;
   color: #888;
+}
+
+.headerRow {
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.controlsRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+/* === Модальное окно «Новый проект» === */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* полупрозрачный чёрный */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100; /* поверх всего остального */
+}
+
+.modalContent {
+  background-color: #fff;
+  border-radius: 1rem;
+  padding: 1.5rem 2rem;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  flex: 1;           /* каждая занимает ровно 1/количество_видимых */
+  border-top: 24px solid rgb(250, 108, 121);
+  min-width: 0;      /* чтобы flex не «ломал» их ширину при переполнении */
+  //background-color: #fff;
+  //padding: 1rem;
+  //box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+    background-color: #FFEBC8;
+  }
+}
+
+.modalTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  text-align: center;
 }
 
